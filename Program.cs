@@ -1,6 +1,8 @@
 ﻿using System;
 using NLog;
 
+using Doocutor.Core;
+
 namespace Doocutor
 {
     class Program
@@ -10,8 +12,19 @@ namespace Doocutor
         static void Main(string[] args)
         {
             LOGGER.Info("Start of the program");
-            Console.WriteLine("Hello World!");
-            LOGGER.Info("End of the program");
+
+            try
+            {
+                InputFlowDescriptor descriptor = new ConsoleInputFlowDescriptor();
+                IInputFlowHandler handler = new CommandFlowHandler(descriptor);
+                handler.Handle();
+            }
+            catch (Exception error)
+            {
+                LOGGER.Error(error);
+            }
+
+            LOGGER.Info("End of the program\n\n");
         }
     }
 }
