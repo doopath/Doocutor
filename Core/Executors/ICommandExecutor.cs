@@ -6,8 +6,8 @@ namespace Doocutor.Core.Executors
     /// Executor of input commands
     /// (for example: natime command - ":run" or some editor command).
     /// </summary>
-    interface ICommandExecutor
+    internal interface ICommandExecutor<T> where T : ICommand
     {
-        void Execute(Command command);
+        void Execute(T command);
     }
 }

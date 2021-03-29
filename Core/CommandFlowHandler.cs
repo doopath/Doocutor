@@ -1,13 +1,14 @@
-﻿
+﻿using Doocutor.Core.Descriptors;
+
 namespace Doocutor.Core
 {
     class CommandFlowHandler : IInputFlowHandler
     {
-        private readonly InputFlowDescriptor inputFlowDescriptor;
+        private readonly IInputFlowDescriptor inputFlowDescriptor;
         private readonly ICommandHandler commandHandler = new CommandHandler();
         public bool IsClosed { get; private set; } = false;
 
-        public CommandFlowHandler(InputFlowDescriptor inputFlowDescriptor)
+        public CommandFlowHandler(IInputFlowDescriptor inputFlowDescriptor)
         {
             this.inputFlowDescriptor = inputFlowDescriptor;
         }

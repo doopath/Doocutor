@@ -1,8 +1,8 @@
 ﻿using System;
 
-namespace Doocutor.Core
+namespace Doocutor.Core.Descriptors
 {
-    class ConsoleInputFlowDescriptor : InputFlowDescriptor
+    internal class ConsoleInputFlowDescriptor : IInputFlowDescriptor
     {
         public bool HasNext()
         {

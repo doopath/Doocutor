@@ -6,71 +6,76 @@ using Doocutor.Core.Commands;
 
 namespace Doocutor.Core
 {
-    class CommandHandler : ICommandHandler
+    internal class CommandHandler : ICommandHandler
     {
-        private readonly Logger LOGGER = LogManager.GetCurrentClassLogger();
-        private ICommandExecutor nativeCommandExecutor;
-        private ICommandExecutor editorCommandExecutor;
-        private ICommandRecognizer commandRecognizer;
+        private readonly Logger _logger = LogManager.GetCurrentClassLogger();
+        private ICommandExecutor<NativeCommand> _nativeCommandExecutor;
+        private ICommandExecutor<EditorCommand> _editorCommandExecutor;
+        private ICommandRecognizer _commandRecognizer;
 
         /// <summary>
-        /// Defautl constructor. Also there is builder that help to testing
-        /// this class and set cusotom executors and recognizers.
+        /// Default constructor. Also there is builder that help to testing
+        /// this class and set custom executors and recognizers.
         /// </summary>
         public CommandHandler()
         {
-            this.nativeCommandExecutor = new NativeCommandExecutor();
-            this.editorCommandExecutor = new EditorCommandExecutor();
-            this.commandRecognizer = new CommandRecognizer();
+            _nativeCommandExecutor = new NativeCommandExecutor();
+            _editorCommandExecutor = new EditorCommandExecutor();
+            _commandRecognizer = new CommandRecognizer();
         }
 
         public static Builder GetBuilder()
         {
-            return new Builder();
+            return new();
         }
 
         public class Builder
         {
-            private readonly CommandHandler commandHandler = new();
+            private readonly CommandHandler _commandHandler = new();
 
-            public CommandHandler Build => this.commandHandler;
+            public CommandHandler Build => _commandHandler;
 
-            public Builder SetNativeCommandExecutor(ICommandExecutor nativeCommandExecutor)
+            public Builder SetNativeCommandExecutor(ICommandExecutor<NativeCommand> nativeCommandExecutor)
             {
-                this.commandHandler.nativeCommandExecutor = nativeCommandExecutor;
+                _commandHandler._nativeCommandExecutor = nativeCommandExecutor;
                 return this;
             }
 
-            public Builder SetEditorCommandExecutor(ICommandExecutor editorCommandExecutor)
+            public Builder SetEditorCommandExecutor(ICommandExecutor<EditorCommand> editorCommandExecutor)
             {
-                this.commandHandler.editorCommandExecutor = editorCommandExecutor;
+                _commandHandler._editorCommandExecutor = editorCommandExecutor;
                 return this;
             }
 
             public Builder SetCommandRecognizer(ICommandRecognizer commandRecognizer)
             {
-                this.commandHandler.commandRecognizer = commandRecognizer;
+                _commandHandler._commandRecognizer = commandRecognizer;
                 return this;
             }
         }
 
         public void Handle(string command)
         {
-
             try
             {
-                Command recognizedCommand = this.commandRecognizer.Recognize(command);
+                var recognizedCommand = _commandRecognizer.Recognize(command);
 
-                if (recognizedCommand.Type.Equals(CommandType.EDITOR_COMMAND))
-                    this.editorCommandExecutor.Execute(recognizedCommand);
-                if (recognizedCommand.Type.Equals(CommandType.NATIVE_COMMAND))
-                    this.nativeCommandExecutor.Execute(recognizedCommand);
+                switch (recognizedCommand.Type)
+                {
+                    case CommandType.EDITOR_COMMAND:
+                        _editorCommandExecutor.Execute((EditorCommand) recognizedCommand);
+                        break;
+                    case CommandType.NATIVE_COMMAND:
+                        _nativeCommandExecutor.Execute((NativeCommand) recognizedCommand);
+                        break;
+                    default:
+                        throw new UnsupportedCommandException($"Given command {command} is not supported!");
+                }
             }
             catch (CommandRecognizingException error)
             {
-                this.LOGGER.Error(error.Message);
+                _logger.Error(error.Message);
             }
         }
     }
 }
-

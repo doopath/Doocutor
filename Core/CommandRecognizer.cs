@@ -4,9 +4,9 @@ using System;
 
 namespace Doocutor.Core
 {
-    class CommandRecognizer : ICommandRecognizer
+    internal class CommandRecognizer : ICommandRecognizer
     {
-        public Command Recognize(string command)
+        public ICommand Recognize(string command)
         {
             if (this.IsValidNativeCommand(command))
                 return new NativeCommand(command);

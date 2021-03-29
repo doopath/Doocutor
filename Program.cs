@@ -2,29 +2,30 @@
 using NLog;
 
 using Doocutor.Core;
+using Doocutor.Core.Descriptors;
 
 namespace Doocutor
 {
-    class Program
+    internal class Program
     {
-        private static readonly Logger LOGGER = LogManager.GetCurrentClassLogger();
+        private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
 
-        static void Main(string[] args)
+        public static void Main(string[] args)
         {
-            LOGGER.Info("Start of the program");
+            Logger.Info("Start of the program");
 
             try
             {
-                InputFlowDescriptor descriptor = new ConsoleInputFlowDescriptor();
+                IInputFlowDescriptor descriptor = new ConsoleInputFlowDescriptor();
                 IInputFlowHandler handler = new CommandFlowHandler(descriptor);
                 handler.Handle();
             }
             catch (Exception error)
             {
-                LOGGER.Error(error);
+                Logger.Error(error);
             }
 
-            LOGGER.Info("End of the program\n\n");
+            Logger.Info("End of the program\n\n");
         }
     }
 }

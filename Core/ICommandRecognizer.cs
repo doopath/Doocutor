@@ -2,8 +2,8 @@
 
 namespace Doocutor.Core
 {
-    interface ICommandRecognizer
+    internal interface ICommandRecognizer
     {
-        Command Recognize(string command);
+        ICommand Recognize(string command);
     }
 }

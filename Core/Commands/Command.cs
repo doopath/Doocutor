@@ -1,7 +1,7 @@
 ﻿
 namespace Doocutor.Core.Commands
 {
-    interface Command
+    internal interface ICommand
     {
         CommandType Type { get; }
         string Content { get; }

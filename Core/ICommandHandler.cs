@@ -1,7 +1,7 @@
 ﻿
 namespace Doocutor.Core
 {
-    interface ICommandHandler
+    internal interface ICommandHandler
     {
         void Handle(string command);
     }
