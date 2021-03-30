@@ -1,23 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Collections.Generic;
 
 namespace Doocutor.Core
 {
     static class NativeCommandsList
     {
-        private static List<string> Commands = Enumerable.ToList<string>(new string[] {
-            ":quit",
-            ":compile",
-            ":run",
-            ":using",
-            ":writeAfter",
-            ":remove",
-            ":removeBlock",
-            ":replace"
-        });
+        private static readonly List<string> Commands = NativeCommander.SupprotedCommands;
 
         public static bool Contains(string command)
         {

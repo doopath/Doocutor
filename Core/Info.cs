@@ -1,8 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Doocutor.Core
 {
@@ -18,7 +14,10 @@ namespace Doocutor.Core
         /// DDMMYY - Day.Month.Year datetime
         /// </summary>
         public static readonly string BuildInfo = "UCB-290321";
-        public static readonly string Updated = "29th of March 2021";
+        public static readonly string Updated = "30th of March 2021";
         public static readonly string Version = "0.0.9";
+
+        public static void ShowDoocutorInfo() => Console.WriteLine($"Doocutor v{Version} with build: {BuildInfo}" +
+            $"updated {Updated}.\nDeveloped in Russia.NizhnyNovgorod 2021.\n");
     }
 }

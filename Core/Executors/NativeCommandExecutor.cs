@@ -1,4 +1,7 @@
 ﻿using System;
+using System.Collections.Generic;
+
+using Doocutor.Core;
 using Doocutor.Core.Commands;
 
 namespace Doocutor.Core.Executors
@@ -7,8 +10,7 @@ namespace Doocutor.Core.Executors
     {
         public void Execute(NativeCommand command)
         {
-            // TODO: execute the gotten command.
-            Console.WriteLine("Executing of a native command...");
+            NativeCommander.GetExecutingFunction(command).Invoke();
         }
     }
 }
