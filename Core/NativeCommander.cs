@@ -23,13 +23,6 @@ namespace Doocutor.Core
             ":replace"
         }));
 
-        private static readonly Dictionary<string, executeCommandDelegate> commandsMap =
-            new(Enumerable.ToList<KeyValuePair<string, executeCommandDelegate>>(new KeyValuePair<string, executeCommandDelegate>[]
-                {
-                    new KeyValuePair<string, executeCommandDelegate>(":quit", ExecuteQuitCommand)
-                })
-            );
-
         public static Action GetExecutingFunction(NativeCommand command)
         {
             var function = commandsMap[command.Content] ?? throw new
@@ -37,6 +30,13 @@ namespace Doocutor.Core
 
             return () => function.Invoke(command);
         }
+
+        private static readonly Dictionary<string, executeCommandDelegate> commandsMap =
+            new(Enumerable.ToList<KeyValuePair<string, executeCommandDelegate>>(new KeyValuePair<string, executeCommandDelegate>[]
+                {
+                    new KeyValuePair<string, executeCommandDelegate>(":quit", ExecuteQuitCommand)
+                })
+            );
 
         private static void ExecuteQuitCommand(NativeCommand command)
         {
