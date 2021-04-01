@@ -2,13 +2,14 @@
 using System.Collections.Generic;
 
 using Doocutor.Core.CodeBuffers.CodePointers;
+using Doocutor.Core.Exceptions;
 
 namespace Doocutor.Core.CodeBuffers
 {
     class SourceCodeBuffer : ICodeBuffer
     {
         private static readonly List<string> _sourceCode = InitialSourceCode.GetInitialSourceCode();
-        private static readonly int _pointerPosition = InitialSourceCode.GetInitialPointerPosition();
+        private static int _pointerPosition = InitialSourceCode.GetInitialPointerPosition();
 
         public int BufferSize { get => _sourceCode.Count; }
 
@@ -16,10 +17,14 @@ namespace Doocutor.Core.CodeBuffers
 
         public void RemoveCodeBlock(ICodeBlockPointer pointer)
         {
+            CheckIfLineExistsAt(pointer.EndLineNumber);
+
             for (var i = 0; i < pointer.StartLineNumber - pointer.EndLineNumber + 1; i++)
             {
-                _sourceCode.RemoveAt(pointer.StartLineNumber);
+                _sourceCode.RemoveAt(pointer.StartLineNumber - 1);
             }
+
+            _pointerPosition = (_pointerPosition <= _sourceCode.Count) ? _pointerPosition : _sourceCode.Count;
         }
 
         public void RemoveLine(int lineNumber)
@@ -40,6 +45,14 @@ namespace Doocutor.Core.CodeBuffers
         public void WriteAfter(int lineNumber, string line)
         {
             throw new System.NotImplementedException();
+        }
+
+        private void CheckIfLineExistsAt(int lineNumber)
+        {
+            if (_sourceCode.Count < lineNumber)
+            {
+                throw new OutOfCodeBufferSizeException($"Line number {lineNumber} does not exist!");
+            }
         }
     }
 
