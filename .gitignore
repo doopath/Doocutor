@@ -24,6 +24,9 @@ bld/
 .vscode/
 .idea/
 
+# User's settings
+Doocutor.csproj.user
+
 # MSTest test Results
 [Tt]est[Rr]esult*/
 [Bb]uild[Ll]og.*
