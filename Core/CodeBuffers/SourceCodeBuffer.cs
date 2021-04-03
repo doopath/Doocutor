@@ -1,5 +1,6 @@
 ﻿using System.Linq;
 using System.Collections.Generic;
+using System.Text.RegularExpressions;
 
 using Doocutor.Core.CodeBuffers.CodePointers;
 using Doocutor.Core.Exceptions;
@@ -12,8 +13,7 @@ namespace Doocutor.Core.CodeBuffers
         private static int _pointerPosition = InitialSourceCode.GetInitialPointerPosition();
 
         public int BufferSize { get => _sourceCode.Count; }
-
-        public string GetCode() => string.Join("", _sourceCode.Select((l, i) => $"{i} |  {l}").ToArray());
+        public string Code { get => GetSourceCode(); }
 
         public void RemoveCodeBlock(ICodeBlockPointer pointer)
         {
@@ -24,27 +24,32 @@ namespace Doocutor.Core.CodeBuffers
                 _sourceCode.RemoveAt(pointer.StartLineNumber - 1);
             }
 
-            _pointerPosition = (_pointerPosition <= _sourceCode.Count) ? _pointerPosition : _sourceCode.Count;
+            SetPointerAtLastLineIfNecessary();
         }
 
         public void RemoveLine(int lineNumber)
         {
-            throw new System.NotImplementedException();
+            CheckIfLineExistsAt(lineNumber);
+            _sourceCode.RemoveAt(lineNumber - 1);
+            SetPointerAtLastLineIfNecessary();
         }
 
         public void ReplaceLineAt(int lineNumber, string newLine)
         {
-            throw new System.NotImplementedException();
+            CheckIfLineExistsAt(lineNumber);
+            _sourceCode[lineNumber - 1] = ModifyLine(newLine, lineNumber);
         }
 
         public void Write(string line)
         {
-            throw new System.NotImplementedException();
+            _sourceCode.Insert(_pointerPosition, ModifyLine(line));
+            _pointerPosition++;
         }
 
         public void WriteAfter(int lineNumber, string line)
         {
-            throw new System.NotImplementedException();
+            CheckIfLineExistsAt(lineNumber);
+            _sourceCode.Insert(lineNumber, ModifyLine(line, lineNumber));
         }
 
         private void CheckIfLineExistsAt(int lineNumber)
@@ -54,20 +59,53 @@ namespace Doocutor.Core.CodeBuffers
                 throw new OutOfCodeBufferSizeException($"Line number {lineNumber} does not exist!");
             }
         }
+
+        private void SetPointerAtLastLineIfNecessary()
+            => _pointerPosition = (_pointerPosition <= _sourceCode.Count) ? _pointerPosition : _sourceCode.Count;
+
+        private string ModifyLine(string line, int lineNumber) => GetTabulationForLineAt(lineNumber) + line.Trim();
+        private string ModifyLine(string line) => GetTabulationForLineAt(_pointerPosition) + line.Trim();
+
+        private string GetTabulationForLineAt(int lineNumber)
+        {
+            int previousTabulationLength = _sourceCode[lineNumber - 1].Length - _sourceCode[lineNumber - 1].Trim().Length;
+            int additionalTabs = (LineHasOpeningBracket(_sourceCode[lineNumber - 1])) ? 4 : 0;
+
+            return new string(' ', previousTabulationLength + additionalTabs);
+        }
+
+        private bool LineHasOpeningBracket(string line)
+        {
+            line = Regex.Replace(line, @"[^{}]", string.Empty);
+
+            while (line.Contains("{") && line.Contains("}"))
+                line = line.Replace(@"\{\}", string.Empty);
+
+            return line.Length == 1 && line.Equals("{");
+        }
+
+        private string GetOutputSpacesForLineAt(int lineNumber)
+            => ' '.ToString() + new string(' ', _sourceCode.Count.ToString().Length - (lineNumber).ToString().Length);
+
+        private string GroupOutputLineAt(int lineNumber)
+            => $"  {lineNumber}{GetOutputSpacesForLineAt(lineNumber)}|{_sourceCode[lineNumber-1]}\n";
+
+        private string GetSourceCode()
+            => string.Join("", _sourceCode.Select((line, index) => GroupOutputLineAt(index + 1)).ToArray());
     }
 
     internal class InitialSourceCode
     {
         public static List<string> GetInitialSourceCode() => new(new string[] {
-            "namespace Doocutor\n",
-            "{\n",
-            "   internal class Program\n",
-            "   {\n",
-            "       public static void Main(string[] args)\n",
-            "       {\n",
-            "       }\n",
-            "   }\n",
-            "}\n"
+            "namespace Doocutor",
+            "{",
+            "   internal class Program",
+            "   {",
+            "       public static void Main(string[] args)",
+            "       {",
+            "       }",
+            "   }",
+            "}"
         });
 
         public static int GetInitialPointerPosition() => 6;

@@ -25,6 +25,10 @@ namespace Doocutor
             {
                 HandleInterruptedExecutionException(error);
             }
+            catch (UnsupportedCommandException error)
+            {
+                HandleUnsopportedCommandException(error);
+            }
             catch (Exception error)
             {
                 HandleAnyException(error);
@@ -34,27 +38,25 @@ namespace Doocutor
         }
 
         private static void Start()
-        {
-            Logger.Debug("Start of the program");
-            Info.ShowDoocutorInfo();
-        }
+            => OutputColorizer.ColorizeForeground(ConsoleColor.Cyan, () => {
+                Logger.Debug("Start of the program");
+                Info.ShowDoocutorInfo();
+            });
 
         private static void End()
-        {
-            Logger.Debug("End of the program\n\n");
-        }
+            => OutputColorizer.ColorizeForeground(ConsoleColor.Cyan, () => Logger.Debug("End of the program\n\n"));
 
         private static void HandleInterruptedExecutionException(InterruptedExecutionException error)
         {
-            Console.WriteLine(error.Message);
-            Logger.Info(error.Message);
+            OutputColorizer.ColorizeForeground(ConsoleColor.Cyan, () => Logger.Debug(error.Message));
             End();
             Environment.Exit(0);
         }
 
         private static void HandleAnyException(Exception error)
-        {
-            Logger.Error(error);
-        }
+            => OutputColorizer.ColorizeForeground(ConsoleColor.Red, () => Logger.Error(error));
+
+        private static void HandleUnsopportedCommandException(UnsupportedCommandException error)
+            => OutputColorizer.ColorizeForeground(ConsoleColor.Red, () => Logger.Error(error.Message));
     }
 }

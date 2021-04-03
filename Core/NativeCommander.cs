@@ -34,7 +34,8 @@ namespace Doocutor.Core
         private static readonly Dictionary<string, executeCommandDelegate> commandsMap =
             new(Enumerable.ToList<KeyValuePair<string, executeCommandDelegate>>(new KeyValuePair<string, executeCommandDelegate>[]
                 {
-                    new KeyValuePair<string, executeCommandDelegate>(":quit", ExecuteQuitCommand)
+                    new KeyValuePair<string, executeCommandDelegate>(":quit", ExecuteQuitCommand),
+                    new KeyValuePair<string, executeCommandDelegate>(":compile", (NativeCommand command) => { })
                 })
             );
 

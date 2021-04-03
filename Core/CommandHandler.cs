@@ -1,4 +1,5 @@
-﻿using NLog;
+﻿using System;
+using NLog;
 
 using Doocutor.Core.Executors;
 using Doocutor.Core.Exceptions;
@@ -74,7 +75,7 @@ namespace Doocutor.Core
             }
             catch (CommandRecognizingException error)
             {
-                _logger.Error(error.Message);
+                OutputColorizer.ColorizeForeground(ConsoleColor.Red, () => _logger.Error(error.Message));
             }
         }
     }
