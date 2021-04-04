@@ -16,6 +16,11 @@ namespace Doocutor.Core
 
         private bool IsValidNativeCommand(string command)
         {
+            // You can pass an expression as a command.
+            // For example: <:writeAfter 5 Console.WriteLine("Hello world");>.
+            // So it checks only first word.
+            command = command.Split(" ")[0];
+
             if (command.StartsWith(":"))
             {
                 if (NativeCommandsList.Contains(command))
