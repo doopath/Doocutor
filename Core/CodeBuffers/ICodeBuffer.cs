@@ -10,6 +10,7 @@ namespace Doocutor.Core.CodeBuffers
         void RemoveCodeBlock(ICodeBlockPointer pointer);
         void ReplaceLineAt(int lineNumber, string newLine);
         string Code { get; }
+        string CodeWithLineNumbers { get; }
         int BufferSize { get; }
     }
 }

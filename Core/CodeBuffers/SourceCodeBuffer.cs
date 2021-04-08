@@ -1,19 +1,19 @@
 ﻿using System.Linq;
 using System.Collections.Generic;
 using System.Text.RegularExpressions;
-
 using Doocutor.Core.CodeBuffers.CodePointers;
 using Doocutor.Core.Exceptions;
 
 namespace Doocutor.Core.CodeBuffers
 {
-    class SourceCodeBuffer : ICodeBuffer
+    internal class SourceCodeBuffer : ICodeBuffer
     {
-        private static readonly List<string> _sourceCode = InitialSourceCode.GetInitialSourceCode();
+        private static readonly List<string> SourceCode = InitialSourceCode.GetInitialSourceCode();
         private static int _pointerPosition = InitialSourceCode.GetInitialPointerPosition();
 
-        public int BufferSize { get => _sourceCode.Count; }
-        public string Code { get => GetSourceCode(); }
+        public int BufferSize => SourceCode.Count;
+        public string CodeWithLineNumbers => GetSourceCodeWithLineNumbers();
+        public string Code => GetSourceCode();
 
         public void RemoveCodeBlock(ICodeBlockPointer pointer)
         {
@@ -21,7 +21,7 @@ namespace Doocutor.Core.CodeBuffers
 
             for (var i = 0; i < pointer.StartLineNumber - pointer.EndLineNumber + 1; i++)
             {
-                _sourceCode.RemoveAt(pointer.StartLineNumber - 1);
+                SourceCode.RemoveAt(pointer.StartLineNumber - 1);
             }
 
             SetPointerAtLastLineIfNecessary();
@@ -30,81 +30,100 @@ namespace Doocutor.Core.CodeBuffers
         public void RemoveLine(int lineNumber)
         {
             CheckIfLineExistsAt(lineNumber);
-            _sourceCode.RemoveAt(lineNumber - 1);
+            SourceCode.RemoveAt(lineNumber - 1);
             SetPointerAtLastLineIfNecessary();
         }
 
         public void ReplaceLineAt(int lineNumber, string newLine)
         {
             CheckIfLineExistsAt(lineNumber);
-            _sourceCode[lineNumber - 1] = ModifyLine(newLine, lineNumber);
+            SourceCode[lineNumber - 1] = ModifyLine(newLine, lineNumber);
         }
 
         public void Write(string line)
         {
-            _sourceCode.Insert(_pointerPosition, ModifyLine(line));
+            SourceCode.Insert(_pointerPosition, ModifyLine(line));
             _pointerPosition++;
         }
 
         public void WriteAfter(int lineNumber, string line)
         {
             CheckIfLineExistsAt(lineNumber);
-            _sourceCode.Insert(lineNumber, ModifyLine(line, lineNumber));
+            SourceCode.Insert(lineNumber, ModifyLine(line, lineNumber));
         }
 
         private void CheckIfLineExistsAt(int lineNumber)
         {
-            if (_sourceCode.Count < lineNumber)
+            if (SourceCode.Count < lineNumber || lineNumber < 1)
             {
                 throw new OutOfCodeBufferSizeException($"Line number {lineNumber} does not exist!");
             }
         }
 
         private void SetPointerAtLastLineIfNecessary()
-            => _pointerPosition = (_pointerPosition <= _sourceCode.Count) ? _pointerPosition : _sourceCode.Count;
+            => _pointerPosition = (_pointerPosition <= SourceCode.Count) ? _pointerPosition : SourceCode.Count;
 
-        private string ModifyLine(string line, int lineNumber) => GetTabulationForLineAt(lineNumber) + line.Trim();
-        private string ModifyLine(string line) => GetTabulationForLineAt(_pointerPosition) + line.Trim();
+        private string ModifyLine(string line, int lineNumber) => GetTabulationForLineAt(lineNumber, line) + line.Trim();
+        private string ModifyLine(string line) => GetTabulationForLineAt(_pointerPosition, line) + line.Trim();
 
-        private string GetTabulationForLineAt(int lineNumber)
+        private string GetTabulationForLineAt(int lineNumber, string line)
         {
-            int previousTabulationLength = _sourceCode[lineNumber - 1].Length - _sourceCode[lineNumber - 1].Trim().Length;
-            int additionalTabs = (LineHasOpeningBracket(_sourceCode[lineNumber - 1])) ? 4 : 0;
+            int previousTabulationLength = SourceCode[lineNumber - 1].Length - SourceCode[lineNumber - 1].Trim().Length;
+            int additionalTabs = LineHasOpeningBracket(SourceCode[lineNumber - 1]) ? 4 : 0;
+            
+            additionalTabs -= LineHasClosingBracket(line) ? 4 : 0;
 
             return new string(' ', previousTabulationLength + additionalTabs);
         }
 
         private bool LineHasOpeningBracket(string line)
         {
-            line = Regex.Replace(line, @"[^{}]", string.Empty);
-
-            while (line.Contains("{") && line.Contains("}"))
-                line = line.Replace(@"\{\}", string.Empty);
-
+            line = RemoveAllButBracketsIn(line);
+            RemoveAllCoupleBracketsIn(ref line);
+            
             return line.Length == 1 && line.Equals("{");
         }
 
+        private bool LineHasClosingBracket(string line)
+        {
+            line = RemoveAllButBracketsIn(line);
+            RemoveAllCoupleBracketsIn(ref line);
+            
+            return line.Length == 1 && line.Equals("}");
+        }
+
+        private string RemoveAllButBracketsIn(string line)
+            => Regex.Replace(line, @"[^{}]", string.Empty);
+
+        private void RemoveAllCoupleBracketsIn(ref string line)
+        {
+            while (line.Contains("{") && line.Contains("}"))
+                line = line.Replace(@"\{\}", string.Empty);
+        }
+
         private string GetOutputSpacesForLineAt(int lineNumber)
-            => ' '.ToString() + new string(' ', _sourceCode.Count.ToString().Length - (lineNumber).ToString().Length);
+            => ' ' + new string(' ', SourceCode.Count.ToString().Length - lineNumber.ToString().Length);
 
         private string GroupOutputLineAt(int lineNumber)
-            => $"  {lineNumber}{GetOutputSpacesForLineAt(lineNumber)}|{_sourceCode[lineNumber-1]}\n";
+            => $"  {lineNumber}{GetOutputSpacesForLineAt(lineNumber)}|{SourceCode[lineNumber-1]}\n";
 
-        private string GetSourceCode()
-            => string.Join("", _sourceCode.Select((line, index) => GroupOutputLineAt(index + 1)).ToArray());
+        private string GetSourceCodeWithLineNumbers()
+            => string.Join("", SourceCode.Select((_, i) => GroupOutputLineAt(i + 1)).ToArray());
+
+        private string GetSourceCode() => string.Join("", SourceCode);
     }
 
-    internal class InitialSourceCode
+    internal static class InitialSourceCode
     {
-        public static List<string> GetInitialSourceCode() => new(new string[] {
+        public static List<string> GetInitialSourceCode() => new(new[] {
             "namespace Doocutor",
             "{",
-            "   internal class Program",
-            "   {",
-            "       public static void Main(string[] args)",
-            "       {",
-            "       }",
-            "   }",
+            "    public class Program",
+            "    {",
+            "        public static void Main(string[] args)",
+            "        {",
+            "        }",
+            "    }",
             "}"
         });
 

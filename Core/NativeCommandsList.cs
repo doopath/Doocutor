@@ -2,10 +2,10 @@
 
 namespace Doocutor.Core
 {
-    static class NativeCommandsList
+    internal static class NativeCommandsList
     {
-        public static readonly List<string> Commands = NativeCommander.SupprotedCommands;
+        public static readonly List<string> Commands = NativeCommander.SupportedCommands;
 
-        public static bool Contains(string command) => NativeCommander.SupprotedCommands.Contains(command);
+        public static bool Contains(string command) => NativeCommander.SupportedCommands.Contains(command);
     }
 }

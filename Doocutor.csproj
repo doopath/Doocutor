@@ -4,11 +4,14 @@
 		<TargetFramework>net5.0</TargetFramework>
 		<GenerateAssemblyInfo>true</GenerateAssemblyInfo>
 		<GeneratedAssemblyInfoFile>assemblyinfo.cs</GeneratedAssemblyInfoFile>
+		<PreserveCompilationContext>true</PreserveCompilationContext>
 	</PropertyGroup>
-
+	
 	<ItemGroup>
+		<PackageReference Include="Microsoft.CodeAnalysis.CSharp" Version="3.10.0-1.final" />
 		<PackageReference Include="Microsoft.Extensions.Configuration.Json" Version="5.0.0" />
 		<PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="5.0.1" />
+		<PackageReference Include="Microsoft.Extensions.DependencyModel" Version="5.0.0" />
 		<PackageReference Include="NLog" Version="4.7.9" />
 		<PackageReference Include="NLog.Extensions.Logging" Version="1.7.1" />
 	</ItemGroup>

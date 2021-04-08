@@ -7,7 +7,7 @@ using Doocutor.Core.Exceptions;
 
 namespace Doocutor
 {
-    internal class Program
+    internal static class Program
     {
         private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
 
@@ -27,7 +27,7 @@ namespace Doocutor
             }
             catch (UnsupportedCommandException error)
             {
-                HandleUnsopportedCommandException(error);
+                HandleUnsupportedCommandException(error);
             }
             catch (Exception error)
             {
@@ -56,7 +56,7 @@ namespace Doocutor
         private static void HandleAnyException(Exception error)
             => OutputColorizer.ColorizeForeground(ConsoleColor.Red, () => Logger.Error(error));
 
-        private static void HandleUnsopportedCommandException(UnsupportedCommandException error)
+        private static void HandleUnsupportedCommandException(UnsupportedCommandException error)
             => OutputColorizer.ColorizeForeground(ConsoleColor.Red, () => Logger.Error(error.Message));
     }
 }

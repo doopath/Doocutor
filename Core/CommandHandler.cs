@@ -1,6 +1,5 @@
 ﻿using System;
 using NLog;
-
 using Doocutor.Core.Executors;
 using Doocutor.Core.Exceptions;
 using Doocutor.Core.Commands;
