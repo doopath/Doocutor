@@ -1,6 +1,5 @@
 ﻿using Doocutor.Core.Commands;
 using Doocutor.Core.Exceptions;
-using System;
 
 namespace Doocutor.Core
 {
@@ -21,15 +20,12 @@ namespace Doocutor.Core
             // So it checks only first word.
             command = command.Split(" ")[0];
 
-            if (command.StartsWith(":"))
-            {
-                if (NativeCommandsList.Contains(command))
-                    return true;
-                else
-                    throw new CommandRecognizingException($"Gotten command \"{command}\" is incorrect!");
-            }
+            if (!command.StartsWith(":"))
+                return false;
 
-            return false;
+            return (NativeCommander.SupportedCommands.Contains(command))
+                ? true
+                : throw new CommandRecognizingException($"Gotten command \"{command}\" is incorrect!");
         }
     }
 }

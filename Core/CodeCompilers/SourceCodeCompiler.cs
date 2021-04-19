@@ -5,6 +5,7 @@ using NLog;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.Text;
+using Microsoft.CodeAnalysis.Emit;
 using Microsoft.Extensions.DependencyModel;
 using Doocutor.Core.CodeBuffers;
 using Doocutor.Core.Exceptions;
@@ -49,17 +50,21 @@ namespace Doocutor.Core.CodeCompilers
             
             var result = compilation.Emit(peStream);
 
-            if (!result.Success)
-            {
-                var message = "Error of compilation:\n" + string.Join("\n", result.Diagnostics);
-                
-                _logger.Error(message);
-                throw new SourceCodeCompilationException(message);
-            }
+            CheckIfFailed(result);
 
             peStream.Seek(0, SeekOrigin.Begin);
 
             return peStream.ToArray();
+        }
+
+        private void CheckIfFailed(EmitResult result)
+        {
+            if (result.Success) return;
+            
+            var message = "Error of compilation:\n" + string.Join("\n", result.Diagnostics);
+                
+            _logger.Error(message);
+            throw new SourceCodeCompilationException(message);
         }
 
         private SyntaxTree GetSyntaxTree() => SyntaxFactory.ParseSyntaxTree(Code, _syntaxTreeOptions);

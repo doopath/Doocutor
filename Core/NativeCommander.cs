@@ -63,13 +63,18 @@ namespace Doocutor.Core
 
         private static void ExecuteWriteAfterCommand(NativeCommand command)
         {
-            var argumentsLen = command.Content.Split(" ")[1..].Length;
-
-            if (argumentsLen < 2)
-                throw new CommandExecutingException(
-                    $"Command :writeAfter takes 2 arguments (lineNumber and newLine) but got {argumentsLen}!");
-
-            SourceCode.WriteAfter(command.GetTargetLineNumber(), command.GetTargetLine());
+            try
+            {
+                SourceCode.WriteAfter(command.GetTargetLineNumber(), command.GetTargetLine());
+            }
+            catch (OutOfCodeBufferSizeException error)
+            {
+                ErrorHandler.ShowError(error);
+            }
+            catch (CommandExecutingException error)
+            {
+                ErrorHandler.ShowError(error);
+            }
         }
 
         private static void ExecuteCompileCommand(NativeCommand command)
@@ -82,47 +87,6 @@ namespace Doocutor.Core
             Executor.Execute(Cache.HasKey(SourceCode.Code)
                 ? Cache.GetValue(SourceCode.Code)
                 : Compiler.Compile(), command.GetArguments());
-        }
-    }
-
-    internal static class NativeCommandExtension
-    {
-        public static int GetTargetLineNumber(this NativeCommand command)
-        {
-            var message = $"Cannot take target line number of command {command.Content}";
-
-            try
-            {
-                return int.Parse(command.Content.Split(" ")[1]);
-            }
-            catch (FormatException)
-            {
-                throw new CommandExecutingException(message);
-            }
-            catch (IndexOutOfRangeException)
-            {
-                throw new CommandExecutingException(message);
-            }
-        }
-
-        public static string GetTargetLine(this NativeCommand command)
-        {
-            try
-            {
-                return string.Join(' ', command.Content.Trim().Split(" ")[2..]);
-            }
-            catch (IndexOutOfRangeException)
-            {
-                throw new CommandExecutingException(
-                    $"Cannot take target line of command {command.Content}");
-            }
-        }
-
-        public static string[] GetArguments(this NativeCommand command)
-        {
-            var parts = command.Content.Trim().Split(" ");
-
-            return parts.Length < 2 ? Array.Empty<string>() : parts[1..];
         }
     }
 }

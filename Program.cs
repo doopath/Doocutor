@@ -1,6 +1,5 @@
 ﻿using System;
 using NLog;
-
 using Doocutor.Core;
 using Doocutor.Core.Descriptors;
 using Doocutor.Core.Exceptions;
@@ -23,15 +22,11 @@ namespace Doocutor
             }
             catch (InterruptedExecutionException error)
             {
-                HandleInterruptedExecutionException(error);
-            }
-            catch (UnsupportedCommandException error)
-            {
-                HandleUnsupportedCommandException(error);
+                ErrorHandler.HandleInterruptedExecutionException(error, End);
             }
             catch (Exception error)
             {
-                HandleAnyException(error);
+                ErrorHandler.ShowError(error);
             }
 
             End();
@@ -45,18 +40,5 @@ namespace Doocutor
 
         private static void End()
             => OutputColorizer.ColorizeForeground(ConsoleColor.Cyan, () => Logger.Debug("End of the program\n\n"));
-
-        private static void HandleInterruptedExecutionException(InterruptedExecutionException error)
-        {
-            OutputColorizer.ColorizeForeground(ConsoleColor.Cyan, () => Logger.Debug(error.Message));
-            End();
-            Environment.Exit(0);
-        }
-
-        private static void HandleAnyException(Exception error)
-            => OutputColorizer.ColorizeForeground(ConsoleColor.Red, () => Logger.Error(error));
-
-        private static void HandleUnsupportedCommandException(UnsupportedCommandException error)
-            => OutputColorizer.ColorizeForeground(ConsoleColor.Red, () => Logger.Error(error.Message));
     }
 }

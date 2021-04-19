@@ -74,7 +74,7 @@ namespace Doocutor.Core
             }
             catch (CommandRecognizingException error)
             {
-                OutputColorizer.ColorizeForeground(ConsoleColor.Red, () => _logger.Error(error.Message));
+                ErrorHandler.ShowError(error.Message);
             }
         }
     }
