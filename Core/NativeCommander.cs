@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using TextCopy;
 using Doocutor.Core.Caches;
 using Doocutor.Core.CodeBuffers;
 using Doocutor.Core.CodeCompilers;
@@ -24,8 +25,10 @@ namespace Doocutor.Core
             ":view",
             ":compile",
             ":run",
-            ":using",
             ":writeAfter",
+            ":writeBefore",
+            ":using",
+            ":copy",
             ":remove",
             ":removeBlock",
             ":replace"
@@ -38,7 +41,10 @@ namespace Doocutor.Core
                     new(":view", ExecuteViewCommand),
                     new(":writeAfter", ExecuteWriteAfterCommand),
                     new(":compile", ExecuteCompileCommand),
-                    new(":run", ExecuteRunCommand)
+                    new(":run", ExecuteRunCommand),
+                    new(":using", ExecuteUsingCommand),
+                    new(":copy", ExecuteCopyCommand),
+                    new(":remove", ExecuteRemoveCommand)
                 }.ToList()
             );
 
@@ -87,6 +93,30 @@ namespace Doocutor.Core
             Executor.Execute(Cache.HasKey(SourceCode.Code)
                 ? Cache.GetValue(SourceCode.Code)
                 : Compiler.Compile(), command.GetArguments());
+        }
+
+        private static void ExecuteUsingCommand(NativeCommand command)
+        {
+            if (SourceCode.Code.Trim().StartsWith("namespace"))
+                SourceCode.WriteBefore(1, "");
+            
+            SourceCode.WriteBefore(1, $"using {command.GetArguments()[0]};");
+        }
+
+        private static void ExecuteCopyCommand(NativeCommand command)
+            => new Clipboard().SetText(SourceCode.Code);
+
+        private static void ExecuteRemoveCommand(NativeCommand command)
+        {
+            try
+            {
+                SourceCode.RemoveLine(int.Parse(command.GetArguments()[0]));
+            }
+            catch (Exception error)
+            {
+                ErrorHandler.ShowError(error);
+            }
+            
         }
     }
 }

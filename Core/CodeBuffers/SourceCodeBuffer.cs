@@ -9,7 +9,7 @@ namespace Doocutor.Core.CodeBuffers
     internal class SourceCodeBuffer : ICodeBuffer
     {
         private static readonly List<string> SourceCode = InitialSourceCode.GetInitialSourceCode();
-        private static int _pointerPosition = InitialSourceCode.GetInitialPointerPosition();
+        private static int _pointerPosition = InitialSourceCode.InitialPointerPosition;
 
         public int BufferSize => SourceCode.Count;
         public string CodeWithLineNumbers => GetSourceCodeWithLineNumbers();
@@ -52,6 +52,15 @@ namespace Doocutor.Core.CodeBuffers
             SourceCode.Insert(lineNumber, ModifyLine(line, lineNumber));
         }
 
+        public void WriteBefore(int lineNumber, string line)
+        {
+            if (lineNumber - 1 > -1 && lineNumber <= SourceCode.Count)
+                SourceCode.Insert(lineNumber - 1, ModifyLine(line, 1));
+            else
+                throw new OutOfCodeBufferSizeException(
+           $"You cannot write line before the line with line number = {lineNumber}!");
+        }
+
         private void CheckIfLineExistsAt(int lineNumber)
         {
             if (SourceCode.Count < lineNumber || lineNumber < 1)
@@ -91,14 +100,14 @@ namespace Doocutor.Core.CodeBuffers
             
             return line.Length == 1 && line.Equals("}");
         }
-
+        
         private string RemoveAllButBracketsIn(string line)
             => Regex.Replace(line, @"[^{}]", string.Empty);
 
         private void RemoveAllCoupleBracketsIn(ref string line)
         {
             while (line.Contains("{") && line.Contains("}"))
-                line = line.Replace(@"\{\}", string.Empty);
+                line = line.Replace(@"{}", string.Empty);
         }
 
         private string GetOutputSpacesForLineAt(int lineNumber)
@@ -110,7 +119,7 @@ namespace Doocutor.Core.CodeBuffers
         private string GetSourceCodeWithLineNumbers()
             => string.Join("", SourceCode.Select((_, i) => GroupOutputLineAt(i + 1)).ToArray());
 
-        private string GetSourceCode() => string.Join("", SourceCode);
+        private string GetSourceCode() => string.Join("", SourceCode.Select(l => l + "\n"));
     }
 
     internal static class InitialSourceCode
@@ -127,6 +136,6 @@ namespace Doocutor.Core.CodeBuffers
             "}"
         });
 
-        public static int GetInitialPointerPosition() => 6;
+        public const int InitialPointerPosition = 6;
     }
 }

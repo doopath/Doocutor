@@ -6,6 +6,7 @@ namespace Doocutor.Core.CodeBuffers
     {
         void Write(string line);
         void WriteAfter(int lineNumber, string line);
+        void WriteBefore(int lineNumber, string line);
         void RemoveLine(int lineNumber);
         void RemoveCodeBlock(ICodeBlockPointer pointer);
         void ReplaceLineAt(int lineNumber, string newLine);
