@@ -8,7 +8,6 @@ namespace Doocutor.Core
 {
     internal class CommandHandler : ICommandHandler
     {
-        private readonly Logger _logger = LogManager.GetCurrentClassLogger();
         private ICommandExecutor<NativeCommand> _nativeCommandExecutor;
         private ICommandExecutor<EditorCommand> _editorCommandExecutor;
         private ICommandRecognizer _commandRecognizer;

@@ -17,13 +17,14 @@ namespace Doocutor.Core.CodeBuffers
 
         public void RemoveCodeBlock(ICodeBlockPointer pointer)
         {
-            CheckIfLineExistsAt(pointer.EndLineNumber);
+            CheckIfLineExistsAt(pointer.EndLineNumber - 1);
 
-            for (var i = 0; i < pointer.StartLineNumber - pointer.EndLineNumber + 1; i++)
+            for (var i = 0; i < pointer.EndLineNumber - pointer.StartLineNumber; i++)
             {
                 SourceCode.RemoveAt(pointer.StartLineNumber - 1);
             }
 
+            AddLineIfBufferIsEmpty();
             SetPointerAtLastLineIfNecessary();
         }
 
@@ -120,6 +121,12 @@ namespace Doocutor.Core.CodeBuffers
             => string.Join("", SourceCode.Select((_, i) => GroupOutputLineAt(i + 1)).ToArray());
 
         private string GetSourceCode() => string.Join("", SourceCode.Select(l => l + "\n"));
+
+        private void AddLineIfBufferIsEmpty()
+        {
+            if (SourceCode.Count == 0)
+                SourceCode.Add("");
+        }
     }
 
     internal static class InitialSourceCode

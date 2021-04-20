@@ -4,6 +4,7 @@ using System.Linq;
 using TextCopy;
 using Doocutor.Core.Caches;
 using Doocutor.Core.CodeBuffers;
+using Doocutor.Core.CodeBuffers.CodePointers;
 using Doocutor.Core.CodeCompilers;
 using Doocutor.Core.Commands;
 using Doocutor.Core.Exceptions;
@@ -44,7 +45,8 @@ namespace Doocutor.Core
                     new(":run", ExecuteRunCommand),
                     new(":using", ExecuteUsingCommand),
                     new(":copy", ExecuteCopyCommand),
-                    new(":remove", ExecuteRemoveCommand)
+                    new(":remove", ExecuteRemoveCommand),
+                    new(":removeBlock", ExecuteRemoveBlockCommand)
                 }.ToList()
             );
 
@@ -117,6 +119,21 @@ namespace Doocutor.Core
                 ErrorHandler.ShowError(error);
             }
             
+        }
+
+        private static void ExecuteRemoveBlockCommand(NativeCommand command)
+        {
+            try
+            {
+                var arguments = command.GetArguments();
+                var pointer = new CodeBlockPointer(int.Parse(arguments[0]), int.Parse(arguments[1]));
+
+                SourceCode.RemoveCodeBlock(pointer);
+            }
+            catch (Exception error)
+            {
+                ErrorHandler.ShowError(error);
+            }
         }
     }
 }

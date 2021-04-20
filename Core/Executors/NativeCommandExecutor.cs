@@ -1,5 +1,4 @@
-﻿using System;
-using NLog;
+﻿using NLog;
 using Doocutor.Core.Commands;
 using Doocutor.Core.Exceptions;
 
@@ -11,7 +10,7 @@ namespace Doocutor.Core.Executors
 
         public void Execute(NativeCommand command)
         {
-            _logger.Debug($"Starting of the native command ({command.Content}) execution.");
+            _logger.Debug($"Start execution of the native command ({command.Content})");
             
             try
             {
@@ -19,7 +18,7 @@ namespace Doocutor.Core.Executors
             }
             catch (SourceCodeCompilationException error)
             {
-                OutputColorizer.ColorizeForeground(ConsoleColor.Red, () => Console.WriteLine(error.Message));
+                ErrorHandler.ShowError(error.Message);
             }
         }
     }
