@@ -1,4 +1,5 @@
-﻿using NLog;
+﻿using System;
+using NLog;
 using Doocutor.Core.Commands;
 using Doocutor.Core.Exceptions;
 
@@ -11,14 +12,18 @@ namespace Doocutor.Core.Executors
         public void Execute(NativeCommand command)
         {
             _logger.Debug($"Start execution of the native command ({command.Content})");
-            
+
             try
             {
                 NativeCommander.GetExecutingFunction(command)();
             }
-            catch (SourceCodeCompilationException error)
+            catch (InterruptedExecutionException interruption)
             {
-                ErrorHandler.ShowError(error.Message);
+                throw new InterruptedExecutionException(interruption.Message);
+            }
+            catch (Exception error)
+            {
+                ErrorHandler.ShowError(error);
             }
         }
     }

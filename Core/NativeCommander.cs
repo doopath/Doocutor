@@ -24,10 +24,10 @@ namespace Doocutor.Core
         {
             ":quit",
             ":view",
-            ":compile",
-            ":run",
             ":writeAfter",
             ":writeBefore",
+            ":compile",
+            ":run",
             ":using",
             ":copy",
             ":remove",
@@ -46,7 +46,8 @@ namespace Doocutor.Core
                     new(":using", ExecuteUsingCommand),
                     new(":copy", ExecuteCopyCommand),
                     new(":remove", ExecuteRemoveCommand),
-                    new(":removeBlock", ExecuteRemoveBlockCommand)
+                    new(":removeBlock", ExecuteRemoveBlockCommand),
+                    new(":replace", ExecuteReplaceCommand)
                 }.ToList()
             );
 
@@ -70,25 +71,10 @@ namespace Doocutor.Core
         }
 
         private static void ExecuteWriteAfterCommand(NativeCommand command)
-        {
-            try
-            {
-                SourceCode.WriteAfter(command.GetTargetLineNumber(), command.GetTargetLine());
-            }
-            catch (OutOfCodeBufferSizeException error)
-            {
-                ErrorHandler.ShowError(error);
-            }
-            catch (CommandExecutingException error)
-            {
-                ErrorHandler.ShowError(error);
-            }
-        }
+            => SourceCode.WriteAfter(command.GetTargetLineNumber(), command.GetTargetLine());
 
         private static void ExecuteCompileCommand(NativeCommand command)
-        {
-            Cache.Cache(SourceCode.Code, Compiler.Compile());
-        }
+            => Cache.Cache(SourceCode.Code, Compiler.Compile());
 
         private static void ExecuteRunCommand(NativeCommand command)
         {
@@ -109,31 +95,23 @@ namespace Doocutor.Core
             => new Clipboard().SetText(SourceCode.Code);
 
         private static void ExecuteRemoveCommand(NativeCommand command)
-        {
-            try
-            {
-                SourceCode.RemoveLine(int.Parse(command.GetArguments()[0]));
-            }
-            catch (Exception error)
-            {
-                ErrorHandler.ShowError(error);
-            }
-            
-        }
+            => SourceCode.RemoveLine(int.Parse(command.GetArguments()[0]));
 
         private static void ExecuteRemoveBlockCommand(NativeCommand command)
         {
-            try
-            {
-                var arguments = command.GetArguments();
-                var pointer = new CodeBlockPointer(int.Parse(arguments[0]), int.Parse(arguments[1]));
+            var arguments = command.GetArguments();
+            var pointer = new CodeBlockPointer(int.Parse(arguments[0]), int.Parse(arguments[1]));
 
-                SourceCode.RemoveCodeBlock(pointer);
-            }
-            catch (Exception error)
-            {
-                ErrorHandler.ShowError(error);
-            }
+            SourceCode.RemoveCodeBlock(pointer);
+        }
+
+        private static void ExecuteReplaceCommand(NativeCommand command)
+        {
+            var arguments = command.GetArguments();
+            var lineNumber = int.Parse(arguments[0]);
+            var line = string.Join("", arguments[1..]);
+            
+            SourceCode.ReplaceLineAt(lineNumber, line);
         }
     }
 }
