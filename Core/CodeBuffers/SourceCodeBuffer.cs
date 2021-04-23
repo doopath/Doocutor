@@ -10,8 +10,9 @@ namespace Doocutor.Core.CodeBuffers
     {
         private static readonly List<string> SourceCode = InitialSourceCode.GetInitialSourceCode();
         private static int _pointerPosition = InitialSourceCode.InitialPointerPosition;
-
+            
         public int BufferSize => SourceCode.Count;
+        public int CurrentPointerPosition => _pointerPosition;
         public string CodeWithLineNumbers => GetSourceCodeWithLineNumbers();
         public string Code => GetSourceCode();
 
@@ -33,6 +34,12 @@ namespace Doocutor.Core.CodeBuffers
             CheckIfLineExistsAt(lineNumber);
             SourceCode.RemoveAt(lineNumber - 1);
             SetPointerAtLastLineIfNecessary();
+        }
+
+        public void SetPointerPosition(int lineNumber)
+        {
+            CheckIfLineExistsAt(lineNumber);
+            _pointerPosition = lineNumber;
         }
 
         public void ReplaceLineAt(int lineNumber, string newLine)

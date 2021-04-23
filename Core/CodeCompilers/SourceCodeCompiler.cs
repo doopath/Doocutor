@@ -69,5 +69,4 @@ namespace Doocutor.Core.CodeCompilers
 
         private SyntaxTree GetSyntaxTree() => SyntaxFactory.ParseSyntaxTree(Code, _syntaxTreeOptions);
     }
-    // :writeAfter 6 System.Console.WriteLine("Hello world!");
 }

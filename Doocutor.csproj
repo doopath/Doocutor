@@ -5,6 +5,7 @@
 		<GenerateAssemblyInfo>true</GenerateAssemblyInfo>
 		<GeneratedAssemblyInfoFile>assemblyinfo.cs</GeneratedAssemblyInfoFile>
 		<PreserveCompilationContext>true</PreserveCompilationContext>
+		<ApplicationIcon>Resources/img/DoocutorIcon.ico</ApplicationIcon>
 	</PropertyGroup>
 	
 	<ItemGroup>

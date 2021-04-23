@@ -24,6 +24,7 @@ namespace Doocutor.Core
         {
             ":quit",
             ":view",
+            ":write",
             ":writeAfter",
             ":writeBefore",
             ":compile",
@@ -32,7 +33,11 @@ namespace Doocutor.Core
             ":copy",
             ":remove",
             ":removeBlock",
-            ":replace"
+            ":replace",
+            ":set",
+            ":showPos",
+            ":help",
+            ":info"
         }.ToList());
 
         private static readonly Dictionary<string, ExecuteCommandDelegate> CommandsMap =
@@ -40,6 +45,7 @@ namespace Doocutor.Core
                 {
                     new(":quit", ExecuteQuitCommand),
                     new(":view", ExecuteViewCommand),
+                    new(":write", ExecuteWriteCommand),
                     new(":writeAfter", ExecuteWriteAfterCommand),
                     new(":compile", ExecuteCompileCommand),
                     new(":run", ExecuteRunCommand),
@@ -47,7 +53,11 @@ namespace Doocutor.Core
                     new(":copy", ExecuteCopyCommand),
                     new(":remove", ExecuteRemoveCommand),
                     new(":removeBlock", ExecuteRemoveBlockCommand),
-                    new(":replace", ExecuteReplaceCommand)
+                    new(":replace", ExecuteReplaceCommand),
+                    new(":set", ExecuteSetCommand),
+                    new(":showPos", ExecuteShowPosCommand),
+                    new(":help", ExecuteHelpCommand),
+                    new(":info", ExecuteInfoCommand)
                 }.ToList()
             );
 
@@ -113,5 +123,24 @@ namespace Doocutor.Core
             
             SourceCode.ReplaceLineAt(lineNumber, line);
         }
+
+        private static void ExecuteWriteCommand(NativeCommand command)
+            => SourceCode.Write(string.Join("", command.GetArguments()));
+
+        private static void ExecuteSetCommand(NativeCommand command)
+            => SourceCode.SetPointerPosition(int.Parse(command.GetArguments()[0]));
+
+        private static void ExecuteShowPosCommand(NativeCommand command)
+        {
+            Console.Write("Current cursor position: ");
+            OutputColorizer.ColorizeForeground(ConsoleColor.Cyan, () =>
+                Console.Write(SourceCode.CurrentPointerPosition + "\n"));
+        }
+
+        private static void ExecuteHelpCommand(NativeCommand command)
+            => Console.WriteLine(Info.HelpList);
+
+        private static void ExecuteInfoCommand(NativeCommand command)
+            => Console.WriteLine(Info.Description);
     }
 }
