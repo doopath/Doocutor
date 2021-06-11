@@ -1,0 +1,28 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Doocutor", "Doocutor\Doocutor.csproj", "{4479B78E-F6D6-4679-AFED-06E46B3E6588}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tests", "Tests\Tests.csproj", "{4452FC2D-D8F9-49AD-8460-759979B09E1B}"
+EndProject
+Project("{F2A71F9B-5D33-465A-A702-920D77279786}") = "DoocutorLibraries", "DoocutorLibraries\DoocutorLibraries.fsproj", "{CA409E5D-D810-41C4-B5B8-ADE30623C286}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{4479B78E-F6D6-4679-AFED-06E46B3E6588}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{4479B78E-F6D6-4679-AFED-06E46B3E6588}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{4479B78E-F6D6-4679-AFED-06E46B3E6588}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{4479B78E-F6D6-4679-AFED-06E46B3E6588}.Release|Any CPU.Build.0 = Release|Any CPU
+		{4452FC2D-D8F9-49AD-8460-759979B09E1B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{4452FC2D-D8F9-49AD-8460-759979B09E1B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{4452FC2D-D8F9-49AD-8460-759979B09E1B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{4452FC2D-D8F9-49AD-8460-759979B09E1B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{CA409E5D-D810-41C4-B5B8-ADE30623C286}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{CA409E5D-D810-41C4-B5B8-ADE30623C286}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{CA409E5D-D810-41C4-B5B8-ADE30623C286}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{CA409E5D-D810-41C4-B5B8-ADE30623C286}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+EndGlobal

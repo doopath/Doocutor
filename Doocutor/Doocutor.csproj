@@ -1,0 +1,26 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <OutputType>Exe</OutputType>
+        <TargetFramework>net5.0</TargetFramework>
+        <GenerateAssemblyInfo>true</GenerateAssemblyInfo>
+        <GeneratedAssemblyInfoFile>assemblyinfo.cs</GeneratedAssemblyInfoFile>
+        <PreserveCompilationContext>true</PreserveCompilationContext>
+        <ApplicationIcon>Resources/img/DoocutorIcon.ico</ApplicationIcon>
+    </PropertyGroup>
+
+    <ItemGroup>
+      <PackageReference Include="Microsoft.CodeAnalysis.CSharp" Version="3.10.0-2.final" />
+      <PackageReference Include="Microsoft.Extensions.DependencyModel" Version="5.0.0" />
+      <PackageReference Include="NLog" Version="4.7.9" />
+      <PackageReference Include="TextCopy" Version="4.3.0" />
+    </ItemGroup>
+
+    <ItemGroup>
+        <None Update="nlog.config" CopyToOutputDirectory="Always" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <ProjectReference Include="..\DoocutorLibraries\DoocutorLibraries.fsproj" />
+    </ItemGroup>
+</Project>
