@@ -2,7 +2,6 @@ namespace DoocutorLibraries.Core
 
 open System
 open NLog
-open DoocutorLibraries.Logging
 
 module Common =
     type Error =
