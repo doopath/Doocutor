@@ -7,7 +7,16 @@
     </PropertyGroup>
 
     <ItemGroup>
+        <Compile Include="Logging.fs" />
         <Compile Include="Core.fs" />
+    </ItemGroup>
+    
+    <ItemGroup>
+        <None Update="nlog.config" CopyToOutputDirectory="Always" />
+    </ItemGroup>
+    
+    <ItemGroup>
+      <PackageReference Include="NLog" Version="4.7.10" />
     </ItemGroup>
 
 </Project>

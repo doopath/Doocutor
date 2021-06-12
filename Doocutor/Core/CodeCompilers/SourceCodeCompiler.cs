@@ -1,7 +1,7 @@
-﻿using System.IO;
+﻿using System;
+using System.IO;
 using System.Linq;
 using System.Collections.Generic;
-using NLog;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.Text;
@@ -9,16 +9,19 @@ using Microsoft.CodeAnalysis.Emit;
 using Microsoft.Extensions.DependencyModel;
 using Doocutor.Core.CodeBuffers;
 using Doocutor.Core.Exceptions;
+using DoocutorLibraries.Core;
+
+
+using Error = DoocutorLibraries.Core.Common.Error;
 
 namespace Doocutor.Core.CodeCompilers
 {
     internal class SourceCodeCompiler : ICodeCompiler
     {
-        private readonly Logger _logger = LogManager.GetCurrentClassLogger();
         private readonly ICodeBuffer _sourceCodeBuffer;
         private SourceText Code => SourceText.From(_sourceCodeBuffer.Code);
         
-        private readonly CSharpCompilationOptions _compilationOptions = new CSharpCompilationOptions(
+        private readonly CSharpCompilationOptions _compilationOptions = new(
             OutputKind.ConsoleApplication, 
             optimizationLevel: OptimizationLevel.Debug,
             assemblyIdentityComparer: DesktopAssemblyIdentityComparer.Default); 
@@ -45,13 +48,10 @@ namespace Doocutor.Core.CodeCompilers
                 syntaxTrees: new[] { GetSyntaxTree() },
                 references: _references,
                 options: _compilationOptions);
-            
             using var peStream = new MemoryStream();
-            
             var result = compilation.Emit(peStream);
 
             CheckIfFailed(result);
-
             peStream.Seek(0, SeekOrigin.Begin);
 
             return peStream.ToArray();
@@ -63,7 +63,7 @@ namespace Doocutor.Core.CodeCompilers
             
             var message = "Error of compilation:\n" + string.Join("\n", result.Diagnostics);
                 
-            _logger.Error(message);
+            OutputColorizer.colorizeForeground(ConsoleColor.Red, () => Console.WriteLine(message));
             throw new SourceCodeCompilationException(message);
         }
 

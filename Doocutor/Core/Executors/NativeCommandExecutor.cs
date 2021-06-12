@@ -1,8 +1,10 @@
 ﻿using System;
-using System.Data;
 using NLog;
 using Doocutor.Core.Commands;
 using Doocutor.Core.Exceptions;
+using DoocutorLibraries.Core;
+
+using Error = DoocutorLibraries.Core.Common.Error;
 
 namespace Doocutor.Core.Executors
 {
@@ -20,7 +22,7 @@ namespace Doocutor.Core.Executors
             }
             catch (Exception error) when (error.GetType() != typeof(InterruptedExecutionException))
             {
-                ErrorHandler.ShowError(error);
+                ErrorHandler.showError(Error.NewException(error));
             }
         }
     }

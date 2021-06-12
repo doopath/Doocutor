@@ -1,7 +1,7 @@
 ﻿using Doocutor.Core.Commands;
 using Doocutor.Core.Exceptions;
 
-namespace Doocutor.Core
+namespace Doocutor.Core.CommandRecognizers
 {
     internal class CommandRecognizer : ICommandRecognizer
     {
@@ -25,7 +25,7 @@ namespace Doocutor.Core
 
             return (NativeCommander.SupportedCommands.Contains(command))
                 ? true
-                : throw new CommandRecognizingException($"Gotten command \"{command}\" is incorrect!");
+                : throw new CommandRecognizingException($"\"{command}\" is not a command!");
         }
     }
 }

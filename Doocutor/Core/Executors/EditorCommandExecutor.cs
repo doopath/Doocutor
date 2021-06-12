@@ -1,13 +1,15 @@
 ﻿using System;
 using NLog;
 using Doocutor.Core.Commands;
+using DoocutorLibraries.Core;
+
+using Error = DoocutorLibraries.Core.Common.Error;
 
 namespace Doocutor.Core.Executors
 {
     internal class EditorCommandExecutor : ICommandExecutor<EditorCommand>
     {
         private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
-        private static readonly NativeCommander Commander = new();
         
         public void Execute(EditorCommand command)
         {
@@ -19,7 +21,7 @@ namespace Doocutor.Core.Executors
             }
             catch (Exception error)
             {
-                ErrorHandler.ShowError(error);
+                ErrorHandler.showError(Error.NewException(error));
             }
         }
     }

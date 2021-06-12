@@ -6,6 +6,8 @@ using Doocutor.Core.Exceptions;
 using DoocutorLibraries.Core;
 
 using Info = Doocutor.Core.Info;
+using ErrorHandler = DoocutorLibraries.Core.ErrorHandler;
+using Error = DoocutorLibraries.Core.Common.Error;
 
 namespace Doocutor
 {
@@ -25,11 +27,15 @@ namespace Doocutor
             }
             catch (InterruptedExecutionException error)
             {
-                ErrorHandler.HandleInterruptedExecutionException(error, End);
+                ErrorHandler.handleInterruptedExecutionException(error, End);
             }
+            // catch (SourceCodeCompilationException error)
+            // {
+            //     Logger.Debug(error);
+            // }
             catch (Exception error)
             {
-                ErrorHandler.ShowError(error);
+                ErrorHandler.showError(Error.NewException(error));
             }
 
             End();

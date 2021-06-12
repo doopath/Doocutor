@@ -1,4 +1,5 @@
-﻿using Doocutor.Core.Descriptors;
+﻿using Doocutor.Core.CommandHandlers;
+using Doocutor.Core.Descriptors;
 
 namespace Doocutor.Core
 {

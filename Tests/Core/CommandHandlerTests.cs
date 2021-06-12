@@ -1,5 +1,6 @@
 using System;
 using Doocutor.Core;
+using Doocutor.Core.CommandHandlers;
 using Doocutor.Core.Commands;
 using Doocutor.Core.Executors;
 using Doocutor.Tests;
