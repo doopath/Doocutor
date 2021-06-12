@@ -20,6 +20,10 @@ namespace Doocutor.Core.Executors
             {
                 NativeCommander.GetExecutingFunction(command)();
             }
+            catch (SourceCodeCompilationException error)
+            {
+                Logger.Debug(error);
+            }
             catch (Exception error) when (error.GetType() != typeof(InterruptedExecutionException))
             {
                 ErrorHandler.showError(Error.NewException(error));
