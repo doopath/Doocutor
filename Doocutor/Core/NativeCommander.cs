@@ -8,7 +8,7 @@ using Doocutor.Core.CodeBuffers.CodePointers;
 using Doocutor.Core.CodeCompilers;
 using Doocutor.Core.Commands;
 using Doocutor.Core.Exceptions;
-using DoocutorLibraries.CoreLibrary;
+using DoocutorLibraries.Core;
 
 namespace Doocutor.Core
 {

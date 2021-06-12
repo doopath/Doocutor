@@ -3,7 +3,7 @@ using NLog;
 using Doocutor.Core;
 using Doocutor.Core.Descriptors;
 using Doocutor.Core.Exceptions;
-using DoocutorLibraries.CoreLibrary;
+using DoocutorLibraries.Core;
 
 using Info = Doocutor.Core.Info;
 

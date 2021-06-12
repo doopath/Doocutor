@@ -2,7 +2,7 @@
 using System.IO;
 using System.Runtime.Loader;
 using Doocutor.Core.Exceptions;
-using DoocutorLibraries.CoreLibrary;
+using DoocutorLibraries.Core;
 
 namespace Doocutor.Core
 {

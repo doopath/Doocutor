@@ -1,6 +1,6 @@
 ﻿using System;
 using Doocutor.Core.Exceptions;
-using DoocutorLibraries.CoreLibrary;
+using DoocutorLibraries.Core;
 using NLog;
 
 namespace Doocutor.Core
