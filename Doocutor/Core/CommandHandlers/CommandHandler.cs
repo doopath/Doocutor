@@ -4,8 +4,6 @@ using Doocutor.Core.Exceptions;
 using Doocutor.Core.Executors;
 using DoocutorLibraries.Core;
 
-using Error = DoocutorLibraries.Core.Common.Error;
-
 namespace Doocutor.Core.CommandHandlers
 {
     public class CommandHandler : ICommandHandler
@@ -75,7 +73,7 @@ namespace Doocutor.Core.CommandHandlers
             }
             catch (CommandRecognizingException error)
             {
-                ErrorHandler.showError(Error.NewMessage(error.Message));
+                ErrorHandler.showErrorMessage(error);
             }
         }
     }

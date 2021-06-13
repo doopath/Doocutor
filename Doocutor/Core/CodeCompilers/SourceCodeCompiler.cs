@@ -12,8 +12,6 @@ using Doocutor.Core.Exceptions;
 using DoocutorLibraries.Core;
 
 
-using Error = DoocutorLibraries.Core.Common.Error;
-
 namespace Doocutor.Core.CodeCompilers
 {
     internal class SourceCodeCompiler : ICodeCompiler

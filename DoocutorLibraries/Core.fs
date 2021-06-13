@@ -4,10 +4,6 @@ open System
 open NLog
 
 module Common =
-    type Error =
-        | Exception of Exception
-        | Message of string
-        
     let uppercaseFirstLetter (s: string) =
         if s.Length < 1 then
             failwith "Cannot uppercase first symbol of an empty string!"
@@ -39,8 +35,11 @@ module OutputColorizer =
 module ErrorHandler =
     let logger = LogManager.GetLogger "ErrorHandler"
     
-    let showError (e: Common.Error) =
-        OutputColorizer.colorizeForeground ConsoleColor.Red (Action (fun () -> logger.Error e.ToString))
+    let showError (e: Exception) =
+        OutputColorizer.colorizeForeground ConsoleColor.Red (Action (fun () -> logger.Error e))
+        
+    let showErrorMessage (e: Exception) =
+        OutputColorizer.colorizeForeground ConsoleColor.Red (Action (fun () -> logger.Error e.Message))
         
     let handleInterruptedExecutionException = fun (e: Exception) -> fun (f: Action) ->
         OutputColorizer.colorizeForeground ConsoleColor.Cyan (Action (fun () -> logger.Debug e.Message))

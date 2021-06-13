@@ -3,8 +3,6 @@ using NLog;
 using Doocutor.Core.Commands;
 using DoocutorLibraries.Core;
 
-using Error = DoocutorLibraries.Core.Common.Error;
-
 namespace Doocutor.Core.Executors
 {
     internal class EditorCommandExecutor : ICommandExecutor<EditorCommand>
@@ -21,7 +19,7 @@ namespace Doocutor.Core.Executors
             }
             catch (Exception error)
             {
-                ErrorHandler.showError(Error.NewException(error));
+                ErrorHandler.showError(error);
             }
         }
     }

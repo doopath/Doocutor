@@ -7,7 +7,6 @@ using DoocutorLibraries.Core;
 
 using Info = Doocutor.Core.Info;
 using ErrorHandler = DoocutorLibraries.Core.ErrorHandler;
-using Error = DoocutorLibraries.Core.Common.Error;
 
 namespace Doocutor
 {
@@ -29,13 +28,9 @@ namespace Doocutor
             {
                 ErrorHandler.handleInterruptedExecutionException(error, End);
             }
-            // catch (SourceCodeCompilationException error)
-            // {
-            //     Logger.Debug(error);
-            // }
             catch (Exception error)
             {
-                ErrorHandler.showError(Error.NewException(error));
+                ErrorHandler.showError(error);
             }
 
             End();
@@ -48,6 +43,11 @@ namespace Doocutor
             });
 
         private static void End()
-            => OutputColorizer.colorizeForeground(ConsoleColor.Cyan, () => Logger.Debug("End of the program\n\n"));
+            => OutputColorizer.colorizeForeground(ConsoleColor.Cyan,
+                () =>
+                {
+                    Logger.Debug("End of the program\n\n");
+                    OutputColorizer.colorizeForeground(ConsoleColor.Cyan, () => Console.WriteLine("\nGood bye!\n"));
+                });
     }
 }
