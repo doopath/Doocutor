@@ -13,7 +13,7 @@ namespace Doocutor.Core.CommandHandlers
         private ICommandRecognizer _commandRecognizer;
 
         /// <summary>
-        /// Default constructor. Also there is builder that help to testing
+        /// A default constructor. Also there is builder that help testing
         /// this class and set custom executors and recognizers.
         /// </summary>
         public CommandHandler()

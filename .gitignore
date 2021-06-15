@@ -5,3 +5,5 @@ Tests/obj
 DoocutorLibraries/bin
 DoocutorLibraries/obj
 .idea
+.vs
+.vscode
