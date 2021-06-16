@@ -22,7 +22,7 @@ namespace Doocutor.Core.CodeBuffers
         /// added at line = pointer position.
         /// </summary>
         public int CurrentPointerPosition => _pointerPosition;
-        
+
         /// <summary>
         /// Get source code numerated by lines.
         /// For example then you do code in a text editor or and IDE you
@@ -45,6 +45,9 @@ namespace Doocutor.Core.CodeBuffers
             CheckIfLineExistsAt(lineNumber);
             return Lines[LineNumberToIndex(lineNumber)];   
         }
+
+        public string[] GetCodeBlock(ICodeBlockPointer pointer)
+            => Lines[LineNumberToIndex(pointer.StartLineNumber)..LineNumberToIndex(pointer.EndLineNumber)];
 
         /// <summary>
         /// Remove a few lines from s to e. Please, pay attention that the last

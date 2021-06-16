@@ -12,6 +12,7 @@ namespace Doocutor.Core.CodeBuffers
         void ReplaceLineAt(int lineNumber, string newLine);
         void SetPointerPositionAt(int lineNumber);
         string GetLineAt(int lineNumber);
+        string[] GetCodeBlock(ICodeBlockPointer pointer);
         string CodeWithLineNumbers { get; }
         string Code { get; }
         string[] Lines { get; }

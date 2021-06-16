@@ -55,6 +55,7 @@ namespace Doocutor.Core
                     new(":using", ExecuteUsingCommand),
                     new(":copy", ExecuteCopyCommand),
                     new(":copyAll", ExecuteCopyAllCommand),
+                    new(":copyBlock", ExecuteCopyBlockCommand),
                     new(":remove", ExecuteRemoveCommand),
                     new(":removeBlock", ExecuteRemoveBlockCommand),
                     new(":replace", ExecuteReplaceCommand),
@@ -101,10 +102,14 @@ namespace Doocutor.Core
 
         private static void ExecuteCopyCommand(NativeCommand command)
             => CopyText(SourceCode.GetLineAt(command.GetTargetLineNumber()));
-        
-        private static void ExecuteCopyAllCommand(NativeCommand command)
-            => new Clipboard().SetText(SourceCode.Code);
 
+        private static void ExecuteCopyAllCommand(NativeCommand command)
+            => CopyText(SourceCode.Code);
+
+        private static void ExecuteCopyBlockCommand(NativeCommand command)
+            => CopyText(string.Join("\n", SourceCode.GetCodeBlock(
+                new CodeBlockPointer(int.Parse(command.GetArguments()[0]), int.Parse(command.GetArguments()[1])))));
+        
         private static void CopyText(string text)
             => new Clipboard().SetText(text);
 
