@@ -16,7 +16,7 @@ namespace Doocutor.Core
         public const string BuildInfo = "UCB-170621";
         public const string Updated = "17th of June 2021";
         public const string Company = "Doopath";
-        public const string Version = "0.1.7";
+        public const string Version = "0.1.8";
         public const string ProductName = "Doocutor";
         public const string ConfigurationAttribute = "Debug";
 
@@ -42,7 +42,7 @@ namespace Doocutor.Core
                ":using <namespace> - Add a namespace to using list (for example: System).\n" +
                ":copy <line number> - Copy the <line number> content.\n" +
                ":copyAll - Copy entire content.\n" +
-               ":remove <line number> - Remove line at <line number>.\n" +
+               ":remove <line number> - Copy and remove line at <line number>.\n" +
                ":removeBlock <since> <to> - Remove a block of code since <since> to <to> (line number).\n" +
                ":replace <line number> <new content> - Replace a line at <line number> with <new content>.\n" +
                ":set <line number> - Set current cursor position.\n" +

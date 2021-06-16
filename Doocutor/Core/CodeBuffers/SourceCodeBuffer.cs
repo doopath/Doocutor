@@ -29,7 +29,7 @@ namespace Doocutor.Core.CodeBuffers
         /// want to know numbers of lines for easier navigating.
         /// </summary>
         public string CodeWithLineNumbers => GetSourceCodeWithLineNumbers();
-        
+
         /// <summary>
         /// Get pure code. Without line numbers and other stuff.
         /// </summary>
@@ -40,21 +40,22 @@ namespace Doocutor.Core.CodeBuffers
         /// </summary>
         public string[] Lines => SourceCode.ToArray();
 
-        /// <summary>
-        /// Get a line in the SourceCodeBuffer with line number = lineNumber.
-        /// </summary>
-        /// <param name="lineNumber">A number of the target line.</param>
-        /// <returns>A line with line number = lineNumber</returns>
         public string GetLineAt(int lineNumber)
         {
-          CheckIfLineExistsAt(lineNumber);
-          return Lines[LineNumberToIndex(lineNumber)];   
+            CheckIfLineExistsAt(lineNumber);
+            return Lines[LineNumberToIndex(lineNumber)];   
         }
 
+        /// <summary>
+        /// Remove a few lines from s to e. Please, pay attention that the last
+        /// line in an interval will not be deleted. So, if you set [1, 2, 3, 4] lines
+        /// then only 1st, 2nd and 3rd lines will be deleted.
+        /// </summary>
+        /// <param name="pointer">A pointer that indicate the interval of lines.</param>
         public void RemoveCodeBlock(ICodeBlockPointer pointer)
         {
             CheckIfLineExistsAt(LineNumberToIndex(pointer.EndLineNumber - 1));
-
+            
             for (var i = 0; i < pointer.EndLineNumber - pointer.StartLineNumber; i++)
             {
                 SourceCode.RemoveAt(LineNumberToIndex(pointer.StartLineNumber));
@@ -64,14 +65,18 @@ namespace Doocutor.Core.CodeBuffers
             SetPointerAtLastLineIfNecessary();
         }
 
-        public void RemoveLine(int lineNumber)
+        public void RemoveLineAt(int lineNumber)
         {
             CheckIfLineExistsAt(lineNumber);
             SourceCode.RemoveAt(LineNumberToIndex(lineNumber));
             SetPointerAtLastLineIfNecessary();
         }
 
-        public void SetPointerPosition(int lineNumber)
+        /// <summary>
+        /// Set current pointer position (see SourceCodeBuffer.CurrentPointerPosition) at a target line.
+        /// </summary>
+        /// <param name="lineNumber">Target line number.</param>
+        public void SetPointerPositionAt(int lineNumber)
         {
             CheckIfLineExistsAt(lineNumber);
             _pointerPosition = lineNumber;
@@ -83,6 +88,10 @@ namespace Doocutor.Core.CodeBuffers
             SourceCode[LineNumberToIndex(lineNumber)] = ModifyLine(newLine, lineNumber);
         }
 
+        /// <summary>
+        /// Write a line after current pointer position (see SourceCodeBuffer.CurrentPointerPosition).
+        /// </summary>
+        /// <param name="line">A new line.</param>
         public void Write(string line)
         {
             SourceCode.Insert(_pointerPosition, ModifyLine(line));

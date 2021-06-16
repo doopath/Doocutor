@@ -21,6 +21,12 @@ namespace Doocutor.Core
         private static readonly ICodeCompiler Compiler = new SourceCodeCompiler(SourceCode);
         private static readonly CompiledCodeExecutor Executor = new();
 
+        /// <summary>
+        /// Get a function (as an action) for a given command to execute that.
+        /// </summary>
+        /// <exception cref="UnsupportedCommandException">
+        /// Throws that if a given command is not included in the list of supported commands.
+        /// </exception>
         public static Action GetExecutingFunction(NativeCommand command)
         {
             var content = command.Content.Split(" ")[0];
@@ -103,7 +109,10 @@ namespace Doocutor.Core
             => new Clipboard().SetText(text);
 
         private static void ExecuteRemoveCommand(NativeCommand command)
-            => SourceCode.RemoveLine(int.Parse(command.GetArguments()[0]));
+        {
+            CopyText(SourceCode.GetLineAt(command.GetTargetLineNumber()));
+            SourceCode.RemoveLineAt(command.GetTargetLineNumber());
+        }
 
         private static void ExecuteRemoveBlockCommand(NativeCommand command)
         {
@@ -122,7 +131,7 @@ namespace Doocutor.Core
             => SourceCode.Write(string.Join(" ", command.GetArguments()));
 
         private static void ExecuteSetCommand(NativeCommand command)
-            => SourceCode.SetPointerPosition(int.Parse(command.GetArguments()[0]));
+            => SourceCode.SetPointerPositionAt(int.Parse(command.GetArguments()[0]));
 
         private static void ExecuteShowPosCommand(NativeCommand command)
         {
