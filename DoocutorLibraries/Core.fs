@@ -1,7 +1,6 @@
 namespace DoocutorLibraries.Core
 
 open System
-open System.Net.Http.Headers
 open NLog
 
 module Common =
@@ -38,4 +37,3 @@ module ErrorHandler =
         OutputColorizer.colorizeForeground ConsoleColor.Cyan (Action (fun () -> logger.Debug e.Message))
         f.Invoke()
         Environment.Exit(0)
-        

@@ -10,19 +10,54 @@ namespace Doocutor.Core.CodeBuffers
     {
         private static readonly List<string> SourceCode = InitialSourceCode.GetInitialSourceCode();
         private static int _pointerPosition = InitialSourceCode.InitialPointerPosition;
-            
+
+        /// <summary>
+        /// Count of lines in the SourceCodeBuffer.
+        /// </summary>
         public int BufferSize => SourceCode.Count;
+        
+        /// <summary>
+        /// SourceCodeBuffer has a pointer that's current line number "to change".
+        /// That means if you add a line of code (EditorCommand) then that will be
+        /// added at line = pointer position.
+        /// </summary>
         public int CurrentPointerPosition => _pointerPosition;
+        
+        /// <summary>
+        /// Get source code numerated by lines.
+        /// For example then you do code in a text editor or and IDE you
+        /// want to know numbers of lines for easier navigating.
+        /// </summary>
         public string CodeWithLineNumbers => GetSourceCodeWithLineNumbers();
+        
+        /// <summary>
+        /// Get pure code. Without line numbers and other stuff.
+        /// </summary>
         public string Code => GetSourceCode();
+
+        /// <summary>
+        /// Get pure code split by line breaks.
+        /// </summary>
+        public string[] Lines => SourceCode.ToArray();
+
+        /// <summary>
+        /// Get a line in the SourceCodeBuffer with line number = lineNumber.
+        /// </summary>
+        /// <param name="lineNumber">A number of the target line.</param>
+        /// <returns>A line with line number = lineNumber</returns>
+        public string GetLineAt(int lineNumber)
+        {
+          CheckIfLineExistsAt(lineNumber);
+          return Lines[LineNumberToIndex(lineNumber)];   
+        }
 
         public void RemoveCodeBlock(ICodeBlockPointer pointer)
         {
-            CheckIfLineExistsAt(pointer.EndLineNumber - 1);
+            CheckIfLineExistsAt(LineNumberToIndex(pointer.EndLineNumber - 1));
 
             for (var i = 0; i < pointer.EndLineNumber - pointer.StartLineNumber; i++)
             {
-                SourceCode.RemoveAt(pointer.StartLineNumber - 1);
+                SourceCode.RemoveAt(LineNumberToIndex(pointer.StartLineNumber));
             }
 
             AddLineIfBufferIsEmpty();
@@ -32,7 +67,7 @@ namespace Doocutor.Core.CodeBuffers
         public void RemoveLine(int lineNumber)
         {
             CheckIfLineExistsAt(lineNumber);
-            SourceCode.RemoveAt(lineNumber - 1);
+            SourceCode.RemoveAt(LineNumberToIndex(lineNumber));
             SetPointerAtLastLineIfNecessary();
         }
 
@@ -45,7 +80,7 @@ namespace Doocutor.Core.CodeBuffers
         public void ReplaceLineAt(int lineNumber, string newLine)
         {
             CheckIfLineExistsAt(lineNumber);
-            SourceCode[lineNumber - 1] = ModifyLine(newLine, lineNumber);
+            SourceCode[LineNumberToIndex(lineNumber)] = ModifyLine(newLine, lineNumber);
         }
 
         public void Write(string line)
@@ -62,8 +97,8 @@ namespace Doocutor.Core.CodeBuffers
 
         public void WriteBefore(int lineNumber, string line)
         {
-            if (lineNumber - 1 > -1 && lineNumber <= SourceCode.Count)
-                SourceCode.Insert(lineNumber - 1, ModifyLine(line, 1));
+            if (LineNumberToIndex(lineNumber) > -1 && lineNumber <= SourceCode.Count)
+                SourceCode.Insert(LineNumberToIndex(lineNumber), ModifyLine(line, 1));
             else
                 throw new OutOfCodeBufferSizeException(
            $"You cannot write line before the line with line number = {lineNumber}!");
@@ -85,8 +120,10 @@ namespace Doocutor.Core.CodeBuffers
 
         private string GetTabulationForLineAt(int lineNumber, string line)
         {
-            int previousTabulationLength = SourceCode[lineNumber - 1].Length - SourceCode[lineNumber - 1].Trim().Length;
-            int additionalTabs = LineHasOpeningBracket(SourceCode[lineNumber - 1]) ? 4 : 0;
+            int previousTabulationLength =
+                SourceCode[LineNumberToIndex(lineNumber)]
+                    .Length - SourceCode[LineNumberToIndex(lineNumber)].Trim().Length;
+            int additionalTabs = LineHasOpeningBracket(SourceCode[LineNumberToIndex(lineNumber)]) ? 4 : 0;
             
             additionalTabs -= LineHasClosingBracket(line) ? 4 : 0;
 
@@ -134,6 +171,10 @@ namespace Doocutor.Core.CodeBuffers
             if (SourceCode.Count == 0)
                 SourceCode.Add("");
         }
+
+        private int IndexToLineNumber(int index) => index + 1;
+
+        private int LineNumberToIndex(int lineNumber) => lineNumber - 1;
     }
 
     internal static class InitialSourceCode

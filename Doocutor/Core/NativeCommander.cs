@@ -31,26 +31,6 @@ namespace Doocutor.Core
             throw new UnsupportedCommandException($"Given command ({command.Content}) is not supported!");
         }
 
-        public static readonly List<string> SupportedCommands = new(new[]
-        {
-            ":quit",
-            ":view",
-            ":write",
-            ":writeAfter",
-            ":writeBefore",
-            ":compile",
-            ":run",
-            ":using",
-            ":copy",
-            ":remove",
-            ":removeBlock",
-            ":replace",
-            ":set",
-            ":showPos",
-            ":help",
-            ":info"
-        }.ToList());
-
         /// <summary>
         /// Using for unit-testing.
         /// </summary>
@@ -68,6 +48,7 @@ namespace Doocutor.Core
                     new(":run", ExecuteRunCommand),
                     new(":using", ExecuteUsingCommand),
                     new(":copy", ExecuteCopyCommand),
+                    new(":copyAll", ExecuteCopyAllCommand),
                     new(":remove", ExecuteRemoveCommand),
                     new(":removeBlock", ExecuteRemoveBlockCommand),
                     new(":replace", ExecuteReplaceCommand),
@@ -77,6 +58,8 @@ namespace Doocutor.Core
                     new(":info", ExecuteInfoCommand)
                 }.ToList()
             );
+
+        public static readonly List<string> SupportedCommands = CommandsMap.Keys.ToList();
 
         private static void ExecuteQuitCommand(NativeCommand command)
         {
@@ -111,7 +94,13 @@ namespace Doocutor.Core
         }
 
         private static void ExecuteCopyCommand(NativeCommand command)
+            => CopyText(SourceCode.GetLineAt(command.GetTargetLineNumber()));
+        
+        private static void ExecuteCopyAllCommand(NativeCommand command)
             => new Clipboard().SetText(SourceCode.Code);
+
+        private static void CopyText(string text)
+            => new Clipboard().SetText(text);
 
         private static void ExecuteRemoveCommand(NativeCommand command)
             => SourceCode.RemoveLine(int.Parse(command.GetArguments()[0]));
