@@ -44,5 +44,5 @@ Clone or download as .zip the ***BINARY*** branch:
 git clone -b binary https://github.com/doopath/doocutor.git
 ```
 
-Just move this directory (for example in C:\Program Files or /bin) and create a shortcut.
+Just move this directory (for example in C:\Program Files or /usr/bin/) and create a shortcut.
 ****
