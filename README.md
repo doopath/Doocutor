@@ -1,9 +1,5 @@
 # Doocutor
 
-![no image](https://raw.githubusercontent.com/doopath/doocutor/functional_design/Doocutor/Resources/img/DoocutorScreen_1.png)
-
-![no image](https://raw.githubusercontent.com/doopath/doocutor/functional_design/Doocutor/Resources/img/DoocutorScreen_2.png)
-
 ## What's doocutor
 **Doocutor** is a **C#** code editor. It helps you to write some minor code. For example when
 you want to show or test learned **C#** features but you're not going to start IDE because it's
@@ -33,6 +29,8 @@ In our case the Main method does not require arguments, so just type :run and yo
 **Output:**
 <br/>
 Hello world
+
+![no image](https://raw.githubusercontent.com/doopath/doocutor/functional_design/Doocutor/Resources/img/DoocutorScreen.png)
 
 When you write lines of code you don't must set tabulation because **Doocutor** will set it
 automatically.
