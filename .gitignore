@@ -1,10 +1,22 @@
+# Doocutor gitignore file
+
+# bin
 Doocutor/bin
-Doocutor/obj
 Tests/bin
-Tests/obj
 DoocutorLibraries/bin
+
+# obj
+Doocutor/obj
+Tests/obj
 DoocutorLibraries/obj
+
+# IDES
 .idea
 .vs
 .vscode
+
+# Local deploy script. Helps me update my local version of doocutor.
 install_local.py
+
+# Built version of doocutor (aka the binary branch).
+Build

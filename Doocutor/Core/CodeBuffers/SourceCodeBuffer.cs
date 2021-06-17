@@ -125,7 +125,7 @@ namespace Doocutor.Core.CodeBuffers
         }
 
         private void SetPointerAtLastLineIfNecessary()
-            => _pointerPosition = (_pointerPosition <= SourceCode.Count) ? _pointerPosition : SourceCode.Count;
+            => _pointerPosition = _pointerPosition <= SourceCode.Count ? _pointerPosition : SourceCode.Count;
 
         private string ModifyLine(string line, int lineNumber) => GetTabulationForLineAt(lineNumber, line) + line.Trim();
         private string ModifyLine(string line) => GetTabulationForLineAt(_pointerPosition, line) + line.Trim();
@@ -135,47 +135,52 @@ namespace Doocutor.Core.CodeBuffers
             int previousTabulationLength =
                 SourceCode[LineNumberToIndex(lineNumber)]
                     .Length - SourceCode[LineNumberToIndex(lineNumber)].Trim().Length;
-            int additionalTabs = LineHasOpeningBracket(SourceCode[LineNumberToIndex(lineNumber)]) ? 4 : 0;
+            int additionalTabulationLength = LineHasOpeningBrace(SourceCode[LineNumberToIndex(lineNumber)]) ? 4 : 0;
             
-            additionalTabs -= LineHasClosingBracket(line) ? 4 : 0;
+            additionalTabulationLength -= LineHasClosingBrace(line) ? 4 : 0;
 
-            return new string(' ', previousTabulationLength + additionalTabs);
+            return new string(' ', previousTabulationLength + additionalTabulationLength);
         }
 
-        private bool LineHasOpeningBracket(string line)
-        {
-            line = RemoveAllButBracketsIn(line);
-            RemoveAllCoupleBracketsIn(ref line);
-            
-            return line.Length == 1 && line.Equals("{");
-        }
+        private bool LineHasOpeningBrace(string line)
+            => RemoveAllCoupleBracesIn(RemoveAllButBracesIn(line)).Length == 1 && IsOpeningBrace(line);
 
-        private bool LineHasClosingBracket(string line)
-        {
-            line = RemoveAllButBracketsIn(line);
-            RemoveAllCoupleBracketsIn(ref line);
-            
-            return line.Length == 1 && line.Equals("}");
-        }
+        private bool LineHasClosingBrace(string line)
+            => RemoveAllCoupleBracesIn(RemoveAllButBracesIn(line)).Length == 1 && IsClosingBrace(line);
         
-        private string RemoveAllButBracketsIn(string line)
+        private bool IsClosingBrace(string line) => line.Equals("}");
+
+        private bool IsOpeningBrace(string line) => line.Equals("{");
+        
+        private string RemoveAllButBracesIn(string line)
             => Regex.Replace(line, @"[^{}]", string.Empty);
 
-        private void RemoveAllCoupleBracketsIn(ref string line)
+        private string RemoveAllCoupleBracesIn(string line)
         {
-            while (line.Contains("{") && line.Contains("}"))
-                line = line.Replace(@"{}", string.Empty);
+            while (LineContainsBraces(line))
+                line = RemoveCoupleBracesIn(line);
+
+            return line;
         }
 
-        private string GetOutputSpacesForLineAt(int lineNumber)
-            => ' ' + new string(' ', SourceCode.Count.ToString().Length - lineNumber.ToString().Length);
-
-        private string GroupOutputLineAt(int lineNumber)
-            => $"  {lineNumber}{GetOutputSpacesForLineAt(lineNumber)}|{SourceCode[lineNumber-1]}\n";
+        private bool LineContainsBraces(string line)
+            => line.Contains("{") && line.Contains(("}"));
+        
+        private string RemoveCoupleBracesIn(string line)
+            => line.Replace(@"{}", string.Empty);
 
         private string GetSourceCodeWithLineNumbers()
-            => string.Join("", SourceCode.Select((_, i) => GroupOutputLineAt(i + 1)).ToArray());
+            => string.Join("", 
+            SourceCode.Select((_, i) => GroupOutputLineAt(IndexToLineNumber(i))).ToArray());
 
+        private string GroupOutputLineAt(int lineNumber)
+            => $"  {lineNumber}{GetOutputSpacesForLineAt(lineNumber)}|{SourceCode[LineNumberToIndex(lineNumber)]}\n";
+
+        private string GetOutputSpacesForLineAt(int lineNumber)
+            => ' ' + new string(' ', GetTimesOfSpacesRepeationForLineAt(lineNumber));
+
+        private int GetTimesOfSpacesRepeationForLineAt(int lineNumber)
+            => SourceCode.Count.ToString().Length - lineNumber.ToString().Length;
         private string GetSourceCode() => string.Join("", SourceCode.Select(l => l + "\n"));
 
         private void AddLineIfBufferIsEmpty()
