@@ -1,5 +1,8 @@
 # Doocutor gitignore file
 
+# User settings
+Doocutor.sln.DotSettings.user
+
 # bin
 Doocutor/bin
 Tests/bin
