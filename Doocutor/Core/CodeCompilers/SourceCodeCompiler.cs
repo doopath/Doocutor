@@ -49,13 +49,13 @@ namespace Doocutor.Core.CodeCompilers
             using var peStream = new MemoryStream();
             var result = compilation.Emit(peStream);
 
-            CheckIfFailed(result);
+            IsFailed(result);
             peStream.Seek(0, SeekOrigin.Begin);
 
             return peStream.ToArray();
         }
 
-        private void CheckIfFailed(EmitResult result)
+        private void IsFailed(EmitResult result)
         {
             if (result.Success) return;
             

@@ -56,6 +56,7 @@ namespace Doocutor.Core
                     new(":copy", ExecuteCopyCommand),
                     new(":copyAll", ExecuteCopyAllCommand),
                     new(":copyBlock", ExecuteCopyBlockCommand),
+                    new(":clear", ExecuteClearCommand),
                     new(":remove", ExecuteRemoveCommand),
                     new(":removeBlock", ExecuteRemoveBlockCommand),
                     new(":replace", ExecuteReplaceCommand),
@@ -91,6 +92,8 @@ namespace Doocutor.Core
                 ? Cache.GetValue(SourceCode.Code)
                 : Compiler.Compile(), command.GetArguments());
         }
+
+        private static void ExecuteClearCommand(NativeCommand command) => Console.Clear();
 
         private static void ExecuteUsingCommand(NativeCommand command)
         {

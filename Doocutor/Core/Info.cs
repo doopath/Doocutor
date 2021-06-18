@@ -43,6 +43,7 @@ namespace Doocutor.Core
                ":copy <line number> - Copy the <line number> content.\n" +
                ":copyAll - Copy entire content.\n" +
                ":copyBlock <since> <to> - Copy a block of code since <since> to <to> (line number).\n" +
+               ":clear - Clear the console.\n" +
                ":remove <line number> - Copy and remove line at <line number>.\n" +
                ":removeBlock <since> <to> - Remove a block of code since <since> to <to> (line number).\n" +
                ":replace <line number> <new content> - Replace a line at <line number> with <new content>.\n" +
