@@ -143,32 +143,40 @@ namespace Doocutor.Core.CodeBuffers
         }
 
         private bool LineHasOpeningBrace(string line)
-            => RemoveAllCoupleBracesIn(RemoveAllButBracesIn(line)).Length == 1 && IsOpeningBrace(line);
+        {
+            RemoveAllButBracesIn(ref line);
+            RemoveAllCoupleBracesIn(ref line);
+            
+            return IsOpeningBrace(line);
+        }
 
         private bool LineHasClosingBrace(string line)
-            => RemoveAllCoupleBracesIn(RemoveAllButBracesIn(line)).Length == 1 && IsClosingBrace(line);
+        {
+            RemoveAllButBracesIn(ref line);
+            RemoveAllCoupleBracesIn(ref line);
+            
+            return IsClosingBrace(line);
+        }
         
         private bool IsClosingBrace(string line) => line.Equals("}");
 
         private bool IsOpeningBrace(string line) => line.Equals("{");
         
-        private string RemoveAllButBracesIn(string line)
-            => Regex.Replace(line, @"[^{}]", string.Empty);
+        private string RemoveAllButBracesIn(ref string line)
+            => line = Regex.Replace(line, @"[^{}]", string.Empty);
 
-        private string RemoveAllCoupleBracesIn(string line)
+        private void RemoveAllCoupleBracesIn(ref string line)
         {
             while (LineContainsBraces(line))
-                line = RemoveCoupleBracesIn(line);
-
-            return line;
+                line = RemoveCoupleBracesIn(ref line);
         }
+
+        private string RemoveCoupleBracesIn(ref string line)
+            => line = line.Replace(@"{}", string.Empty);
 
         private bool LineContainsBraces(string line)
             => line.Contains("{") && line.Contains(("}"));
         
-        private string RemoveCoupleBracesIn(string line)
-            => line.Replace(@"{}", string.Empty);
-
         private string GetSourceCodeWithLineNumbers()
             => string.Join("", 
             SourceCode.Select((_, i) => GroupOutputLineAt(IndexToLineNumber(i))).ToArray());

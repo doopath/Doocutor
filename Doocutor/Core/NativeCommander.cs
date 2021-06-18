@@ -62,6 +62,7 @@ namespace Doocutor.Core
                     new(":replace", ExecuteReplaceCommand),
                     new(":set", ExecuteSetCommand),
                     new(":showPos", ExecuteShowPosCommand),
+                    new(":addRef", ExecuteAddRefCommand),
                     new(":help", ExecuteHelpCommand),
                     new(":info", ExecuteInfoCommand)
                 }.ToList()
@@ -81,7 +82,7 @@ namespace Doocutor.Core
         }
 
         private static void ExecuteWriteAfterCommand(NativeCommand command)
-            => SourceCode.WriteAfter(command.GetTargetLineNumber(), command.GetTargetLine());
+            => SourceCode.WriteAfter(command.GetFirstArgumentAsAnInteger(), command.GetArgumentsSinceSecondAsALine());
 
         private static void ExecuteCompileCommand(NativeCommand command)
             => Cache.Cache(SourceCode.Code, Compiler.Compile());
@@ -104,7 +105,7 @@ namespace Doocutor.Core
         }
 
         private static void ExecuteCopyCommand(NativeCommand command)
-            => CopyText(SourceCode.GetLineAt(command.GetTargetLineNumber()));
+            => CopyText(SourceCode.GetLineAt(command.GetFirstArgumentAsAnInteger()));
 
         private static void ExecuteCopyAllCommand(NativeCommand command)
             => CopyText(SourceCode.Code);
@@ -118,8 +119,8 @@ namespace Doocutor.Core
 
         private static void ExecuteRemoveCommand(NativeCommand command)
         {
-            CopyText(SourceCode.GetLineAt(command.GetTargetLineNumber()));
-            SourceCode.RemoveLineAt(command.GetTargetLineNumber());
+            CopyText(SourceCode.GetLineAt(command.GetFirstArgumentAsAnInteger()));
+            SourceCode.RemoveLineAt(command.GetFirstArgumentAsAnInteger());
         }
 
         private static void ExecuteRemoveBlockCommand(NativeCommand command)
@@ -132,7 +133,7 @@ namespace Doocutor.Core
         private static void ExecuteReplaceCommand(NativeCommand command)
         {
             var arguments = command.GetArguments();
-            SourceCode.ReplaceLineAt(int.Parse(arguments[0]), command.GetTargetLine());
+            SourceCode.ReplaceLineAt(int.Parse(arguments[0]), command.GetArgumentsSinceSecondAsALine());
         }
 
         private static void ExecuteWriteCommand(NativeCommand command)
@@ -147,6 +148,9 @@ namespace Doocutor.Core
             OutputColorizer.colorizeForeground(ConsoleColor.Cyan,
                 () => Console.Write(SourceCode.CurrentPointerPosition + "\n"));
         }
+
+        private static void ExecuteAddRefCommand(NativeCommand command)
+            => Compiler.AddReference(command.GetArguments()[0]);
 
         private static void ExecuteHelpCommand(NativeCommand command)
             => Console.WriteLine(Info.HelpList);

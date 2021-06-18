@@ -49,21 +49,23 @@ namespace Doocutor.Core.CodeCompilers
             using var peStream = new MemoryStream();
             var result = compilation.Emit(peStream);
 
-            IsFailed(result);
+            ThrowAnExceptionAndShowDiagnosticsIfFailed(result);
             peStream.Seek(0, SeekOrigin.Begin);
 
             return peStream.ToArray();
         }
 
-        private void IsFailed(EmitResult result)
+        private void ThrowAnExceptionAndShowDiagnosticsIfFailed(EmitResult result)
         {
             if (result.Success) return;
-            
-            var message = "Error of compilation:\n" + string.Join("\n", result.Diagnostics);
-                
+
+            var message = GetMessageForCompilationResult(result);
             OutputColorizer.colorizeForeground(ConsoleColor.Red, () => Console.WriteLine(message));
             throw new SourceCodeCompilationException(message);
         }
+        
+        private string GetMessageForCompilationResult(EmitResult result)
+            => "Error of compilation:\n" + string.Join("\n", result.Diagnostics);
 
         private SyntaxTree GetSyntaxTree() => SyntaxFactory.ParseSyntaxTree(Code, _syntaxTreeOptions);
     }

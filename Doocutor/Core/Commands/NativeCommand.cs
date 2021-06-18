@@ -13,7 +13,7 @@ namespace Doocutor.Core.Commands
             this.Content = content;
         }
 
-        public int GetTargetLineNumber()
+        public int GetFirstArgumentAsAnInteger()
         {
             var message = $"Cannot take target line number of command {Content}";
 
@@ -31,18 +31,15 @@ namespace Doocutor.Core.Commands
             }
         }
 
-        public string GetTargetLine()
+        public string GetArgumentsSinceSecondAsALine()
         {
             try
             {
-                var content = Content.Trim().Split(" ");
-                
-                return string.Join(' ', Content.Trim().Split(" ")[2..]);
+                return string.Join(' ', GetArguments()[1..]);
             }
             catch (IndexOutOfRangeException)
             {
-                throw new CommandExecutingException(
-                    $"Cannot take target line of command {Content}");
+                throw new CommandExecutingException($"Cannot take target line of command {Content}");
             }
         }
 
