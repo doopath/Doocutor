@@ -21,6 +21,6 @@
     </ItemGroup>
 
     <ItemGroup>
-      <ProjectReference Include="..\DoocutorLibraries\DoocutorLibraries.fsproj" />
+      <ProjectReference Include="..\Libraries\Libraries.fsproj" />
     </ItemGroup>
 </Project>

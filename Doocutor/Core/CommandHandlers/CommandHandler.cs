@@ -2,7 +2,7 @@
 using Doocutor.Core.Commands;
 using Doocutor.Core.Exceptions;
 using Doocutor.Core.Executors;
-using DoocutorLibraries.Core;
+using Libraries.Core;
 
 namespace Doocutor.Core.CommandHandlers
 {

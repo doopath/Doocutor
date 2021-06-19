@@ -6,13 +6,13 @@ using NUnit.Framework;
 namespace Tests.Core
 {
     [TestFixture]
-    public class NativeCommanderTests
+    public class NativeCommandExecutionProviderTests
     {
         [SetUp]
         public void SetUp()
         {
             Checkbox.TurnOff();
-            _ = new MockNativeCommander();
+            _ = new MockNativeCommandExecutionProvider();
         }
 
         [TearDown]
@@ -21,18 +21,18 @@ namespace Tests.Core
         [Test]
         public void GetExecutingFunctionTest()
         {
-            var commandContent = MockNativeCommander.SupportedCommands[^1];
+            var commandContent = MockNativeCommandExecutionProvider.SupportedCommands[^1];
             var command = new NativeCommand(commandContent);
             
-            MockNativeCommander.GetExecutingFunction(command)();
+            MockNativeCommandExecutionProvider.GetExecutingFunction(command)();
             
             Assert.True(Checkbox.State, "Given native command :test should turn the checkbox on!");
         }
     }
 
-    internal class MockNativeCommander : NativeCommander
+    internal class MockNativeCommandExecutionProvider : NativeCommandExecutionProvider
     {
-        public MockNativeCommander()
+        public MockNativeCommandExecutionProvider()
         {
             SupportedCommands.Add(":test");
             AddExecutingCommand(":test", ExecuteTestCommand);

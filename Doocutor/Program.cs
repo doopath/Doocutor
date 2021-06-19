@@ -3,10 +3,10 @@ using NLog;
 using Doocutor.Core;
 using Doocutor.Core.Descriptors;
 using Doocutor.Core.Exceptions;
-using DoocutorLibraries.Core;
+using Libraries.Core;
 
 using Info = Doocutor.Core.Info;
-using ErrorHandler = DoocutorLibraries.Core.ErrorHandler;
+using ErrorHandler = Libraries.Core.ErrorHandler;
 
 namespace Doocutor
 {

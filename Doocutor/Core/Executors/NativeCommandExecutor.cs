@@ -2,7 +2,7 @@
 using NLog;
 using Doocutor.Core.Commands;
 using Doocutor.Core.Exceptions;
-using DoocutorLibraries.Core;
+using Libraries.Core;
 
 namespace Doocutor.Core.Executors
 {
@@ -16,7 +16,7 @@ namespace Doocutor.Core.Executors
 
             try
             {
-                NativeCommander.GetExecutingFunction(command)();
+                NativeCommandExecutionProvider.GetExecutingFunction(command)();
             }
             catch (SourceCodeCompilationException error)
             {

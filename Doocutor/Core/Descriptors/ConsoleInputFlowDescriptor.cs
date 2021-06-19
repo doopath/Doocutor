@@ -1,5 +1,5 @@
 ﻿using System;
-using DoocutorLibraries.Core;
+using Libraries.Core;
 
 namespace Doocutor.Core.Descriptors
 {

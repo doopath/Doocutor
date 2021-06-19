@@ -1,4 +1,4 @@
-namespace DoocutorLibraries.Logging
+namespace Libraries.Logging
 
 open NLog
 

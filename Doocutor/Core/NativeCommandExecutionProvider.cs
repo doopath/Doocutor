@@ -8,13 +8,13 @@ using Doocutor.Core.CodeBuffers.CodePointers;
 using Doocutor.Core.CodeCompilers;
 using Doocutor.Core.Commands;
 using Doocutor.Core.Exceptions;
-using DoocutorLibraries.Core;
+using Libraries.Core;
 
 namespace Doocutor.Core
 {
     public delegate void ExecuteCommandDelegate(NativeCommand command);
 
-    public class NativeCommander
+    public class NativeCommandExecutionProvider
     {
         private static readonly ICodeBuffer SourceCode = new SourceCodeBuffer();
         private static readonly ICache<byte[]> Cache = new CompiledCodeCache();
@@ -63,6 +63,7 @@ namespace Doocutor.Core
                     new(":set", ExecuteSetCommand),
                     new(":showPos", ExecuteShowPosCommand),
                     new(":addRef", ExecuteAddRefCommand),
+                    new(":saveCode", ExecuteSaveCodeCommand),
                     new(":help", ExecuteHelpCommand),
                     new(":info", ExecuteInfoCommand)
                 }.ToList()
@@ -137,7 +138,7 @@ namespace Doocutor.Core
         }
 
         private static void ExecuteWriteCommand(NativeCommand command)
-            => SourceCode.Write(string.Join(" ", command.GetArguments()));
+            => SourceCode.Write(command.GetArgumentsAsALine());
 
         private static void ExecuteSetCommand(NativeCommand command)
             => SourceCode.SetPointerPositionAt(int.Parse(command.GetArguments()[0]));
@@ -157,5 +158,8 @@ namespace Doocutor.Core
 
         private static void ExecuteInfoCommand(NativeCommand command)
             => Console.WriteLine(Info.Description);
+
+        private static void ExecuteSaveCodeCommand(NativeCommand command)
+            => SourceCodeSaver.save(command.GetArgumentsAsALine(), SourceCode.Lines);
     }
 }

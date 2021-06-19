@@ -49,5 +49,8 @@ namespace Doocutor.Core.Commands
 
             return parts.Length < 2 ? Array.Empty<string>() : parts[1..];
         }
+
+        public string GetArgumentsAsALine()
+            => string.Join("", GetArguments());
     }
 }

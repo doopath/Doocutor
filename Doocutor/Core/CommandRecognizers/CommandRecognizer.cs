@@ -23,7 +23,7 @@ namespace Doocutor.Core.CommandRecognizers
             if (!command.StartsWith(":"))
                 return false;
 
-            return (NativeCommander.SupportedCommands.Contains(command))
+            return (NativeCommandExecutionProvider.SupportedCommands.Contains(command))
                 ? true
                 : throw new CommandRecognizingException($"\"{command}\" is not a command!");
         }

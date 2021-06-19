@@ -1,7 +1,7 @@
 ﻿using System;
 using NLog;
 using Doocutor.Core.Commands;
-using DoocutorLibraries.Core;
+using Libraries.Core;
 
 namespace Doocutor.Core.Executors
 {
@@ -15,7 +15,7 @@ namespace Doocutor.Core.Executors
 
             try
             {
-                NativeCommander.GetExecutingFunction(new NativeCommand(":write " + command.Content.Trim()))();
+                NativeCommandExecutionProvider.GetExecutingFunction(new NativeCommand(":write " + command.Content.Trim()))();
             }
             catch (Exception error)
             {

@@ -9,7 +9,7 @@ using Microsoft.CodeAnalysis.Emit;
 using Microsoft.Extensions.DependencyModel;
 using Doocutor.Core.CodeBuffers;
 using Doocutor.Core.Exceptions;
-using DoocutorLibraries.Core;
+using Libraries.Core;
 
 
 namespace Doocutor.Core.CodeCompilers
