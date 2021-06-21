@@ -6,3 +6,11 @@
 /home/doopath/Files/Coderpool/CSharp/Doocutor/Libraries/obj/Debug/net5.0/Libraries.AssemblyInfo.fs
 /home/doopath/Files/Coderpool/CSharp/Doocutor/Libraries/obj/Debug/net5.0/Libraries.dll
 /home/doopath/Files/Coderpool/CSharp/Doocutor/Libraries/obj/Debug/net5.0/Libraries.pdb
+C:\Users\doopa\Files\Coderpool\CSharp\Doocutor\Libraries\obj\Debug\net5.0\Libraries.dll
+C:\Users\doopa\Files\Coderpool\CSharp\Doocutor\Libraries\obj\Debug\net5.0\Libraries.pdb
+C:\Users\doopa\Files\Coderpool\CSharp\Doocutor\Libraries\bin\Debug\net5.0\Libraries.deps.json
+C:\Users\doopa\Files\Coderpool\CSharp\Doocutor\Libraries\bin\Debug\net5.0\Libraries.dll
+C:\Users\doopa\Files\Coderpool\CSharp\Doocutor\Libraries\bin\Debug\net5.0\Libraries.pdb
+C:\Users\doopa\Files\Coderpool\CSharp\Doocutor\Libraries\obj\Debug\net5.0\Libraries.fsproj.AssemblyReference.cache
+C:\Users\doopa\Files\Coderpool\CSharp\Doocutor\Libraries\obj\Debug\net5.0\Libraries.AssemblyInfoInputs.cache
+C:\Users\doopa\Files\Coderpool\CSharp\Doocutor\Libraries\obj\Debug\net5.0\Libraries.AssemblyInfo.fs

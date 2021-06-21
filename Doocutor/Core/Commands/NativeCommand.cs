@@ -35,7 +35,7 @@ namespace Doocutor.Core.Commands
         {
             try
             {
-                return string.Join(' ', GetArguments()[1..]);
+                return string.Join(" ", GetArguments()[1..]);
             }
             catch (IndexOutOfRangeException)
             {
@@ -51,6 +51,6 @@ namespace Doocutor.Core.Commands
         }
 
         public string GetArgumentsAsALine()
-            => string.Join("", GetArguments());
+            => string.Join(" ", GetArguments());
     }
 }

@@ -1,26 +1,29 @@
 {
   "format": 1,
   "restore": {
-    "/home/doopath/Files/Coderpool/CSharp/Doocutor/Libraries/Libraries.fsproj": {}
+    "C:\\Users\\doopa\\Files\\Coderpool\\CSharp\\Doocutor\\Libraries\\Libraries.fsproj": {}
   },
   "projects": {
-    "/home/doopath/Files/Coderpool/CSharp/Doocutor/Libraries/Libraries.fsproj": {
+    "C:\\Users\\doopa\\Files\\Coderpool\\CSharp\\Doocutor\\Libraries\\Libraries.fsproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "/home/doopath/Files/Coderpool/CSharp/Doocutor/Libraries/Libraries.fsproj",
+        "projectUniqueName": "C:\\Users\\doopa\\Files\\Coderpool\\CSharp\\Doocutor\\Libraries\\Libraries.fsproj",
         "projectName": "Libraries",
-        "projectPath": "/home/doopath/Files/Coderpool/CSharp/Doocutor/Libraries/Libraries.fsproj",
-        "packagesPath": "/home/doopath/.nuget/packages/",
-        "outputPath": "/home/doopath/Files/Coderpool/CSharp/Doocutor/Libraries/obj/",
+        "projectPath": "C:\\Users\\doopa\\Files\\Coderpool\\CSharp\\Doocutor\\Libraries\\Libraries.fsproj",
+        "packagesPath": "C:\\Users\\doopa\\.nuget\\packages\\",
+        "outputPath": "C:\\Users\\doopa\\Files\\Coderpool\\CSharp\\Doocutor\\Libraries\\obj\\",
         "projectStyle": "PackageReference",
         "configFilePaths": [
-          "/home/doopath/.nuget/NuGet/NuGet.Config"
+          "C:\\Users\\doopa\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
         ],
         "originalTargetFrameworks": [
           "net5.0"
         ],
         "sources": {
-          "https://api.nuget.org/v3/index.json": {}
+          "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
+          "https://api.nuget.org/v3/index.json": {},
+          "https://pkgs.dev.azure.com/dnceng/public/_packaging/dotnet-tools/nuget/v3/index.json": {}
         },
         "frameworks": {
           "net5.0": {
@@ -34,8 +37,9 @@
           "targetAlias": "net5.0",
           "dependencies": {
             "FSharp.Core": {
+              "include": "Runtime, Compile, Build, Native, Analyzers, BuildTransitive",
               "target": "Package",
-              "version": "[5.0.0, )",
+              "version": "[5.0.0-beta.*, )",
               "generatePathProperty": true
             },
             "NLog": {
@@ -59,7 +63,7 @@
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "/usr/lib64/dotnet/sdk/5.0.204/RuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\6.0.100-preview.5.21302.13\\RuntimeIdentifierGraph.json"
         }
       }
     }

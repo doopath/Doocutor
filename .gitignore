@@ -23,3 +23,7 @@ install_local.py
 
 # Built version of doocutor (aka the binary branch).
 Build
+
+# Wow, what is these?
+.fake
+.ionide

@@ -1,0 +1,8 @@
+/home/doopath/Files/Coderpool/CSharp/Doocutor/Libraries/bin/Release/net5.0/Libraries.deps.json
+/home/doopath/Files/Coderpool/CSharp/Doocutor/Libraries/bin/Release/net5.0/Libraries.dll
+/home/doopath/Files/Coderpool/CSharp/Doocutor/Libraries/bin/Release/net5.0/Libraries.pdb
+/home/doopath/Files/Coderpool/CSharp/Doocutor/Libraries/obj/Release/net5.0/Libraries.fsprojAssemblyReference.cache
+/home/doopath/Files/Coderpool/CSharp/Doocutor/Libraries/obj/Release/net5.0/Libraries.AssemblyInfoInputs.cache
+/home/doopath/Files/Coderpool/CSharp/Doocutor/Libraries/obj/Release/net5.0/Libraries.AssemblyInfo.fs
+/home/doopath/Files/Coderpool/CSharp/Doocutor/Libraries/obj/Release/net5.0/Libraries.dll
+/home/doopath/Files/Coderpool/CSharp/Doocutor/Libraries/obj/Release/net5.0/Libraries.pdb

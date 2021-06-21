@@ -114,7 +114,7 @@ namespace Doocutor.Core
         private static void ExecuteCopyBlockCommand(NativeCommand command)
             => CopyText(string.Join("\n", SourceCode.GetCodeBlock(
                 new CodeBlockPointer(int.Parse(command.GetArguments()[0]), int.Parse(command.GetArguments()[1])))));
-        
+
         private static void CopyText(string text)
             => new Clipboard().SetText(text);
 
@@ -153,13 +153,13 @@ namespace Doocutor.Core
         private static void ExecuteAddRefCommand(NativeCommand command)
             => Compiler.AddReference(command.GetArguments()[0]);
 
+        private static void ExecuteSaveCodeCommand(NativeCommand command)
+            => SourceCodeSaver.save(command.GetArgumentsAsALine(), SourceCode.Lines);
+
         private static void ExecuteHelpCommand(NativeCommand command)
             => Console.WriteLine(Info.HelpList);
 
         private static void ExecuteInfoCommand(NativeCommand command)
             => Console.WriteLine(Info.Description);
-
-        private static void ExecuteSaveCodeCommand(NativeCommand command)
-            => SourceCodeSaver.save(command.GetArgumentsAsALine(), SourceCode.Lines);
     }
 }

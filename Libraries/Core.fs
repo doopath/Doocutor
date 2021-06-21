@@ -37,7 +37,7 @@ module ErrorHandler =
         OutputColorizer.colorizeForeground ConsoleColor.Cyan (Action (fun () -> logger.Debug e.Message))
         f.Invoke()
         Environment.Exit(0)
-        
+
 
 module SourceCodeSaver =
     open System.IO
