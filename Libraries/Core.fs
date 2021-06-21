@@ -3,6 +3,15 @@ namespace Libraries.Core
 open System
 open NLog
 
+module Utils =
+    let getFirst (l: 'a list) = l.[0]
+
+    let getFirstOrEmptyString (l: string list) =
+        match l.Length with
+        | 0 -> ""
+        | _ -> getFirst l
+
+
 module Common =
     let uppercaseFirstLetter (s: string) =
         if s.Length < 1 then
@@ -39,20 +48,62 @@ module ErrorHandler =
         Environment.Exit(0)
 
 
-module SourceCodeSaver =
-    open System.IO
+module FileSystem =
+    open Utils
 
     let getHomeDir() =
-        match Environment.GetEnvironmentVariable "userdir" with
+        match (Environment.GetFolderPath Environment.SpecialFolder.UserProfile) with
         | null -> Environment.GetEnvironmentVariable "HOME" // "HOME" is a default global variable in Linux and OSX
         | winHomeDir -> winHomeDir // "userdir" is a default home global variable in windows10
 
-    let getGlobalPath (shortedPath: string) = getHomeDir() + shortedPath.[1..]
-
     let isShortedPath (path: string) = path.Trim().StartsWith "~"
 
-    let save (path: string) code =
-        match isShortedPath path with
-        | true -> File.WriteAllLines(getGlobalPath path, code)
-        | false -> File.WriteAllLines(path, code)
+    let removeFileExtension (path: string) =
+        let joinWithPoint (l: string list) = String.Join(".", l)
 
+        let reversedSplitPath =
+            path.Split(".")
+                |> List.ofArray
+                |> List.rev
+
+        match reversedSplitPath.Length with
+        | 0 | 1 -> path
+        | _ ->  reversedSplitPath |> List.tail |> List.rev |> joinWithPoint
+
+    let isDll (path: string) =
+        (path.ToCharArray()
+            |> List.ofArray
+            |> List.rev
+            |> string).StartsWith("lld.")
+
+    let changeFileExtension (target: string) (path: string) = removeFileExtension path + $".%s{target}"
+
+
+module SourceCodeSaver =
+    open System.IO
+    open FileSystem
+
+    let getGlobalPath (path: string) = 
+        match isShortedPath path with
+        | true -> getHomeDir() + path.[1..]
+        | false -> path
+
+    let saveCode (path: string) code = File.WriteAllLines(getGlobalPath path, code)
+
+
+module AssemblySaver =
+    open System.IO
+    open SourceCodeSaver
+    open FileSystem
+
+    let notifyAboutWrongFileExtension() =
+        printfn "By default doocutor makes an assemblies as a dynamic links library, so your file fill be overridden with \".dll\" extension."
+
+    let saveAssembly (path: string) assembly =
+        let saveWithChangedExtension() =
+            notifyAboutWrongFileExtension()
+            File.WriteAllBytes(getGlobalPath (changeFileExtension "dll" path), assembly)
+
+        match isDll path with
+        | true -> File.WriteAllBytes(getGlobalPath path, assembly)
+        | false -> saveWithChangedExtension()

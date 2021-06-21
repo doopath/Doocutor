@@ -21,7 +21,7 @@ namespace Doocutor.Core.CodeCompilers
         
         private readonly CSharpCompilationOptions _compilationOptions = new(
             OutputKind.ConsoleApplication, 
-            optimizationLevel: OptimizationLevel.Debug,
+            optimizationLevel: OptimizationLevel.Release,
             assemblyIdentityComparer: DesktopAssemblyIdentityComparer.Default); 
         
         private readonly CSharpParseOptions _syntaxTreeOptions =
@@ -42,7 +42,7 @@ namespace Doocutor.Core.CodeCompilers
         public byte[] Compile()
         {
             var compilation = CSharpCompilation.Create(
-                assemblyName: "Doocutor.dll",
+                assemblyName: "CreatedByDoocutorAssembly",
                 syntaxTrees: new[] { GetSyntaxTree() },
                 references: _references,
                 options: _compilationOptions);

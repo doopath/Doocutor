@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 using TextCopy;
 using Doocutor.Core.Caches;
 using Doocutor.Core.CodeBuffers;
@@ -64,6 +65,7 @@ namespace Doocutor.Core
                     new(":showPos", ExecuteShowPosCommand),
                     new(":addRef", ExecuteAddRefCommand),
                     new(":saveCode", ExecuteSaveCodeCommand),
+                    new(":saveAsm", ExecuteSaveAsmCommand),
                     new(":help", ExecuteHelpCommand),
                     new(":info", ExecuteInfoCommand)
                 }.ToList()
@@ -154,7 +156,15 @@ namespace Doocutor.Core
             => Compiler.AddReference(command.GetArguments()[0]);
 
         private static void ExecuteSaveCodeCommand(NativeCommand command)
-            => SourceCodeSaver.save(command.GetArgumentsAsALine(), SourceCode.Lines);
+            => SourceCodeSaver.saveCode(command.GetArgumentsAsALine(), SourceCode.Lines);
+
+        private static void ExecuteSaveAsmCommand(NativeCommand command)
+        {
+            if (!Cache.HasKey(SourceCode.Code))
+                Cache.Cache(SourceCode.Code, Compiler.Compile());
+
+            AssemblySaver.saveAssembly(command.GetArgumentsAsALine(), Cache.GetValue(SourceCode.Code));
+        }
 
         private static void ExecuteHelpCommand(NativeCommand command)
             => Console.WriteLine(Info.HelpList);
