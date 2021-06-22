@@ -1,14 +1,14 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using TextCopy;
-using Doocutor.Core.Caches;
+﻿using Doocutor.Core.Caches;
 using Doocutor.Core.CodeBuffers;
 using Doocutor.Core.CodeBuffers.CodePointers;
 using Doocutor.Core.CodeCompilers;
 using Doocutor.Core.Commands;
 using Doocutor.Core.Exceptions;
 using Libraries.Core;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using TextCopy;
 
 namespace Doocutor.Core
 {
@@ -30,7 +30,7 @@ namespace Doocutor.Core
         public static Action GetExecutingFunction(NativeCommand command)
         {
             var content = command.Content.Split(" ")[0];
-            
+
             if (SupportedCommands.Contains(content))
                 return () => CommandsMap[content].Invoke(command);
 

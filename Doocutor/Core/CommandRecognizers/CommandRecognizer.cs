@@ -7,7 +7,7 @@ namespace Doocutor.Core.CommandRecognizers
     {
         public ICommand Recognize(string command)
         {
-            if (this.IsValidNativeCommand(command))
+            if (IsValidNativeCommand(command))
                 return new NativeCommand(command);
             else
                 return new EditorCommand(command);
@@ -15,12 +15,10 @@ namespace Doocutor.Core.CommandRecognizers
 
         private bool IsValidNativeCommand(string command)
         {
-            // You can pass an expression as a command.
-            // For example: <:writeAfter 5 Console.WriteLine("Hello world");>.
-            // So it checks only first word.
             command = command.Split(" ")[0];
 
-            if (!command.StartsWith(":"))
+            // It checks if command is a ":" because that can be a ternary operator.
+            if (!command.StartsWith(":") || command == ":")
                 return false;
 
             return (NativeCommandExecutionProvider.SupportedCommands.Contains(command))

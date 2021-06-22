@@ -13,10 +13,10 @@ namespace Doocutor.Core
         /// B - build
         /// DDMMYY - DayMonthYear datetime
         /// </summary>
-        public const string BuildInfo = "UCB-220621";
-        public const string Updated = "22nd of June 2021";
+        public const string BuildInfo = "UCB-230621";
+        public const string Updated = "23rd of June 2021";
         public const string Company = "Doopath";
-        public const string Version = "0.2.2";
+        public const string Version = "0.2.3";
         public const string ProductName = "Doocutor";
         public const string ConfigurationAttribute = "Release";
 

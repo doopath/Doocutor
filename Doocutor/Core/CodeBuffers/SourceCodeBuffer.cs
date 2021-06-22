@@ -1,8 +1,8 @@
-﻿using System.Linq;
-using System.Collections.Generic;
-using System.Text.RegularExpressions;
-using Doocutor.Core.CodeBuffers.CodePointers;
+﻿using Doocutor.Core.CodeBuffers.CodePointers;
 using Doocutor.Core.Exceptions;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text.RegularExpressions;
 
 namespace Doocutor.Core.CodeBuffers
 {
@@ -15,7 +15,7 @@ namespace Doocutor.Core.CodeBuffers
         /// Count of lines in the SourceCodeBuffer.
         /// </summary>
         public int BufferSize => SourceCode.Count;
-        
+
         /// <summary>
         /// SourceCodeBuffer has a pointer that's current line number "to change".
         /// That means if you add a line of code (EditorCommand) then that will be
@@ -43,7 +43,7 @@ namespace Doocutor.Core.CodeBuffers
         public string GetLineAt(int lineNumber)
         {
             CheckIfLineExistsAt(lineNumber);
-            return Lines[LineNumberToIndex(lineNumber)];   
+            return Lines[LineNumberToIndex(lineNumber)];
         }
 
         public string[] GetCodeBlock(ICodeBlockPointer pointer)
@@ -58,7 +58,7 @@ namespace Doocutor.Core.CodeBuffers
         public void RemoveCodeBlock(ICodeBlockPointer pointer)
         {
             CheckIfLineExistsAt(LineNumberToIndex(pointer.EndLineNumber - 1));
-            
+
             for (var i = 0; i < pointer.EndLineNumber - pointer.StartLineNumber; i++)
             {
                 SourceCode.RemoveAt(LineNumberToIndex(pointer.StartLineNumber));
@@ -127,8 +127,10 @@ namespace Doocutor.Core.CodeBuffers
         private void SetPointerAtLastLineIfNecessary()
             => _pointerPosition = _pointerPosition <= SourceCode.Count ? _pointerPosition : SourceCode.Count;
 
-        private string ModifyLine(string line, int lineNumber) => GetTabulationForLineAt(lineNumber, line) + line.Trim();
-        private string ModifyLine(string line) => GetTabulationForLineAt(_pointerPosition, line) + line.Trim();
+        private string ModifyLine(string line, int lineNumber)
+            => GetTabulationForLineAt(lineNumber, line) + line.Trim();
+        private string ModifyLine(string line)
+            => GetTabulationForLineAt(_pointerPosition, line) + line.Trim();
 
         private string GetTabulationForLineAt(int lineNumber, string line)
         {
@@ -136,7 +138,7 @@ namespace Doocutor.Core.CodeBuffers
                 SourceCode[LineNumberToIndex(lineNumber)]
                     .Length - SourceCode[LineNumberToIndex(lineNumber)].Trim().Length;
             int additionalTabulationLength = LineHasOpeningBrace(SourceCode[LineNumberToIndex(lineNumber)]) ? 4 : 0;
-            
+
             additionalTabulationLength -= LineHasClosingBrace(line) ? 4 : 0;
 
             return new string(' ', previousTabulationLength + additionalTabulationLength);
@@ -146,7 +148,7 @@ namespace Doocutor.Core.CodeBuffers
         {
             RemoveAllButBracesIn(ref line);
             RemoveAllCoupleBracesIn(ref line);
-            
+
             return IsOpeningBrace(line);
         }
 
@@ -154,14 +156,14 @@ namespace Doocutor.Core.CodeBuffers
         {
             RemoveAllButBracesIn(ref line);
             RemoveAllCoupleBracesIn(ref line);
-            
+
             return IsClosingBrace(line);
         }
-        
+
         private bool IsClosingBrace(string line) => line.Equals("}");
 
         private bool IsOpeningBrace(string line) => line.Equals("{");
-        
+
         private string RemoveAllButBracesIn(ref string line)
             => line = Regex.Replace(line, @"[^{}]", string.Empty);
 
@@ -176,9 +178,9 @@ namespace Doocutor.Core.CodeBuffers
 
         private bool LineContainsBraces(string line)
             => line.Contains("{") && line.Contains(("}"));
-        
+
         private string GetSourceCodeWithLineNumbers()
-            => string.Join("", 
+            => string.Join("",
             SourceCode.Select((_, i) => GroupOutputLineAt(IndexToLineNumber(i))).ToArray());
 
         private string GroupOutputLineAt(int lineNumber)
