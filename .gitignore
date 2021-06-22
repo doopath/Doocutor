@@ -6,12 +6,12 @@ Doocutor.sln.DotSettings.user
 # bin
 Doocutor/bin
 Tests/bin
-DoocutorLibraries/bin
+Libraries/bin
 
 # obj
 Doocutor/obj
 Tests/obj
-DoocutorLibraries/obj
+Libraries/obj
 
 # IDES
 .idea

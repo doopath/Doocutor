@@ -30,7 +30,7 @@ namespace Doocutor
             }
             catch (Exception error)
             {
-                ErrorHandler.showError(error);
+                ErrorHandler.showErrorMessage(error);
             }
 
             End();

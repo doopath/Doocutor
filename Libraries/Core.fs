@@ -1,12 +1,11 @@
 namespace Libraries.Core
 
 open System
-open NLog
 
 module Utils =
     let getFirst (l: 'a list) = l.[0]
 
-    let getFirstOrEmptyString (l: string list) =
+    let getFirstElOrEmptyString (l: string list) =
         match l.Length with
         | 0 -> ""
         | _ -> getFirst l
@@ -14,10 +13,9 @@ module Utils =
 
 module Common =
     let uppercaseFirstLetter (s: string) =
-        if s.Length < 1 then
-            failwith "Cannot uppercase first symbol of an empty string!"
-
-        s.ToCharArray().[0].ToString().ToUpper() + String.Join("", s.ToCharArray().[1..])
+        match s.Length with
+        | 0 -> failwith "Cannot uppercase first symbol of an empty string!"
+        | _ -> s.ToCharArray().[0].ToString().ToUpper() + String.Join("", s.ToCharArray().[1..])
 
 
 module OutputColorizer =
@@ -27,24 +25,28 @@ module OutputColorizer =
         Console.ForegroundColor <- defaultForegroundColor
         ()
 
-    let colorizeForeground = fun c -> fun (f: Action) ->
-        Console.ForegroundColor <- c
-        f.Invoke()
+    let colorizeForeground (color: ConsoleColor) (fn: Action) =
+        Console.ForegroundColor <- color
+        fn.Invoke()
         setDefaultColors()
 
 
 module ErrorHandler =
+    open NLog
+
     let logger = LogManager.GetLogger "ErrorHandler"
 
     let showError (e: Exception) =
         OutputColorizer.colorizeForeground ConsoleColor.Red (Action (fun () -> logger.Error e))
 
     let showErrorMessage (e: Exception) =
-        OutputColorizer.colorizeForeground ConsoleColor.Red (Action (fun () -> logger.Error e.Message))
+        OutputColorizer.colorizeForeground ConsoleColor.Red (Action (fun () -> 
+            logger.Error e.Message
+            logger.Debug e))
 
-    let handleInterruptedExecutionException = fun (e: Exception) -> fun (f: Action) ->
-        OutputColorizer.colorizeForeground ConsoleColor.Cyan (Action (fun () -> logger.Debug e.Message))
-        f.Invoke()
+    let handleInterruptedExecutionException (exc: Exception) (fn: Action) =
+        OutputColorizer.colorizeForeground ConsoleColor.Cyan (Action (fun () -> logger.Debug exc.Message))
+        fn.Invoke()
         Environment.Exit(0)
 
 
@@ -54,9 +56,14 @@ module FileSystem =
     let getHomeDir() =
         match (Environment.GetFolderPath Environment.SpecialFolder.UserProfile) with
         | null -> Environment.GetEnvironmentVariable "HOME" // "HOME" is a default global variable in Linux and OSX
-        | winHomeDir -> winHomeDir // "userdir" is a default home global variable in windows10
+        | winHomeDir -> winHomeDir // Default home global variable in Windows 10
 
     let isShortedPath (path: string) = path.Trim().StartsWith "~"
+
+    let getGlobalPath (path: string) = 
+        match isShortedPath path with
+        | true -> getHomeDir() + path.[1..]
+        | false -> path
 
     let removeFileExtension (path: string) =
         let joinWithPoint (l: string list) = String.Join(".", l)
@@ -82,11 +89,6 @@ module FileSystem =
 module SourceCodeSaver =
     open System.IO
     open FileSystem
-
-    let getGlobalPath (path: string) = 
-        match isShortedPath path with
-        | true -> getHomeDir() + path.[1..]
-        | false -> path
 
     let saveCode (path: string) code = File.WriteAllLines(getGlobalPath path, code)
 

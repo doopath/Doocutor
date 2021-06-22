@@ -1,8 +1,0 @@
-/home/doopath/Files/coderpool/CSharp/Doocutor/DoocutorLibraries/bin/Release/net5.0/DoocutorLibraries.deps.json
-/home/doopath/Files/coderpool/CSharp/Doocutor/DoocutorLibraries/bin/Release/net5.0/DoocutorLibraries.dll
-/home/doopath/Files/coderpool/CSharp/Doocutor/DoocutorLibraries/bin/Release/net5.0/DoocutorLibraries.pdb
-/home/doopath/Files/coderpool/CSharp/Doocutor/DoocutorLibraries/obj/Release/net5.0/DoocutorLibraries.fsprojAssemblyReference.cache
-/home/doopath/Files/coderpool/CSharp/Doocutor/DoocutorLibraries/obj/Release/net5.0/DoocutorLibraries.AssemblyInfoInputs.cache
-/home/doopath/Files/coderpool/CSharp/Doocutor/DoocutorLibraries/obj/Release/net5.0/DoocutorLibraries.AssemblyInfo.fs
-/home/doopath/Files/coderpool/CSharp/Doocutor/DoocutorLibraries/obj/Release/net5.0/DoocutorLibraries.dll
-/home/doopath/Files/coderpool/CSharp/Doocutor/DoocutorLibraries/obj/Release/net5.0/DoocutorLibraries.pdb

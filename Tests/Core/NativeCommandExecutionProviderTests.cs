@@ -35,7 +35,7 @@ namespace Tests.Core
         public MockNativeCommandExecutionProvider()
         {
             SupportedCommands.Add(":test");
-            AddExecutingCommand(":test", ExecuteTestCommand);
+            AddCommand(":test", ExecuteTestCommand);
         }
         
         private static void ExecuteTestCommand(NativeCommand command) => Checkbox.TurnOn();

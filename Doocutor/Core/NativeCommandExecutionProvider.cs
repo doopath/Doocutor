@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Reflection;
 using TextCopy;
 using Doocutor.Core.Caches;
 using Doocutor.Core.CodeBuffers;
@@ -31,7 +30,7 @@ namespace Doocutor.Core
         public static Action GetExecutingFunction(NativeCommand command)
         {
             var content = command.Content.Split(" ")[0];
-
+            
             if (SupportedCommands.Contains(content))
                 return () => CommandsMap[content].Invoke(command);
 
@@ -41,7 +40,7 @@ namespace Doocutor.Core
         /// <summary>
         /// Using for unit-testing.
         /// </summary>
-        protected static void AddExecutingCommand(string command, ExecuteCommandDelegate function)
+        protected static void AddCommand(string command, ExecuteCommandDelegate function)
             => CommandsMap.Add(command, function);
 
         private static readonly Dictionary<string, ExecuteCommandDelegate> CommandsMap =
@@ -74,9 +73,7 @@ namespace Doocutor.Core
         public static readonly List<string> SupportedCommands = CommandsMap.Keys.ToList();
 
         private static void ExecuteQuitCommand(NativeCommand command)
-        {
-            throw new InterruptedExecutionException("You have came out of the doocutor! Good bye!");
-        }
+            => throw new InterruptedExecutionException("You have came out of the doocutor! Good bye!");
 
         private static void ExecuteViewCommand(NativeCommand command)
         {
@@ -97,7 +94,8 @@ namespace Doocutor.Core
                 : Compiler.Compile(), command.GetArguments());
         }
 
-        private static void ExecuteClearCommand(NativeCommand command) => Console.Clear();
+        private static void ExecuteClearCommand(NativeCommand command)
+            => Console.Clear();
 
         private static void ExecuteUsingCommand(NativeCommand command)
         {
@@ -153,7 +151,7 @@ namespace Doocutor.Core
         }
 
         private static void ExecuteAddRefCommand(NativeCommand command)
-            => Compiler.AddReference(command.GetArguments()[0]);
+            => Compiler.AddReference(FileSystem.getGlobalPath(command.GetArguments()[0]));
 
         private static void ExecuteSaveCodeCommand(NativeCommand command)
             => SourceCodeSaver.saveCode(command.GetArgumentsAsALine(), SourceCode.Lines);
