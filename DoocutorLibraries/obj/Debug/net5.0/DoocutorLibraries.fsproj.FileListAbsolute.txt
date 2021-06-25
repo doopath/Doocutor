@@ -1,8 +1,0 @@
-C:\Users\doopa\Files\Coderpool\CSharp\Doocutor\DoocutorLibraries\bin\Debug\net5.0\DoocutorLibraries.deps.json
-C:\Users\doopa\Files\Coderpool\CSharp\Doocutor\DoocutorLibraries\bin\Debug\net5.0\DoocutorLibraries.dll
-C:\Users\doopa\Files\Coderpool\CSharp\Doocutor\DoocutorLibraries\bin\Debug\net5.0\DoocutorLibraries.pdb
-C:\Users\doopa\Files\Coderpool\CSharp\Doocutor\DoocutorLibraries\obj\Debug\net5.0\DoocutorLibraries.fsproj.AssemblyReference.cache
-C:\Users\doopa\Files\Coderpool\CSharp\Doocutor\DoocutorLibraries\obj\Debug\net5.0\DoocutorLibraries.AssemblyInfoInputs.cache
-C:\Users\doopa\Files\Coderpool\CSharp\Doocutor\DoocutorLibraries\obj\Debug\net5.0\DoocutorLibraries.AssemblyInfo.fs
-C:\Users\doopa\Files\Coderpool\CSharp\Doocutor\DoocutorLibraries\obj\Debug\net5.0\DoocutorLibraries.dll
-C:\Users\doopa\Files\Coderpool\CSharp\Doocutor\DoocutorLibraries\obj\Debug\net5.0\DoocutorLibraries.pdb
