@@ -60,7 +60,7 @@ namespace Doocutor.Core
                     new(":remove", ExecuteRemoveCommand),
                     new(":removeBlock", ExecuteRemoveBlockCommand),
                     new(":replace", ExecuteReplaceCommand),
-                    new(":set", ExecuteSetCommand),
+                    new(":set", ExecuteSetCommand), 
                     new(":showPos", ExecuteShowPosCommand),
                     new(":addRef", ExecuteAddRefCommand),
                     new(":saveCode", ExecuteSaveCodeCommand),

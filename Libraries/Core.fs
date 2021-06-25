@@ -34,18 +34,16 @@ module OutputColorizer =
 module ErrorHandler =
     open NLog
 
-    let logger = LogManager.GetLogger "ErrorHandler"
+    let consoleLogger = LogManager.GetLogger "ErrorHandlerConsoleLogger"
+    let fileLogger = LogManager.GetLogger "ErrorHandlerFileLogger"
 
-    let showError (e: Exception) =
-        OutputColorizer.colorizeForeground ConsoleColor.Red (Action (fun () -> logger.Error e))
-
-    let showErrorMessage (e: Exception) =
+    let showError (exc: Exception) =
         OutputColorizer.colorizeForeground ConsoleColor.Red (Action (fun () -> 
-            logger.Error e.Message
-            logger.Debug e))
+            consoleLogger.Error (exc.Message)
+            fileLogger.Debug ($"Thrown an error '%s{exc.Message}'" + exc.StackTrace + "\n")))
 
     let handleInterruptedExecutionException (exc: Exception) (fn: Action) =
-        OutputColorizer.colorizeForeground ConsoleColor.Cyan (Action (fun () -> logger.Debug exc.Message))
+        OutputColorizer.colorizeForeground ConsoleColor.Cyan (Action (fun () -> fileLogger.Debug exc.Message))
         fn.Invoke()
         Environment.Exit(0)
 

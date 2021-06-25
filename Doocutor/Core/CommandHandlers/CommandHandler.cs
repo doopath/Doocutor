@@ -73,7 +73,7 @@ namespace Doocutor.Core.CommandHandlers
             }
             catch (CommandRecognizingException error)
             {
-                ErrorHandler.showErrorMessage(error);
+                ErrorHandler.showError(error);
             }
         }
     }
