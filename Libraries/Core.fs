@@ -76,10 +76,9 @@ module FileSystem =
         | _ ->  reversedSplitPath |> List.tail |> List.rev |> joinWithPoint
 
     let isDll (path: string) =
-        (path.ToCharArray()
+        String.Join("", path.ToCharArray()
             |> List.ofArray
-            |> List.rev
-            |> string).StartsWith("lld.")
+            |> List.rev).StartsWith("lld.")
 
     let changeFileExtension (target: string) (path: string) = removeFileExtension path + $".%s{target}"
 
