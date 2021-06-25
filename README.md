@@ -39,10 +39,7 @@ automatically.
 ## Installation
 **Doocutor** binaries contained as portable version.
 
-Clone or download as .zip the ***BINARY*** branch:
-```shell
-git clone -b binary https://github.com/doopath/doocutor.git
-```
-
-Just move this directory (for example in C:\Program Files or /bin) and create a shortcut.
+Visit the [release page](https://github.com/doopath/doocutor/releases) and download an archive with Doocutor portable (osx, linux, win)-x64
+then unpack it and move this directory (for example in C:\Program Files\ or /usr/bin/) and create a shortcut.
 ****
+
