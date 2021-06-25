@@ -1,0 +1,10 @@
+{
+  "version": 2,
+  "dgSpecHash": "qLv/LOI98lnBNeoc3mkboHyvooMqprGWTDj0/yCZI8ddTl+pMawSQBxiq2Qb6VMEvLzxc5dS3EUKaDrBBg4RJQ==",
+  "success": true,
+  "projectFilePath": "C:\\Users\\doopa\\Files\\Coderpool\\CSharp\\Doocutor\\DoocutorLibraries\\DoocutorLibraries.fsproj",
+  "expectedPackageFiles": [
+    "C:\\Users\\doopa\\.nuget\\packages\\fsharp.core\\5.0.0\\fsharp.core.5.0.0.nupkg.sha512"
+  ],
+  "logs": []
+}

@@ -1,0 +1,90 @@
+{
+  "format": 1,
+  "restore": {
+    "/mnt/c/Users/doopa/Files/Coderpool/CSharp/Doocutor/Doocutor.csproj": {}
+  },
+  "projects": {
+    "/mnt/c/Users/doopa/Files/Coderpool/CSharp/Doocutor/Doocutor.csproj": {
+      "version": "1.0.0",
+      "restore": {
+        "projectUniqueName": "/mnt/c/Users/doopa/Files/Coderpool/CSharp/Doocutor/Doocutor.csproj",
+        "projectName": "Doocutor",
+        "projectPath": "/mnt/c/Users/doopa/Files/Coderpool/CSharp/Doocutor/Doocutor.csproj",
+        "packagesPath": "/home/doopath/.nuget/packages/",
+        "outputPath": "/mnt/c/Users/doopa/Files/Coderpool/CSharp/Doocutor/obj/",
+        "projectStyle": "PackageReference",
+        "configFilePaths": [
+          "/home/doopath/.nuget/NuGet/NuGet.Config"
+        ],
+        "originalTargetFrameworks": [
+          "net5.0"
+        ],
+        "sources": {
+          "https://api.nuget.org/v3/index.json": {}
+        },
+        "frameworks": {
+          "net5.0": {
+            "targetAlias": "net5.0",
+            "projectReferences": {}
+          }
+        },
+        "warningProperties": {
+          "warnAsError": [
+            "NU1605"
+          ]
+        }
+      },
+      "frameworks": {
+        "net5.0": {
+          "targetAlias": "net5.0",
+          "dependencies": {
+            "Microsoft.CodeAnalysis.CSharp": {
+              "target": "Package",
+              "version": "[3.10.0-1.final, )"
+            },
+            "Microsoft.Extensions.Configuration.Json": {
+              "target": "Package",
+              "version": "[5.0.0, )"
+            },
+            "Microsoft.Extensions.DependencyInjection": {
+              "target": "Package",
+              "version": "[5.0.1, )"
+            },
+            "Microsoft.Extensions.DependencyModel": {
+              "target": "Package",
+              "version": "[5.0.0, )"
+            },
+            "NLog": {
+              "target": "Package",
+              "version": "[4.7.9, )"
+            },
+            "NLog.Extensions.Logging": {
+              "target": "Package",
+              "version": "[1.7.1, )"
+            },
+            "TextCopy": {
+              "target": "Package",
+              "version": "[4.3.0, )"
+            }
+          },
+          "imports": [
+            "net461",
+            "net462",
+            "net47",
+            "net471",
+            "net472",
+            "net48"
+          ],
+          "assetTargetFallback": true,
+          "warn": true,
+          "frameworkReferences": {
+            "Microsoft.NETCore.App": {
+              "privateAssets": "all"
+            }
+          },
+          "runtimeIdentifierGraphPath": "/usr/share/dotnet/sdk/5.0.301/RuntimeIdentifierGraph.json"
+        }
+      }
+    }
+  }
+}

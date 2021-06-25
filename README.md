@@ -42,4 +42,3 @@ automatically.
 Visit the [release page](https://github.com/doopath/doocutor/releases) and download an archive with Doocutor portable (osx, linux, win)-x64
 then unpack it and move this directory (for example in C:\Program Files\ or /usr/bin/) and create a shortcut.
 ****
-

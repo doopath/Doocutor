@@ -1,0 +1,4 @@
+/mnt/c/Users/doopa/Files/Coderpool/CSharp/Doocutor/obj/Debug/net5.0/Doocutor.csproj.AssemblyReference.cache
+/mnt/c/Users/doopa/Files/Coderpool/CSharp/Doocutor/obj/Debug/net5.0/Doocutor.GeneratedMSBuildEditorConfig.editorconfig
+/mnt/c/Users/doopa/Files/Coderpool/CSharp/Doocutor/obj/Debug/net5.0/Doocutor.AssemblyInfoInputs.cache
+/mnt/c/Users/doopa/Files/Coderpool/CSharp/Doocutor/obj/Debug/net5.0/Doocutor.csproj.CoreCompileInputs.cache
