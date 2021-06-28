@@ -60,7 +60,7 @@ namespace Doocutor.Core
                     new(":remove", ExecuteRemoveCommand),
                     new(":removeBlock", ExecuteRemoveBlockCommand),
                     new(":replace", ExecuteReplaceCommand),
-                    new(":set", ExecuteSetCommand), 
+                    new(":set", ExecuteSetCommand),
                     new(":showPos", ExecuteShowPosCommand),
                     new(":addRef", ExecuteAddRefCommand),
                     new(":saveCode", ExecuteSaveCodeCommand),
@@ -165,7 +165,7 @@ namespace Doocutor.Core
         }
 
         private static void ExecuteHelpCommand(NativeCommand command)
-            => Console.WriteLine(Info.HelpList);
+            => HelpList.Show();
 
         private static void ExecuteInfoCommand(NativeCommand command)
             => Console.WriteLine(Info.Description);
