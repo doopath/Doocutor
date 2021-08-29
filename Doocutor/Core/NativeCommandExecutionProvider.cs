@@ -146,7 +146,7 @@ namespace Doocutor.Core
         private static void ExecuteShowPosCommand(NativeCommand command)
         {
             Console.Write("Current cursor position: ");
-            OutputColorizer.colorizeForeground(ConsoleColor.Cyan,
+            OutputColorizing.colorizeForeground(ConsoleColor.Cyan,
                 () => Console.Write(SourceCode.CurrentPointerPosition + "\n"));
         }
 
@@ -154,14 +154,14 @@ namespace Doocutor.Core
             => Compiler.AddReference(FileSystem.getGlobalPath(command.GetArguments()[0]));
 
         private static void ExecuteSaveCodeCommand(NativeCommand command)
-            => SourceCodeSaver.saveCode(command.GetArgumentsAsALine(), SourceCode.Lines);
+            => SourceCodeSaving.saveCode(command.GetArgumentsAsALine(), SourceCode.Lines);
 
         private static void ExecuteSaveAsmCommand(NativeCommand command)
         {
             if (!Cache.HasKey(SourceCode.Code))
                 Cache.Cache(SourceCode.Code, Compiler.Compile());
 
-            AssemblySaver.saveAssembly(command.GetArgumentsAsALine(), Cache.GetValue(SourceCode.Code));
+            AssemblySaving.saveAssembly(command.GetArgumentsAsALine(), Cache.GetValue(SourceCode.Code));
         }
 
         private static void ExecuteHelpCommand(NativeCommand command)

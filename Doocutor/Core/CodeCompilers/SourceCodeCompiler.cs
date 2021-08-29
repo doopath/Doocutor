@@ -67,7 +67,7 @@ namespace Doocutor.Core.CodeCompilers
             if (result.Success) return;
 
             var message = GetMessageForCompilationResult(result);
-            OutputColorizer.colorizeForeground(ConsoleColor.Red, () => Console.WriteLine(message));
+            OutputColorizing.colorizeForeground(ConsoleColor.Red, () => Console.WriteLine(message));
             throw new SourceCodeCompilationException(message);
         }
         

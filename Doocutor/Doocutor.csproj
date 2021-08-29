@@ -6,11 +6,11 @@
         <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
         <PreserveCompilationContext>true</PreserveCompilationContext>
         <ApplicationIcon>Resources/img/DoocutorIcon.ico</ApplicationIcon>
-		<SatelliteResourceLanguages>en</SatelliteResourceLanguages>
-		<StartupObject>Doocutor.Program</StartupObject>
-		<SignAssembly>true</SignAssembly>
-		<AssemblyOriginatorKeyFile>Doocutor.snk</AssemblyOriginatorKeyFile>
-		<DelaySign>true</DelaySign>
+        <SatelliteResourceLanguages>en</SatelliteResourceLanguages>
+        <StartupObject>Doocutor.Program</StartupObject>
+        <SignAssembly>true</SignAssembly>
+        <AssemblyOriginatorKeyFile>Doocutor.snk</AssemblyOriginatorKeyFile>
+        <DelaySign>true</DelaySign>
     </PropertyGroup>
 
     <ItemGroup>

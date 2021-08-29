@@ -15,6 +15,6 @@ namespace Doocutor.Core.Descriptors
         }
 
         private void ShowArrows()
-            => OutputColorizer.colorizeForeground(ConsoleColor.Cyan, () => Console.Write(">>> "));
+            => OutputColorizing.colorizeForeground(ConsoleColor.Cyan, () => Console.Write(">>> "));
     }
 }

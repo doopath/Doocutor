@@ -9,6 +9,9 @@ Doocutor/bin
 Tests/bin
 Libraries/bin
 
+# Publish
+Publish
+
 # obj
 Doocutor/obj
 Tests/obj

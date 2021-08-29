@@ -24,7 +24,7 @@ namespace Doocutor.Core.Executors
             }
             catch (Exception error) when (error.GetType() != typeof(InterruptedExecutionException))
             {
-                ErrorHandler.showError(error);
+                ErrorHandling.showError(error);
             }
         }
     }

@@ -6,7 +6,6 @@ using Doocutor.Core.Exceptions;
 using Libraries.Core;
 
 using Info = Doocutor.Core.Info;
-using ErrorHandler = Libraries.Core.ErrorHandler;
 
 namespace Doocutor
 {
@@ -26,28 +25,28 @@ namespace Doocutor
             }
             catch (InterruptedExecutionException error)
             {
-                ErrorHandler.handleInterruptedExecutionException(error, End);
+                ErrorHandling.handleInterruptedExecutionException(error, End);
             }
             catch (Exception error)
             {
-                ErrorHandler.showError(error);
+                ErrorHandling.showError(error);
             }
 
             End();
         }
 
         private static void Start()
-            => OutputColorizer.colorizeForeground(ConsoleColor.Cyan, () => {
+            => OutputColorizing.colorizeForeground(ConsoleColor.Cyan, () => {
                 Logger.Debug("Start of the program");
                 Info.ShowDoocutorInfo();
             });
 
         private static void End()
-            => OutputColorizer.colorizeForeground(ConsoleColor.Cyan,
+            => OutputColorizing.colorizeForeground(ConsoleColor.Cyan,
                 () =>
                 {
                     Logger.Debug("End of the program\n\n");
-                    OutputColorizer.colorizeForeground(ConsoleColor.Cyan, () => Console.WriteLine("\nGood bye!\n"));
+                    OutputColorizing.colorizeForeground(ConsoleColor.Cyan, () => Console.WriteLine("\nGood bye!\n"));
                 });
     }
 }

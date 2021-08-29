@@ -19,7 +19,7 @@ namespace Doocutor.Core.Executors
             }
             catch (Exception error)
             {
-                ErrorHandler.showError(error);
+                ErrorHandling.showError(error);
             }
         }
     }

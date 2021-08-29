@@ -33,7 +33,7 @@ namespace Doocutor.Core
         }
         
         private void ShowOutputMessage()
-            => OutputColorizer.colorizeForeground(ConsoleColor.Blue, () => Console.WriteLine("Output:"));
+            => OutputColorizing.colorizeForeground(ConsoleColor.Blue, () => Console.WriteLine("Output:"));
 
         private string[] GetEntryArgs(MethodInfo entry, string[] preferredArgs)
             => entry.GetParameters().Length > 0 ? preferredArgs : Array.Empty<string>();
