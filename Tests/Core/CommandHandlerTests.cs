@@ -1,9 +1,8 @@
 using System;
-using Doocutor.Core;
-using Doocutor.Core.CommandHandlers;
-using Doocutor.Core.Commands;
-using Doocutor.Core.Executors;
-using Doocutor.Tests;
+using Domain.Core;
+using Domain.Core.CommandHandlers;
+using Domain.Core.Commands;
+using Domain.Core.Executors;
 using NUnit.Framework;
 
 namespace Tests.Core

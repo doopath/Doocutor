@@ -8,6 +8,9 @@ Doocutor/Properties
 Doocutor/bin
 Tests/bin
 Libraries/bin
+DynamicEditor/bin
+StaticEditor/bin
+Domain/bin
 
 # Publish
 Publish
@@ -16,6 +19,9 @@ Publish
 Doocutor/obj
 Tests/obj
 Libraries/obj
+DynamicEditor/obj
+StaticEditor/obj
+Domain/obj
 
 # IDES
 .idea

@@ -1,5 +1,5 @@
 using System.Reflection;
-using Doocutor.Core;
+using Domain.Core;
     
 [assembly: AssemblyCompany(Info.ProductName)]
 [assembly: AssemblyProduct(Info.ProductName)]

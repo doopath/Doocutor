@@ -1,6 +1,5 @@
-using Doocutor.Core;
-using Doocutor.Core.Commands;
-using Doocutor.Tests;
+using Domain.Core;
+using Domain.Core.Commands;
 using NUnit.Framework;
 
 namespace Tests.Core
@@ -21,10 +20,10 @@ namespace Tests.Core
         [Test]
         public void GetExecutingFunctionTest()
         {
-            var commandContent = MockNativeCommandExecutionProvider.SupportedCommands[^1];
+            var commandContent = NativeCommandExecutionProvider.SupportedCommands[^1];
             var command = new NativeCommand(commandContent);
-            
-            MockNativeCommandExecutionProvider.GetExecutingFunction(command)();
+
+            NativeCommandExecutionProvider.GetExecutingFunction(command)();
             
             Assert.True(Checkbox.State, "Given native command :test should turn the checkbox on!");
         }
@@ -37,7 +36,7 @@ namespace Tests.Core
             SupportedCommands.Add(":test");
             AddCommand(":test", ExecuteTestCommand);
         }
-        
+            
         private static void ExecuteTestCommand(NativeCommand command) => Checkbox.TurnOn();
     }
 }

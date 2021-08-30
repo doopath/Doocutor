@@ -23,6 +23,7 @@
     
     <ItemGroup>
       <PackageReference Include="NLog" Version="4.7.10" />
+      <PackageReference Include="Spectre.Console" Version="0.41.0" />
     </ItemGroup>
 
 </Project>

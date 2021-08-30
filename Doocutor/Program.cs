@@ -1,27 +1,28 @@
 ﻿using System;
 using NLog;
-using Doocutor.Core;
-using Doocutor.Core.Descriptors;
-using Doocutor.Core.Exceptions;
 using Libraries.Core;
-
-using Info = Doocutor.Core.Info;
+using StaticEditor;
+using DynamicEditor;
+using Domain.Core;
+using Domain.Core.Exceptions;
+using Doocutor.Options;
+using CommandLine;
 
 namespace Doocutor
 {
-    internal static class Program
+    public static class Program
     {
-        private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
+        private static readonly Logger Logger = LogManager.GetLogger("Doocutor.Program");
 
         public static void Main(string[] args)
         {
             Start();
 
+            var ops = ParseCommandLineOptions(args);
+            
             try
             {
-                IInputFlowDescriptor descriptor = new ConsoleInputFlowDescriptor();
-                IInputFlowHandler handler = new CommandFlowHandler(descriptor);
-                handler.Handle();
+                SelectEditor(ops.EditorMode).Run(args);
             }
             catch (InterruptedExecutionException error)
             {
@@ -34,6 +35,14 @@ namespace Doocutor
 
             End();
         }
+
+        private static EditorSetup SelectEditor(string mode) => mode.ToLower() switch
+        {
+            "dynamic" => new DynamicEditorSetup(),
+            "static" => new StaticEditorSetup(),
+            _ => throw new ArgumentException($"Cannot run editor in mode={mode}")
+        };
+        
 
         private static void Start()
             => OutputColorizing.colorizeForeground(ConsoleColor.Cyan, () => {
@@ -48,5 +57,20 @@ namespace Doocutor
                     Logger.Debug("End of the program\n\n");
                     OutputColorizing.colorizeForeground(ConsoleColor.Cyan, () => Console.WriteLine("\nGood bye!\n"));
                 });
+
+        private static ProgramOptions ParseCommandLineOptions(string[] args)
+        {
+            var parser = new Parser(with =>
+            {
+                with.IgnoreUnknownArguments = true;
+            });
+
+            var ops = parser.ParseArguments<ProgramOptions>(args);
+            var result = new ProgramOptions();
+
+            ops.WithParsed(ops => result = ops);
+
+            return result;
+        }
     }
 }
