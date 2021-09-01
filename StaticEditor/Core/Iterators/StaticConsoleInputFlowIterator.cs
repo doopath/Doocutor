@@ -1,9 +1,10 @@
 ﻿using System;
 using Libraries.Core;
+using Domain.Core.Iterators;
 
-namespace Domain.Core.Descriptors
+namespace StaticEditor.Core.Iterators
 {
-    public class StaticConsoleInputFlowDescriptor : IInputFlowDescriptor
+    internal class StaticConsoleInputFlowIterator : IInputFlowIterator
     {
         public bool HasNext() => true;
 
@@ -14,7 +15,7 @@ namespace Domain.Core.Descriptors
             return Console.ReadLine();
         }
 
-        private void ShowArrows()
+        private static void ShowArrows()
             => OutputColorizing.colorizeForeground(ConsoleColor.Cyan, () => Console.Write(">>> "));
     }
 }

@@ -1,5 +1,6 @@
 ﻿using Domain.Core;
-using Domain.Core.Descriptors;
+using Domain.Core.Iterators;
+using StaticEditor.Core.Iterators;
 
 namespace StaticEditor
 {
@@ -7,7 +8,7 @@ namespace StaticEditor
     {
         public void Run(string[] args)
         {
-            IInputFlowDescriptor descriptor = new StaticConsoleInputFlowDescriptor();
+            IInputFlowIterator descriptor = new StaticConsoleInputFlowIterator();
             IInputFlowHandler handler = new CommandFlowHandler(descriptor);
             handler.Handle();
         }

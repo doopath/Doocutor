@@ -1,24 +1,24 @@
 ﻿using Domain.Core.CommandHandlers;
-using Domain.Core.Descriptors;
+using Domain.Core.Iterators;
 
 namespace Domain.Core
 {
     public class CommandFlowHandler : IInputFlowHandler
     {
-        private readonly IInputFlowDescriptor inputFlowDescriptor;
-        private readonly ICommandHandler commandHandler = new CommandHandler();
+        private readonly IInputFlowIterator _inputFlowDescriptor;
+        private readonly ICommandHandler _commandHandler = new CommandHandler();
         public bool IsClosed { get; private set; } = false;
 
-        public CommandFlowHandler(IInputFlowDescriptor inputFlowDescriptor)
+        public CommandFlowHandler(IInputFlowIterator inputFlowDescriptor)
         {
-            this.inputFlowDescriptor = inputFlowDescriptor;
+            _inputFlowDescriptor = inputFlowDescriptor;
         }
 
         public void Handle()
         {
-            while (inputFlowDescriptor.HasNext())
+            while (_inputFlowDescriptor.HasNext())
             {
-                commandHandler.Handle(inputFlowDescriptor.Next());
+                _commandHandler.Handle(_inputFlowDescriptor.Next());
             }
 
             IsClosed = true;

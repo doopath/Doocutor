@@ -16,13 +16,14 @@ namespace Doocutor
 
         public static void Main(string[] args)
         {
-            Start();
-
-            var ops = ParseCommandLineOptions(args);
-            
             try
             {
-                SelectEditor(ops.EditorMode).Run(args);
+                var ops = ParseCommandLineOptions(args);
+                var editor = SelectEditor(ops.EditorMode);
+
+                Start();
+                
+                editor.Run(args);
             }
             catch (InterruptedExecutionException error)
             {
@@ -32,8 +33,10 @@ namespace Doocutor
             {
                 ErrorHandling.showError(error);
             }
-
-            End();
+            finally
+            {
+                End();
+            }
         }
 
         private static EditorSetup SelectEditor(string mode) => mode.ToLower() switch
