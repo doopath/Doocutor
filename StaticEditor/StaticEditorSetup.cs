@@ -8,9 +8,9 @@ namespace StaticEditor
     {
         public void Run(string[] args)
         {
-            IInputFlowIterator descriptor = new StaticConsoleInputFlowIterator();
-            IInputFlowHandler handler = new CommandFlowHandler(descriptor);
-            handler.Handle();
+            IInputFlowIterator iterator = new StaticConsoleInputFlowIterator();
+            IInputFlowHandler handler = new CommandFlowHandler(iterator);
+            handler.StartHandling();
         }
     }
 }

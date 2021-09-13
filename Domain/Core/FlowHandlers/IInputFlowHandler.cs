@@ -8,6 +8,6 @@
     public interface IInputFlowHandler
     {
         bool IsClosed { get; }
-        void Handle();
+        void StartHandling();
     }
 }

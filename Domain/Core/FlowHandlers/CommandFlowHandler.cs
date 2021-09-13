@@ -14,7 +14,7 @@ namespace Domain.Core
             _inputFlowDescriptor = inputFlowDescriptor;
         }
 
-        public void Handle()
+        public void StartHandling()
         {
             while (_inputFlowDescriptor.HasNext())
             {

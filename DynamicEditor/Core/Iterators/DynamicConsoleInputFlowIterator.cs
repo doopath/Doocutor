@@ -1,17 +1,21 @@
-﻿using Domain.Core.Iterators;
+﻿using System;
+using Domain.Core.Iterators;
+using Domain.Core;
 
 namespace DynamicEditor.Core.Iterators
 {
     internal class DynamicConsoleInputFlowIterator : IInputFlowIterator
     {
         public bool HasNext()
-        {
-            throw new System.NotImplementedException();
-        }
+            => true;
 
         public string Next()
         {
-            throw new System.NotImplementedException();
+            var keyCombination = Console.ReadKey(true);
+
+            Console.WriteLine(keyCombination.ToKeyCombination());
+            
+            return "";
         }
     }
 }
