@@ -1,4 +1,4 @@
-﻿namespace Domain.Core
+﻿namespace Domain.Core.FlowHandlers
 {
     /// <summary>
     /// InputFlowHandler uses an InputFlowDescriptor

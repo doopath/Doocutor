@@ -9,6 +9,7 @@ namespace DynamicEditor.Core
         public static string ToKeyCombination(this ConsoleKeyInfo combination)
         {
             var modifiers = combination.GetModifiersList();
+
             modifiers.Reverse();
             modifiers.Add(combination.Key.ToString());
 

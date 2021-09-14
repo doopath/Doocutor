@@ -1,9 +1,11 @@
 ﻿using Domain.Core.Commands;
 using Domain.Core.Exceptions;
+using Domain.Core;
+using Domain.Core.CommandRecognizers;
 
 namespace Domain.Core.CommandRecognizers
 {
-    public class CommandRecognizer : ICommandRecognizer
+    public sealed class CommandRecognizer : ICommandRecognizer
     {
         public ICommand Recognize(string command)
         {
@@ -17,7 +19,7 @@ namespace Domain.Core.CommandRecognizers
         {
             command = command.Split(" ")[0];
 
-            // It checks if command is a ":" because that can be a ternary operator.
+            // It checks if command is a ":" because that can be the ternary operator.
             if (!command.StartsWith(":") || command == ":")
                 return false;
 

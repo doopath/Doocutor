@@ -1,6 +1,10 @@
 ﻿using Domain.Core;
 using Domain.Core.Iterators;
+using Domain.Core.FlowHandlers;
 using StaticEditor.Core.Iterators;
+using StaticEditor.Core.FlowHandlers;
+using StaticEditor.Core.CommandHandlers;
+using Domain.Core.CommandHandlers;
 
 namespace StaticEditor
 {
@@ -9,7 +13,9 @@ namespace StaticEditor
         public void Run(string[] args)
         {
             IInputFlowIterator iterator = new StaticConsoleInputFlowIterator();
-            IInputFlowHandler handler = new CommandFlowHandler(iterator);
+            ICommandHandler commandHandler= new StaticCommandHandler();
+            IInputFlowHandler handler = new StaticCommandFlowHandler(iterator, commandHandler);
+
             handler.StartHandling();
         }
     }

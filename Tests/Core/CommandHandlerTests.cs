@@ -16,7 +16,7 @@ namespace Tests.Core
         public void Setup()
         {
             Checkbox.TurnOff();
-            _testCommandHandler = CommandHandler.GetBuilder()
+            _testCommandHandler = StaticCommandHandler.GetBuilder()
                 .SetCommandRecognizer(new MockCommandRecognizer())
                 .SetNativeCommandExecutor(new MockNativeExecutor())
                 .SetEditorCommandExecutor(new MockEditorExecutor())

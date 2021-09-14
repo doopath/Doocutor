@@ -3,10 +3,11 @@ using Domain.Core.Commands;
 using Domain.Core.Exceptions;
 using Domain.Core.Executors;
 using Libraries.Core;
+using Domain.Core.CommandHandlers;
 
-namespace Domain.Core.CommandHandlers
+namespace StaticEditor.Core.CommandHandlers
 {
-    public class CommandHandler : ICommandHandler
+    public class StaticCommandHandler : ICommandHandler
     {
         private ICommandExecutor<NativeCommand> _nativeCommandExecutor;
         private ICommandExecutor<EditorCommand> _editorCommandExecutor;
@@ -16,7 +17,7 @@ namespace Domain.Core.CommandHandlers
         /// A default constructor. Also there is builder that help testing
         /// this class and set custom executors and recognizers.
         /// </summary>
-        public CommandHandler()
+        public StaticCommandHandler()
         {
             _nativeCommandExecutor = new NativeCommandExecutor();
             _editorCommandExecutor = new EditorCommandExecutor();
@@ -30,9 +31,9 @@ namespace Domain.Core.CommandHandlers
 
         public class Builder
         {
-            private readonly CommandHandler _commandHandler = new();
+            private readonly StaticCommandHandler _commandHandler = new();
 
-            public CommandHandler Build() => _commandHandler;
+            public StaticCommandHandler Build() => _commandHandler;
 
             public Builder SetNativeCommandExecutor(ICommandExecutor<NativeCommand> nativeCommandExecutor)
             {

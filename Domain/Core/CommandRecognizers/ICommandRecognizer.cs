@@ -1,6 +1,6 @@
 ﻿using Domain.Core.Commands;
 
-namespace Domain.Core
+namespace Domain.Core.CommandRecognizers
 {
     public interface ICommandRecognizer
     {

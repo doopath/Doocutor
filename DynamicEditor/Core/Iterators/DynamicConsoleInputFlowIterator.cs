@@ -11,11 +11,9 @@ namespace DynamicEditor.Core.Iterators
 
         public string Next()
         {
-            var keyCombination = Console.ReadKey(true);
+            var pressedKeys = Console.ReadKey(true);
 
-            Console.WriteLine(keyCombination.ToKeyCombination());
-            
-            return "";
+            return pressedKeys.ToKeyCombination();
         }
     }
 }

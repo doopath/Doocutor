@@ -16,7 +16,7 @@ namespace Domain.Core
 
     public class NativeCommandExecutionProvider
     {
-        private static readonly ICodeBuffer SourceCode = new SourceCodeBuffer();
+        public static readonly ICodeBuffer SourceCode = new SourceCodeBuffer();
         private static readonly ICache<byte[]> Cache = new CompiledCodeCache();
         private static readonly ICodeCompiler Compiler = new SourceCodeCompiler(SourceCode);
         private static readonly CompiledCodeExecutor Executor = new();
