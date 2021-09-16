@@ -56,25 +56,25 @@ namespace StaticEditor.Core.CommandHandlers
 
         public void Handle(string command)
         {
-            try
-            {
-                var recognizedCommand = _commandRecognizer.Recognize(command);
+            var recognizedCommand = _commandRecognizer.TryRecognize(command);
+            var exceptionMessage = $"Given command {command} is not supported!";
 
-                switch (recognizedCommand.Type)
-                {
-                    case CommandType.EDITOR_COMMAND:
-                        _editorCommandExecutor.Execute((EditorCommand) recognizedCommand);
-                        break;
-                    case CommandType.NATIVE_COMMAND:
-                        _nativeCommandExecutor.Execute((NativeCommand) recognizedCommand);
-                        break;
-                    default:
-                        throw new UnsupportedCommandException($"Given command {command} is not supported!");
-                }
+            if (recognizedCommand is null)
+            {                
+                ErrorHandling.showError(new CommandRecognizingException(exceptionMessage));
+                return;
             }
-            catch (CommandRecognizingException error)
+
+            switch (recognizedCommand.Type)
             {
-                ErrorHandling.showError(error);
+                case CommandType.EDITOR_COMMAND:
+                    _editorCommandExecutor.Execute((EditorCommand) recognizedCommand);
+                    break;
+                case CommandType.NATIVE_COMMAND:
+                    _nativeCommandExecutor.Execute((NativeCommand) recognizedCommand);
+                    break;
+                default:
+                    throw new UnsupportedCommandException($"Given command {command} is not supported!");
             }
         }
     }

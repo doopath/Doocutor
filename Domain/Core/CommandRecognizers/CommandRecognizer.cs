@@ -11,8 +11,20 @@ namespace Domain.Core.CommandRecognizers
         {
             if (IsValidNativeCommand(command))
                 return new NativeCommand(command);
-            else
-                return new EditorCommand(command);
+           
+            return new EditorCommand(command);
+        }
+
+        public ICommand? TryRecognize(string command)
+        {
+            try
+            {
+                return Recognize(command);
+            }
+            catch (CommandRecognizingException)
+            {
+                return null;
+            }
         }
 
         private bool IsValidNativeCommand(string command)

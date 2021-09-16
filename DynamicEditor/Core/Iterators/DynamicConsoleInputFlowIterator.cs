@@ -1,6 +1,5 @@
 ﻿using System;
 using Domain.Core.Iterators;
-using Domain.Core;
 
 namespace DynamicEditor.Core.Iterators
 {

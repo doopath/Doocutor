@@ -1,7 +1,9 @@
-﻿using Domain.Core.FlowHandlers;
+﻿using System;
+using Domain.Core.FlowHandlers;
 using Domain.Core.Iterators;
 using Domain.Core.CommandHandlers;
 using System.Collections.Generic;
+using Domain.Core.Exceptions;
 
 namespace DynamicEditor.Core.FlowHandlers
 {
@@ -10,20 +12,21 @@ namespace DynamicEditor.Core.FlowHandlers
         private readonly IInputFlowIterator _inputFlowIterator;
         private readonly ICommandHandler _commandHandler;
         private readonly KeyCombinationTranslating _keyCombinationTranslating;
-        private readonly CUIRender _CUIRender;
+        private readonly CuiRender _cuiRender;
 
-        public bool IsClosed { get; private set; } = false;
+        public bool IsClosed { get; private set; }
 
         public DynamicKeyFlowHandler(
             IInputFlowIterator iterator,
             ICommandHandler commandHandler,
             Dictionary<string, string> keyCombinationsMap,
-            CUIRender cuiRender)
+            CuiRender cuiRender)
         {
             _inputFlowIterator = iterator;
             _commandHandler = commandHandler;
             _keyCombinationTranslating = new KeyCombinationTranslating(keyCombinationsMap);
-            _CUIRender = cuiRender;
+            _cuiRender = cuiRender;
+            IsClosed = false;
         }
 
         public void StartHandling()
@@ -33,9 +36,19 @@ namespace DynamicEditor.Core.FlowHandlers
                 var input = _inputFlowIterator.Next();
                 var command = _keyCombinationTranslating.TryGetCommandFor(input) ?? input;
 
-                _commandHandler.Handle(command);
-
-                _CUIRender.Render();
+                if (MovementKeysMap.Map.ContainsKey(input))
+                {
+                    try
+                    {
+                        MovementKeysMap.Map[input](_cuiRender);
+                    }
+                    catch (OutOfCodeBufferSizeException){}
+                }
+                else
+                {
+                    _commandHandler.Handle(command);
+                    _cuiRender.Render();
+                }
             }
 
 

@@ -1,9 +1,10 @@
 using System;
-using Domain.Core;
 using Domain.Core.CommandHandlers;
+using Domain.Core.CommandRecognizers;
 using Domain.Core.Commands;
 using Domain.Core.Executors;
 using NUnit.Framework;
+using StaticEditor.Core.CommandHandlers;
 
 namespace Tests.Core
 {
@@ -60,5 +61,17 @@ namespace Tests.Core
                 "editor" => new EditorCommand(command),
                 _ => throw new Exception("Should test only native and editor commands!")
             };
+
+        public ICommand? TryRecognize(string command)
+        {
+            try
+            {
+                return Recognize(command);
+            }
+            catch (Exception)
+            {
+                return null;
+            }
+        }
     }
 }

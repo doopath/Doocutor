@@ -2,7 +2,6 @@
 using DynamicEditor.Core.Iterators;
 using DynamicEditor.Core.CommandHandlers;
 using DynamicEditor.Core.FlowHandlers;
-using Domain.Core.CodeBuffers;
 using DynamicEditor.Core;
 
 namespace DynamicEditor
@@ -13,8 +12,10 @@ namespace DynamicEditor
         {
             var iterator = new DynamicConsoleInputFlowIterator();
             var commandHandler = new DynamicCommandHandler();
-            var cuiRender = new CUIRender(NativeCommandExecutionProvider.SourceCode);
+            var cuiRender = new CuiRender(NativeCommandExecutionProvider.SourceCode);
             var handler = new DynamicKeyFlowHandler(iterator, commandHandler, KeyCombinationsMap.Map, cuiRender);
+
+            cuiRender.Clear();
             handler.StartHandling();
         }
     }

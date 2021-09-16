@@ -141,13 +141,13 @@ namespace Domain.Core
             => SourceCode.Write(command.GetArgumentsAsALine());
 
         private static void ExecuteSetCommand(NativeCommand command)
-            => SourceCode.SetPointerPositionAt(int.Parse(command.GetArguments()[0]));
+            => SourceCode.SetCursorPositionFromTopAt(int.Parse(command.GetArguments()[0]));
 
         private static void ExecuteShowPosCommand(NativeCommand command)
         {
             Console.Write("Current cursor position: ");
             OutputColorizing.colorizeForeground(ConsoleColor.Cyan,
-                () => Console.Write(SourceCode.CurrentPointerPosition + "\n"));
+                () => Console.Write(SourceCode.CursorPositionFromLeft + "\n"));
         }
 
         private static void ExecuteAddRefCommand(NativeCommand command)

@@ -10,13 +10,19 @@ namespace Domain.Core.CodeBuffers
         void RemoveLineAt(int lineNumber);
         void RemoveCodeBlock(ICodeBlockPointer pointer);
         void ReplaceLineAt(int lineNumber, string newLine);
-        void SetPointerPositionAt(int lineNumber);
+        void SetCursorPositionFromTopAt(int lineNumber);
+        void SetCursorPositionFromLeftAt(int position);
+        void IncCursorPositionFromLeft();
+        void DecCursorPositionFromLeft();
+        void IncCursorPositionFromTop();
+        void DecCursorPositionFromTop();
         string GetLineAt(int lineNumber);
         string[] GetCodeBlock(ICodeBlockPointer pointer);
         string CodeWithLineNumbers { get; }
         string Code { get; }
         string[] Lines { get; }
         int BufferSize { get; }
-        int CurrentPointerPosition { get; }
+        int CursorPositionFromLeft { get; }
+        int CursorPositionFromTop { get; }
     }
 }
