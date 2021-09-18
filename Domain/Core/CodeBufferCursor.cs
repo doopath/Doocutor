@@ -1,5 +1,5 @@
-﻿using Domain.Core.Exceptions;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
+using Domain.Core.Exceptions;
 
 namespace Domain.Core
 {
@@ -34,7 +34,7 @@ namespace Domain.Core
             var targetLineContent = _formatter.GetLineAt(position + 1);
             var targetLinePrefix = targetLine.Split(targetLineContent)[0];
 
-            if (CursorPositionFromLeft > targetLine.Length)
+            if (CursorPositionFromLeft >= targetLine.Length)
             {
                 SetCursorPositionFromLeftAt(targetLine.Length - 1);
 

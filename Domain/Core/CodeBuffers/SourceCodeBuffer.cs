@@ -1,6 +1,6 @@
-﻿using Domain.Core.CodeBuffers.CodePointers;
+﻿using System.Collections.Generic;
+using Domain.Core.CodeBuffers.CodePointers;
 using Domain.Core.Exceptions;
-using System.Collections.Generic;
 
 namespace Domain.Core.CodeBuffers
 {
@@ -28,6 +28,14 @@ namespace Domain.Core.CodeBuffers
         /// Presents an offset or a count of whitespaces from left side.
         /// </summary>
         public int CursorPositionFromLeft => Cursor.CursorPositionFromLeft;
+
+        /// <summary>
+        /// A current line of the buffer.
+        /// </summary>
+        public string CurrentLine => GetCurrentLine();
+
+        public string CurrentLinePrefix =>
+            CodeFormatter.GetLineAt(CodeFormatter.IndexToLineNumber(CursorPositionFromTop)).Split(CurrentLine)[0];
 
         /// <summary>
         /// Get source code numerated by lines.
@@ -142,6 +150,9 @@ namespace Domain.Core.CodeBuffers
             if (SourceCode.Count == 0)
                 SourceCode.Add("");
         }
+
+        private string GetCurrentLine()
+            => SourceCode.Count > 0 ? SourceCode[CursorPositionFromTop] : "";
     }
 
     internal static class InitialSourceCode

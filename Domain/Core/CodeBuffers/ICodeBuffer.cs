@@ -20,6 +20,8 @@ namespace Domain.Core.CodeBuffers
         string[] GetCodeBlock(ICodeBlockPointer pointer);
         string CodeWithLineNumbers { get; }
         string Code { get; }
+        string CurrentLine { get; }
+        string CurrentLinePrefix { get; }
         string[] Lines { get; }
         int BufferSize { get; }
         int CursorPositionFromLeft { get; }

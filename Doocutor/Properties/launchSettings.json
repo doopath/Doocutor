@@ -2,7 +2,7 @@
   "profiles": {
     "Doocutor": {
       "commandName": "Project",
-      "commandLineArgs": "--editor-mode dynamic"
+      "commandLineArgs": "--editor-mode static"
     },
     "WSL 2": {
       "commandName": "WSL2",
