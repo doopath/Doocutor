@@ -35,14 +35,9 @@ namespace Domain.Core
             var targetLinePrefix = targetLine.Split(targetLineContent)[0];
 
             if (CursorPositionFromLeft >= targetLine.Length)
-            {
                 SetCursorPositionFromLeftAt(targetLine.Length - 1);
-
-            }
             else if (CursorPositionFromLeft == currentLinePrefix.Length - 1)
-            {
                 SetCursorPositionFromLeftAt(targetLinePrefix.Length - 1);
-            }
 
             CursorPositionFromTop = position;
         }
@@ -64,8 +59,6 @@ namespace Domain.Core
                     SetCursorPositionFromLeftAt(nextLine.Length - 1);
                 else
                     SetCursorPositionFromLeftAt(currentLine.Length);
-
-
             }
             else if (position > currentLine.Length - 1 && CursorPositionFromTop == _sourceCode.Count - 1)
             {

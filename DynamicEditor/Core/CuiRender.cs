@@ -1,8 +1,6 @@
 ﻿using System;
 using System.Linq;
 using Domain.Core.CodeBuffers;
-using Microsoft.CodeAnalysis.CSharp.Syntax;
-using Spectre.Console;
 
 namespace DynamicEditor.Core
 {
@@ -21,9 +19,9 @@ namespace DynamicEditor.Core
         public void Render()
         {
             var code = _codeBuffer.CodeWithLineNumbers;
-            var codeLines = code.Split("\n")[TopOffset..];
             var width = Console.WindowWidth;
             var height = Console.WindowHeight;
+            var codeLines = code.Split("\n")[TopOffset..];
 
             DisableCursor();
             Console.SetCursorPosition(0, 0);
@@ -38,6 +36,7 @@ namespace DynamicEditor.Core
 
             FixCursorPosition(width, height);
             UpdateCursorPosition();
+            ShowDevMonitor(); // Dev-only feature
             EnableCursor();
         }
 
@@ -46,9 +45,6 @@ namespace DynamicEditor.Core
 
         public void MoveCursorUp()
         {
-            if (_codeBuffer.CursorPositionFromTop - TopOffset == 0 && TopOffset != 0)
-                TopOffset--;
-
             _codeBuffer.DecCursorPositionFromTop();
             Render();
         }
@@ -61,9 +57,6 @@ namespace DynamicEditor.Core
 
         public void MoveCursorLeft()
         {
-            // if (_codeBuffer.CursorPositionFromLeft - LeftOffset == _codeBuffer.CurrentLinePrefix.Length - 1 && LeftOffset == 0)
-            //     TopOffset--;
-
             _codeBuffer.DecCursorPositionFromLeft();
             Render();
         }
@@ -82,16 +75,16 @@ namespace DynamicEditor.Core
 
         private void FixCursorPosition(int width, int height)
         {
-            if (_codeBuffer.CursorPositionFromTop - TopOffset >= height)
-            {
-                TopOffset++;
-            }
-            else if (_codeBuffer.CursorPositionFromTop - TopOffset < 0)
-            {
-                TopOffset--;
-            }
+            var bottomEdge = height - 3;
+            var topEdge = 2;
 
-            ShowDevMonitor();
+            var internalCursorPositionFromTop = _codeBuffer.CursorPositionFromTop - TopOffset;
+            var isItNotFirstLine = TopOffset != 0;
+
+            if (internalCursorPositionFromTop >= bottomEdge)
+                TopOffset++;
+            else if (internalCursorPositionFromTop < topEdge && isItNotFirstLine)
+                TopOffset--;
         }
 
         private void UpdateCursorPosition()
