@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Linq;
 using Domain.Core.CodeBuffers;
 
 namespace DynamicEditor.Core
@@ -7,13 +6,22 @@ namespace DynamicEditor.Core
     internal sealed class CuiRender
     {
         private readonly ICodeBuffer _codeBuffer;
+        private readonly DeveloperMonitor _developerMonitor;
         public int TopOffset { get; set; }
         public int LeftOffset { get; set; }
 
         public CuiRender(ICodeBuffer codeBuffer)
         {
             _codeBuffer = codeBuffer;
+
             TopOffset = 0;
+            LeftOffset = 0;
+
+            _developerMonitor = new DeveloperMonitor(
+                TopOffset,
+                LeftOffset,
+                _codeBuffer.CursorPositionFromTop,
+                _codeBuffer.CursorPositionFromLeft);
         }
 
         public void Render()
@@ -36,7 +44,7 @@ namespace DynamicEditor.Core
 
             FixCursorPosition(width, height);
             UpdateCursorPosition();
-            ShowDevMonitor(); // Dev-only feature
+            ShowDeveloperMonitor(); // Dev-only feature
             EnableCursor();
         }
 
@@ -44,26 +52,23 @@ namespace DynamicEditor.Core
             => Console.Clear();
 
         public void MoveCursorUp()
-        {
-            _codeBuffer.DecCursorPositionFromTop();
-            Render();
-        }
+            => DoCursorMovement(_codeBuffer.DecCursorPositionFromTop);
 
         public void MoveCursorDown()
-        {
-            _codeBuffer.IncCursorPositionFromTop();
-            Render();
-        }
+            => DoCursorMovement(_codeBuffer.IncCursorPositionFromTop);
 
         public void MoveCursorLeft()
         {
-            _codeBuffer.DecCursorPositionFromLeft();
-            Render();
+            DoCursorMovement(_codeBuffer.DecCursorPositionFromLeft);
         }
 
         public void MoveCursorRight()
+            => DoCursorMovement(_codeBuffer.IncCursorPositionFromLeft);
+
+        private void DoCursorMovement(Action movement)
         {
-            _codeBuffer.IncCursorPositionFromLeft();
+            Render();
+            movement?.Invoke();
             Render();
         }
 
@@ -92,28 +97,22 @@ namespace DynamicEditor.Core
             _codeBuffer.CursorPositionFromLeft - LeftOffset,
             _codeBuffer.CursorPositionFromTop - TopOffset);
 
-        private void ShowDevMonitor()
+        private void ShowDeveloperMonitor()
         {
             DisableCursor();
-            Console.CursorTop = 1;
-            Console.ForegroundColor = ConsoleColor.Cyan;
 
-            var monitor = $"Top: [ offset: {TopOffset}; pos: {_codeBuffer.CursorPositionFromTop} ]\n";
-            monitor += $"Left: [ offset: {LeftOffset}; pos: {_codeBuffer.CursorPositionFromLeft} ]";
+            UpdateDeveloperMonitor();
+            _developerMonitor.Show();
 
-            var output = monitor.Split("\n").ToList();
-
-            foreach (var l in output)
-            {
-                Console.CursorLeft = Console.WindowWidth - l.Length - 2;
-
-                Console.Write(l);
-                Console.SetCursorPosition(Console.WindowWidth - 1, Console.CursorTop + 1);
-            }
-
-            Console.ResetColor();
             UpdateCursorPosition();
             EnableCursor();
         }
+
+        private void UpdateDeveloperMonitor()
+            => _developerMonitor.Update(
+                TopOffset,
+                LeftOffset,
+                _codeBuffer.CursorPositionFromTop,
+                _codeBuffer.CursorPositionFromLeft);
     }
 }
