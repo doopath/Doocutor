@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 using Domain.Core.CodeBuffers;
 
 namespace DynamicEditor.Core
@@ -29,18 +31,13 @@ namespace DynamicEditor.Core
             var code = _codeBuffer.CodeWithLineNumbers;
             var width = Console.WindowWidth;
             var height = Console.WindowHeight;
-            var codeLines = code.Split("\n")[TopOffset..];
+            var output = PreapareOutput(width, height, code);
 
             DisableCursor();
             Console.SetCursorPosition(0, 0);
 
-            for (var t = 0; t < height - 1; t++)
-            {
-                var line = codeLines.Length < t + 1 ? new string(' ', width) : codeLines[t];
-                line += line.Length < width ? new string(' ', width - line.Length) : "";
-
-                Console.Write(line);
-            }
+            for (var i = 0; i < height - 1; i++)
+                Console.Write(output[i]);
 
             FixCursorPosition(width, height);
             UpdateCursorPosition();
@@ -58,12 +55,22 @@ namespace DynamicEditor.Core
             => DoCursorMovement(_codeBuffer.IncCursorPositionFromTop);
 
         public void MoveCursorLeft()
-        {
-            DoCursorMovement(_codeBuffer.DecCursorPositionFromLeft);
-        }
+            => DoCursorMovement(_codeBuffer.DecCursorPositionFromLeft);
 
         public void MoveCursorRight()
             => DoCursorMovement(_codeBuffer.IncCursorPositionFromLeft);
+
+        public void ShowRenderTime()
+        {
+            var watch = new System.Diagnostics.Stopwatch();
+
+            watch.Start();
+            Render();
+            watch.Stop();
+
+            Console.Clear();
+            Console.WriteLine($"Time spent: {watch.ElapsedMilliseconds}ms");
+        }
 
         private void DoCursorMovement(Action movement)
         {
@@ -80,8 +87,8 @@ namespace DynamicEditor.Core
 
         private void FixCursorPosition(int width, int height)
         {
-            var bottomEdge = height - 3;
-            var topEdge = 2;
+            var bottomEdge = height - 2;
+            var topEdge = 1;
 
             var internalCursorPositionFromTop = _codeBuffer.CursorPositionFromTop - TopOffset;
             var isItNotFirstLine = TopOffset != 0;
@@ -114,5 +121,24 @@ namespace DynamicEditor.Core
                 LeftOffset,
                 _codeBuffer.CursorPositionFromTop,
                 _codeBuffer.CursorPositionFromLeft);
+
+        private List<string> PreapareOutput(int width, int height, string code)
+        {
+            var output = code
+                .Split("\n")[TopOffset..]
+                .AsParallel()
+                .Select(l => l + (l.Length < width ? new string(' ', width - l.Length) : ""))
+                .ToList();
+
+            if (output.Count < height)
+            {
+                var emptyLinesCount = height - output.Count;
+
+                for (var i = 0; i < emptyLinesCount; i++)
+                    output.Add(new string(' ', width));
+            }
+
+            return output;
+        }
     }
 }

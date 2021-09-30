@@ -105,9 +105,7 @@ namespace Domain.Core
         private void CheckIfLineExistsAt(int lineNumber)
         {
             if (_sourceCode.Count < lineNumber || lineNumber < 1)
-            {
                 throw new OutOfCodeBufferSizeException($"Line number {lineNumber} does not exist!");
-            }
         }
 
 

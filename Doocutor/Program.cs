@@ -1,12 +1,12 @@
 ﻿using System;
-using NLog;
-using Libraries.Core;
-using StaticEditor;
-using DynamicEditor;
+using CommandLine;
 using Domain.Core;
 using Domain.Core.Exceptions;
 using Doocutor.Options;
-using CommandLine;
+using DynamicEditor;
+using Libraries.Core;
+using NLog;
+using StaticEditor;
 
 namespace Doocutor
 {
@@ -22,7 +22,7 @@ namespace Doocutor
                 var editor = SelectEditor(ops.EditorMode);
 
                 Start();
-                
+
                 editor.Run(args);
             }
             catch (InterruptedExecutionException error)
@@ -45,10 +45,11 @@ namespace Doocutor
             "static" => new StaticEditorSetup(),
             _ => throw new ArgumentException($"Cannot run editor in mode={mode}")
         };
-        
+
 
         private static void Start()
-            => OutputColorizing.colorizeForeground(ConsoleColor.Cyan, () => {
+            => OutputColorizing.colorizeForeground(ConsoleColor.Cyan, () =>
+            {
                 Logger.Debug("Start of the program");
                 Info.ShowDoocutorInfo();
             });
