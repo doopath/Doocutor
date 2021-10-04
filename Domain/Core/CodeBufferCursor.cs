@@ -57,12 +57,12 @@ namespace Domain.Core
                 var nextLineNumber = currentLineNumber + 1;
                 var nextLine = _formatter.GroupOutputLineAt(nextLineNumber);
 
-                IncCursorPositionFromTop();
-
                 if (nextLine.Length < currentLine.Length)
-                    SetCursorPositionFromLeftAt(nextLine.Length - 1);
+                    CursorPositionFromLeft = nextLine.Length - 1;
                 else
-                    SetCursorPositionFromLeftAt(currentLine.Length);
+                    CursorPositionFromLeft = currentLine.Length;
+
+                IncCursorPositionFromTop();
             }
             else if (LineLengthOverflowedByCursor(position, currentLine) && IsThisTheLastLine())
             {
