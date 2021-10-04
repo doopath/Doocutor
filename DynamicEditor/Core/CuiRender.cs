@@ -74,9 +74,14 @@ namespace DynamicEditor.Core
 
         private void DoCursorMovement(Action movement)
         {
-            Render();
-            movement?.Invoke();
-            Render();
+            try
+            {
+                movement?.Invoke();
+            }
+            finally
+            {
+                Render();
+            }
         }
 
         private void EnableCursor()
@@ -94,9 +99,15 @@ namespace DynamicEditor.Core
             var isItNotFirstLine = TopOffset != 0;
 
             if (internalCursorPositionFromTop >= bottomEdge)
+            {
                 TopOffset++;
+                Render();
+            }
             else if (internalCursorPositionFromTop < topEdge && isItNotFirstLine)
+            {
                 TopOffset--;
+                Render();
+            }
         }
 
         private void UpdateCursorPosition()
