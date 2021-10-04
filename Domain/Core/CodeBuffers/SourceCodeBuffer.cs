@@ -112,8 +112,8 @@ namespace Domain.Core.CodeBuffers
         public void Write(string line)
         {
             SourceCode.Insert(
-                Cursor.CursorPositionFromTop, CodeFormatter.ModifyLine(
-                    line, CodeFormatter.IndexToLineNumber(Cursor.CursorPositionFromTop)));
+                Cursor.CursorPositionFromTop,
+                CodeFormatter.ModifyLine(line, CodeFormatter.IndexToLineNumber(Cursor.CursorPositionFromTop)));
             Cursor.IncCursorPositionFromTop();
         }
 

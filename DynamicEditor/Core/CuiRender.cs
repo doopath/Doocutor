@@ -31,7 +31,7 @@ namespace DynamicEditor.Core
             var code = _codeBuffer.CodeWithLineNumbers;
             var width = Console.WindowWidth;
             var height = Console.WindowHeight;
-            var output = PreapareOutput(width, height, code);
+            var output = PrepareOutput(width, height, code);
 
             DisableCursor();
             Console.SetCursorPosition(0, 0);
@@ -133,7 +133,7 @@ namespace DynamicEditor.Core
                 _codeBuffer.CursorPositionFromTop,
                 _codeBuffer.CursorPositionFromLeft);
 
-        private List<string> PreapareOutput(int width, int height, string code)
+        private List<string> PrepareOutput(int width, int height, string code)
         {
             var output = code
                 .Split("\n")[TopOffset..]

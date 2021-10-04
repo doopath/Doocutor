@@ -52,7 +52,7 @@ namespace Domain.Core
             var currentLineContent = _formatter.GetLineAt(currentLineNumber);
             var currentLinePrefix = currentLine.Split(currentLineContent)[0];
 
-            if (TargetLinePositionFromLeftIsGreaterThanCurrent(position, currentLine) && NextLineOfTheBufferExists())
+            if (LineLengthOverflowedByCursor(position, currentLine) && NextLineOfTheBufferExists())
             {
                 var nextLineNumber = currentLineNumber + 1;
                 var nextLine = _formatter.GroupOutputLineAt(nextLineNumber);
@@ -64,7 +64,7 @@ namespace Domain.Core
                 else
                     SetCursorPositionFromLeftAt(currentLine.Length);
             }
-            else if (TargetLinePositionFromLeftIsGreaterThanCurrent(position, currentLine) && IsThisTheLastLine())
+            else if (LineLengthOverflowedByCursor(position, currentLine) && IsThisTheLastLine())
             {
                 return;
             }
@@ -111,7 +111,7 @@ namespace Domain.Core
 
         #region Condition simplifications
 
-        private bool TargetLinePositionFromLeftIsGreaterThanCurrent(int position, string currentLine)
+        private bool LineLengthOverflowedByCursor(int position, string currentLine)
             => position > currentLine.Length - 1;
 
         private bool NextLineOfTheBufferExists()

@@ -19,10 +19,16 @@ namespace Domain.Core
 
         public string GetTabulationForLineAt(int lineNumber, string line)
         {
-            int previousTabulationLength =
-                _sourceCode[LineNumberToIndex(lineNumber)]
-                    .Length - _sourceCode[LineNumberToIndex(lineNumber)].Trim().Length;
-            int additionalTabulationLength = LineHasOpeningBrace(_sourceCode[LineNumberToIndex(lineNumber)]) ? 4 : 0;
+
+            int previousTabulationLength = 0;
+            int additionalTabulationLength = 0;
+
+            if (lineNumber != 1)
+            {
+                var previousLine = _sourceCode[LineNumberToIndex(lineNumber) - 1];
+                previousTabulationLength = previousLine.Length - previousLine.Trim().Length;
+                additionalTabulationLength = LineHasOpeningBrace(previousLine) ? 4 : 0;
+            }
 
             additionalTabulationLength -= LineHasClosingBrace(line) ? 4 : 0;
 

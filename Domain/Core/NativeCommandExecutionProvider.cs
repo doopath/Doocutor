@@ -1,13 +1,13 @@
-﻿using Domain.Core.Caches;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using Domain.Core.Caches;
 using Domain.Core.CodeBuffers;
 using Domain.Core.CodeBuffers.CodePointers;
 using Domain.Core.CodeCompilers;
 using Domain.Core.Commands;
 using Domain.Core.Exceptions;
 using Libraries.Core;
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using TextCopy;
 
 namespace Domain.Core
@@ -147,7 +147,7 @@ namespace Domain.Core
         {
             Console.Write("Current cursor position: ");
             OutputColorizing.colorizeForeground(ConsoleColor.Cyan,
-                () => Console.Write(SourceCode.CursorPositionFromLeft + "\n"));
+                () => Console.Write(SourceCode.CursorPositionFromTop + "\n"));
         }
 
         private static void ExecuteAddRefCommand(NativeCommand command)
