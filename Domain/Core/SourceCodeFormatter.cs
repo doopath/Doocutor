@@ -14,6 +14,17 @@ namespace Domain.Core
             _sourceCode = sourceCode;
         }
 
+        public string GroupNewLineOfACurrentOne(string newPart, int cursorPositionFromTop, int cursorPositionFromLeft)
+        {
+            var lineNumber = cursorPositionFromTop + 1;
+            var currentLine = GroupOutputLineAt(lineNumber)[..^1];
+
+            return currentLine[..cursorPositionFromLeft] + newPart + currentLine[cursorPositionFromLeft..];
+        }
+
+        public string SeparateLineFromLineNumber(string line)
+            => string.Join("|", line.Split("|")[1..]);
+
         public string ModifyLine(string line, int lineNumber)
             => GetTabulationForLineAt(lineNumber, line) + line.Trim();
 

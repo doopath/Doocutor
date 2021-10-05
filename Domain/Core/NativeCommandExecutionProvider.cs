@@ -50,6 +50,9 @@ namespace Domain.Core
                     new(":view", ExecuteViewCommand),
                     new(":write", ExecuteWriteCommand),
                     new(":writeAfter", ExecuteWriteAfterCommand),
+                    new(":appendLine", ExecuteAppendLineCommand),
+                    new(":enter", ExecuteEnterCommand),
+                    new(":backspace", ExecuteBackspaceCommand),
                     new(":compile", ExecuteCompileCommand),
                     new(":run", ExecuteRunCommand),
                     new(":using", ExecuteUsingCommand),
@@ -169,5 +172,14 @@ namespace Domain.Core
 
         private static void ExecuteInfoCommand(NativeCommand command)
             => Console.WriteLine(Info.Description);
+
+        private static void ExecuteAppendLineCommand(NativeCommand command)
+            => SourceCode.AppendLine(string.Join(" ", command.Content.Split(" ")[1..]));
+
+        private static void ExecuteEnterCommand(NativeCommand command)
+            => SourceCode.Enter();
+
+        private static void ExecuteBackspaceCommand(NativeCommand command)
+            => SourceCode.Backspace();
     }
 }

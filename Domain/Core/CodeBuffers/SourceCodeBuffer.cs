@@ -1,4 +1,6 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
+using System.Text.RegularExpressions;
 using Domain.Core.CodeBuffers.CodePointers;
 using Domain.Core.Exceptions;
 
@@ -132,6 +134,57 @@ namespace Domain.Core.CodeBuffers
            $"You cannot write line before the line with line number = {lineNumber}!");
         }
 
+        public void AppendLine(string newPart)
+        {
+            if (IsUpperCaseSymbol(newPart))
+                newPart = KeyToUpperCaseSymbol(newPart);
+            else if (IsLowerCaseSymbol(newPart))
+                newPart = newPart.ToLower();
+
+            var lineNumber = CursorPositionFromTop + 1;
+            var newLine = CodeFormatter.SeparateLineFromLineNumber(
+                CodeFormatter.GroupNewLineOfACurrentOne(newPart, CursorPositionFromTop, CursorPositionFromLeft));
+
+            SourceCode[CodeFormatter.LineNumberToIndex(lineNumber)] = newLine;
+            SetCursorPositionFromLeftAt(CursorPositionFromLeft + newPart.Length);
+        }
+
+        public void Enter()
+        {
+            var lineNumber = CodeFormatter.IndexToLineNumber(CursorPositionFromTop);
+            var line = CodeFormatter.GroupOutputLineAt(lineNumber)[..^1];
+
+            SourceCode[CursorPositionFromTop] = CodeFormatter.SeparateLineFromLineNumber(line[..CursorPositionFromLeft]);
+
+            var newLine = line[CursorPositionFromLeft..];
+            var targetIndex = CursorPositionFromTop + 1;
+            newLine = CodeFormatter.GetTabulationForLineAt(CodeFormatter.IndexToLineNumber(targetIndex), newLine) + newLine;
+
+            SourceCode.Insert(targetIndex, newLine);
+            Cursor.IncCursorPositionFromTop();
+        }
+
+        public void Backspace()
+        {
+            var lineNumber = CodeFormatter.IndexToLineNumber(CursorPositionFromTop);
+            var line = CodeFormatter.GroupOutputLineAt(lineNumber)[..^1];
+
+            if (line.Length - CodeFormatter.SeparateLineFromLineNumber(line).Length == CursorPositionFromLeft)
+            {
+                var previousLine = CodeFormatter.GroupOutputLineAt(CursorPositionFromTop)[..^1];
+
+                SourceCode.RemoveAt(CursorPositionFromTop);
+                DecCursorPositionFromTop();
+                SetCursorPositionFromLeftAt(previousLine.Length);
+            }
+            else
+            {
+                SourceCode[CursorPositionFromTop] = CodeFormatter.SeparateLineFromLineNumber(
+                    line.Remove(CursorPositionFromLeft - 1, 1));
+                DecCursorPositionFromLeft();
+            }
+        }
+
         private void CheckIfLineExistsAt(int lineNumber)
         {
             if (SourceCode.Count < lineNumber || lineNumber < 1)
@@ -139,6 +192,18 @@ namespace Domain.Core.CodeBuffers
                 throw new OutOfCodeBufferSizeException($"Line number {lineNumber} does not exist!");
             }
         }
+
+        private bool IsOneSymbol(string key)
+            => IsUpperCaseSymbol(key) || IsLowerCaseSymbol(key);
+
+        private bool IsUpperCaseSymbol(string key)
+            => Regex.IsMatch(key, @"Shift\+[\w]", RegexOptions.IgnoreCase) || Console.CapsLock;
+
+        private bool IsLowerCaseSymbol(string key)
+            => Regex.IsMatch(key, "[A-Z]", RegexOptions.IgnoreCase) && !Console.CapsLock;
+
+        private string KeyToUpperCaseSymbol(string key)
+            => key.Replace("Shift+", "").ToUpper();
 
         private void SetPointerAtLastLineIfNecessary()
             => Cursor.CursorPositionFromTop = Cursor.CursorPositionFromTop <= SourceCode.Count
@@ -166,7 +231,8 @@ namespace Domain.Core.CodeBuffers
             "        {",
             "        }",
             "    }",
-            "}"
+            "}",
+            ""
         });
 
         public const int InitialCursorPositionFromTop = 6;
