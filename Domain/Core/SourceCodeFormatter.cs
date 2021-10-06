@@ -7,11 +7,11 @@ namespace Domain.Core
 {
     public sealed class SourceCodeFormatter
     {
-        private readonly List<string> _sourceCode;
+        public readonly List<string> SourceCode;
 
         public SourceCodeFormatter(List<string> sourceCode)
         {
-            _sourceCode = sourceCode;
+            SourceCode = sourceCode;
         }
 
         public string GroupNewLineOfACurrentOne(string newPart, int cursorPositionFromTop, int cursorPositionFromLeft)
@@ -36,7 +36,7 @@ namespace Domain.Core
 
             if (lineNumber != 1)
             {
-                var previousLine = _sourceCode[LineNumberToIndex(lineNumber) - 1];
+                var previousLine = SourceCode[LineNumberToIndex(lineNumber) - 1];
                 previousTabulationLength = previousLine.Length - previousLine.Trim().Length;
                 additionalTabulationLength = LineHasOpeningBrace(previousLine) ? 4 : 0;
             }
@@ -83,22 +83,22 @@ namespace Domain.Core
         public string GetLineAt(int lineNumber)
         {
             CheckIfLineExistsAt(lineNumber);
-            return _sourceCode.ToArray()[LineNumberToIndex(lineNumber)];
+            return SourceCode.ToArray()[LineNumberToIndex(lineNumber)];
         }
 
         public string GetSourceCodeWithLineNumbers()
-            => string.Join("", _sourceCode.Select((_, i) => GroupOutputLineAt(IndexToLineNumber(i))).ToArray());
+            => string.Join("", SourceCode.Select((_, i) => GroupOutputLineAt(IndexToLineNumber(i))).ToArray());
 
         public string GroupOutputLineAt(int lineNumber)
-            => $"  {lineNumber}{GetOutputSpacesForLineAt(lineNumber)}|{_sourceCode[LineNumberToIndex(lineNumber)]}\n";
+            => $"  {lineNumber}{GetOutputSpacesForLineAt(lineNumber)}|{SourceCode[LineNumberToIndex(lineNumber)]}\n";
 
         public string GetOutputSpacesForLineAt(int lineNumber)
             => ' ' + new string(' ', GetTimesOfSpacesRepeationForLineAt(lineNumber));
 
         public int GetTimesOfSpacesRepeationForLineAt(int lineNumber)
-            => _sourceCode.Count.ToString().Length - lineNumber.ToString().Length;
+            => SourceCode.Count.ToString().Length - lineNumber.ToString().Length;
 
-        public string GetSourceCode() => string.Join("", _sourceCode.Select(l => l + "\n"));
+        public string GetSourceCode() => string.Join("", SourceCode.Select(l => l + "\n"));
 
         public int IndexToLineNumber(int index) => index + 1;
 
@@ -106,7 +106,7 @@ namespace Domain.Core
 
         private void CheckIfLineExistsAt(int lineNumber)
         {
-            if (_sourceCode.Count < lineNumber || lineNumber < 1)
+            if (SourceCode.Count < lineNumber || lineNumber < 1)
             {
                 throw new OutOfCodeBufferSizeException($"Line number {lineNumber} does not exist!");
             }

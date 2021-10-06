@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using Domain.Core.Exceptions;
+using Microsoft.CodeAnalysis.Operations;
 
 namespace Domain.Core
 {
@@ -37,12 +38,14 @@ namespace Domain.Core
             var targetLineContent = _formatter.GetLineAt(targetLineNumber);
             var targetLinePrefix = targetLine.Split(targetLineContent)[0];
 
-            if (CursorPositionFromLeft >= targetLine.Length)
-                SetCursorPositionFromLeftAt(targetLine.Length - 1);
-            else if (CursorPositionFromLeft == currentLinePrefix.Length - 1)
-                SetCursorPositionFromLeftAt(targetLinePrefix.Length - 1);
-
             CursorPositionFromTop = position;
+
+            if (CursorPositionFromLeft == currentLinePrefix.Length - 1 && targetLineContent != "")
+                CursorPositionFromLeft = targetLinePrefix.Length;
+            else if (targetLineContent == "")
+                CursorPositionFromLeft = targetLinePrefix.Length - 1;
+            else if (CursorPositionFromLeft >= targetLine.Length)
+                CursorPositionFromLeft = targetLine.Length - 1;
         }
 
         public void SetCursorPositionFromLeftAt(int position)
@@ -60,9 +63,9 @@ namespace Domain.Core
                 if (nextLine.Length < currentLine.Length)
                     CursorPositionFromLeft = nextLine.Length - 1;
                 else
-                    CursorPositionFromLeft = currentLine.Length;
+                    CursorPositionFromLeft = currentLine.Length - 1;
 
-                IncCursorPositionFromTop();
+                CursorPositionFromTop++;
             }
             else if (LineLengthOverflowedByCursor(position, currentLine) && IsThisTheLastLine())
             {
@@ -72,8 +75,8 @@ namespace Domain.Core
             {
                 var previousLine = _formatter.GroupOutputLineAt(CursorPositionFromTop);
 
-                DecCursorPositionFromTop();
-                SetCursorPositionFromLeftAt(previousLine.Length - 1);
+                CursorPositionFromTop--;
+                CursorPositionFromLeft = previousLine.Length - 1;
             }
             else if (IsThisAFirstSymbolInALine(position, currentLinePrefix) && IsThisAFirstLine())
             {

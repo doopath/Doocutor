@@ -16,24 +16,12 @@ namespace Domain.Core.CodeBuffers
             InitialSourceCode.InitialCursorPositionFromLeft,
             InitialSourceCode.InitialCursorPositionFromTop);
 
-        /// <summary>
-        /// Count of lines in the SourceCodeBuffer.
-        /// </summary>
         public int BufferSize => SourceCode.Count;
 
-        /// <summary>
-        /// Presents an offset or a count of "\n" symbols from top side.
-        /// </summary>
         public int CursorPositionFromTop => Cursor.CursorPositionFromTop;
 
-        /// <summary>
-        /// Presents an offset or a count of whitespaces from left side.
-        /// </summary>
         public int CursorPositionFromLeft => Cursor.CursorPositionFromLeft;
 
-        /// <summary>
-        /// A current line of the buffer.
-        /// </summary>
         public string CurrentLine => GetCurrentLine();
 
         public string CurrentLinePrefix =>
@@ -47,12 +35,12 @@ namespace Domain.Core.CodeBuffers
         public string CodeWithLineNumbers => CodeFormatter.GetSourceCodeWithLineNumbers();
 
         /// <summary>
-        /// Get pure code. Without line numbers and other stuff.
+        /// Get bare code. Without line numbers and '\n' symbols.
         /// </summary>
         public string Code => CodeFormatter.GetSourceCode();
 
         /// <summary>
-        /// Get pure code split by line breaks.
+        /// Get bare code split by line ends.
         /// </summary>
         public string[] Lines => SourceCode.ToArray();
 
@@ -61,12 +49,6 @@ namespace Domain.Core.CodeBuffers
         public string[] GetCodeBlock(ICodeBlockPointer pointer)
             => Lines[CodeFormatter.LineNumberToIndex(pointer.StartLineNumber)..CodeFormatter.LineNumberToIndex(pointer.EndLineNumber)];
 
-        /// <summary>
-        /// Remove a few lines from s to e. Please, pay attention that the last
-        /// line in an interval will not be deleted. So, if you set [1, 2, 3, 4] lines
-        /// then only 1st, 2nd and 3rd lines will be deleted.
-        /// </summary>
-        /// <param name="pointer">A pointer that indicate the interval of lines.</param>
         public void RemoveCodeBlock(ICodeBlockPointer pointer)
         {
             CheckIfLineExistsAt(CodeFormatter.LineNumberToIndex(pointer.EndLineNumber - 1));
@@ -168,20 +150,29 @@ namespace Domain.Core.CodeBuffers
         {
             var lineNumber = CodeFormatter.IndexToLineNumber(CursorPositionFromTop);
             var line = CodeFormatter.GroupOutputLineAt(lineNumber)[..^1];
+            var lineContent = CodeFormatter.SeparateLineFromLineNumber(line);
 
-            if (line.Length - CodeFormatter.SeparateLineFromLineNumber(line).Length == CursorPositionFromLeft)
+            var isThisAFirstSymbol = line.Length - lineContent.Length == CursorPositionFromLeft;
+            var isThisAFirstLine = CursorPositionFromTop == 0;
+            var isLineEmpty = lineContent == "";
+            var isThisALastLine = CursorPositionFromTop == SourceCode.Count - 1;
+
+            if (isThisAFirstSymbol && !isThisAFirstLine)
             {
                 var previousLine = CodeFormatter.GroupOutputLineAt(CursorPositionFromTop)[..^1];
+                var previousLineContent = CodeFormatter.GetLineAt(CodeFormatter.IndexToLineNumber(CursorPositionFromTop));
 
-                SourceCode.RemoveAt(CursorPositionFromTop);
                 DecCursorPositionFromTop();
-                SetCursorPositionFromLeftAt(previousLine.Length);
+                SourceCode[CursorPositionFromTop] += lineContent;
+                SourceCode.RemoveAt(CodeFormatter.IndexToLineNumber(CursorPositionFromTop));
+                SetCursorPositionFromLeftAt(previousLine.Length - (previousLineContent == "" ? 0 : 1));
             }
-            else
+            else if ((!isLineEmpty && !isThisAFirstLine) || (isThisAFirstLine && !isThisAFirstSymbol))
             {
-                SourceCode[CursorPositionFromTop] = CodeFormatter.SeparateLineFromLineNumber(
-                    line.Remove(CursorPositionFromLeft - 1, 1));
                 DecCursorPositionFromLeft();
+
+                SourceCode[CursorPositionFromTop] = CodeFormatter.SeparateLineFromLineNumber(
+                    line.Remove(CursorPositionFromLeft, 1));
             }
         }
 
@@ -232,7 +223,6 @@ namespace Domain.Core.CodeBuffers
             "        }",
             "    }",
             "}",
-            ""
         });
 
         public const int InitialCursorPositionFromTop = 6;

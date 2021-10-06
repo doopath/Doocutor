@@ -23,7 +23,7 @@ namespace Tests.Core
                 .SetEditorCommandExecutor(new MockEditorExecutor())
                 .Build();
         }
-        
+
         [TearDown]
         public void TearDown() => Checkbox.TurnOff();
 
@@ -46,7 +46,7 @@ namespace Tests.Core
     {
         public void Execute(NativeCommand command) => Checkbox.TurnOn();
     }
-    
+
     internal class MockEditorExecutor : ICommandExecutor<EditorCommand>
     {
         public void Execute(EditorCommand command) => Checkbox.TurnOn();
