@@ -23,6 +23,7 @@ namespace Domain.Core
         {
             var lineNumber = _formatter.IndexToLineNumber(CursorPositionFromTop);
             var line = _formatter.GroupOutputLineAt(lineNumber)[..^1];
+            var lineContent = _formatter.GetLineAt(lineNumber);
 
             _code[CursorPositionFromTop] = _formatter.SeparateLineFromLineNumber(line[..CursorPositionFromLeft]);
 

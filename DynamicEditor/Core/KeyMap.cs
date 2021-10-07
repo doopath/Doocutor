@@ -1,5 +1,4 @@
 using System.Collections.Generic;
-using Microsoft.FSharp.Collections;
 
 namespace DynamicEditor.Core
 {

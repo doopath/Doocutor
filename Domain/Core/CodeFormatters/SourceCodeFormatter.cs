@@ -43,7 +43,9 @@ namespace Domain.Core.CodeFormatters
 
             additionalTabulationLength -= LineHasClosingBrace(line) ? 4 : 0;
 
-            return new string(' ', previousTabulationLength + additionalTabulationLength);
+            var countOfTabs = previousTabulationLength + additionalTabulationLength;
+
+            return countOfTabs > 0 ? new string(' ', countOfTabs) : "";
         }
 
         public string GetSourceCodeWithLineNumbers()
@@ -62,6 +64,23 @@ namespace Domain.Core.CodeFormatters
 
         public int LineNumberToIndex(int lineNumber) => lineNumber - 1;
 
+        public int GetPrefixLength(int currentLineNumber)
+        {
+            var lastLineNumber = SourceCode.Count;
+            var lastLine = GroupOutputLineAt(lastLineNumber)[..^1];
+            var lastLineContent = SeparateLineFromLineNumber(lastLine);
+            var currentLine = GroupOutputLineAt(currentLineNumber);
+            var currentLineContent = SeparateLineFromLineNumber(currentLine);
+
+            return lastLine.Length - lastLineContent.Length + (currentLineContent == "" ? 1 : 0);
+        }
+
+        public string ModifyLine(string line, int lineNumber)
+            => GetTabulationForLineAt(lineNumber, line) + line.Trim();
+
+        private bool IsClosingBrace(string line)
+            => line.Equals("}");
+
         private bool LineHasOpeningBrace(string line)
         {
             RemoveAllButBracesIn(ref line);
@@ -77,12 +96,6 @@ namespace Domain.Core.CodeFormatters
 
             return IsClosingBrace(line);
         }
-
-        public string ModifyLine(string line, int lineNumber)
-            => GetTabulationForLineAt(lineNumber, line) + line.Trim();
-
-        private bool IsClosingBrace(string line)
-            => line.Equals("}");
 
         private bool IsOpeningBrace(string line)
             => line.Equals("{");

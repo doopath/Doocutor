@@ -69,7 +69,8 @@ namespace Domain.Core
                     new(":saveCode", ExecuteSaveCodeCommand),
                     new(":saveAsm", ExecuteSaveAsmCommand),
                     new(":help", ExecuteHelpCommand),
-                    new(":info", ExecuteInfoCommand)
+                    new(":info", ExecuteInfoCommand),
+                    new(":doNothing", ExecuteDoNothingCommand)
                 }.ToList()
             );
 
@@ -181,5 +182,7 @@ namespace Domain.Core
 
         private static void ExecuteBackspaceCommand(NativeCommand command)
             => SourceCode.Backspace();
+
+        private static void ExecuteDoNothingCommand(NativeCommand command) { }
     }
 }

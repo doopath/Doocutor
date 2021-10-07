@@ -25,35 +25,31 @@ namespace Domain.Core.Cursors
 
         public void SetCursorPositionFromTopAt(int position)
         {
-            CheckIfLineExistsAt(position + 1);
+            CheckIfLineExistsAt(_formatter.IndexToLineNumber(position));
 
-            var targetLineNumber = position + 1;
-            var currentLineNumber = CursorPositionFromTop + 1;
-
-            var currentLine = _formatter.GroupOutputLineAt(currentLineNumber);
-            var currentLineContent = _formatter.GetLineAt(currentLineNumber);
-            var currentLinePrefix = currentLine.Split(currentLineContent)[0];
-
+            var currentLineNumber = _formatter.IndexToLineNumber(CursorPositionFromTop);
+            var prefixLength = _formatter.GetPrefixLength(currentLineNumber);
+            var targetLineNumber = _formatter.IndexToLineNumber(position);
             var targetLine = _formatter.GroupOutputLineAt(targetLineNumber);
             var targetLineContent = _formatter.GetLineAt(targetLineNumber);
-            var targetLinePrefix = targetLine.Split(targetLineContent)[0];
 
             CursorPositionFromTop = position;
 
-            if (CursorPositionFromLeft == currentLinePrefix.Length - 1 && targetLineContent != "")
-                CursorPositionFromLeft = targetLinePrefix.Length;
+            if (CursorPositionFromLeft == prefixLength && targetLineContent != "")
+                CursorPositionFromLeft = prefixLength;
             else if (targetLineContent == "")
-                CursorPositionFromLeft = targetLinePrefix.Length - 1;
+                CursorPositionFromLeft = prefixLength;
             else if (CursorPositionFromLeft >= targetLine.Length)
                 CursorPositionFromLeft = targetLine.Length - 1;
+            else if (CursorPositionFromLeft < prefixLength)
+                CursorPositionFromLeft = prefixLength;
         }
 
         public void SetCursorPositionFromLeftAt(int position)
         {
-            var currentLineNumber = CursorPositionFromTop + 1;
+            var currentLineNumber = _formatter.IndexToLineNumber(CursorPositionFromTop);
             var currentLine = _formatter.GroupOutputLineAt(currentLineNumber);
-            var currentLineContent = _formatter.GetLineAt(currentLineNumber);
-            var currentLinePrefix = currentLine.Split(currentLineContent)[0];
+            var prefixLength = _formatter.GetPrefixLength(currentLineNumber);
 
             if (LineLengthOverflowedByCursor(position, currentLine) && NextLineOfTheBufferExists())
             {
@@ -71,14 +67,14 @@ namespace Domain.Core.Cursors
             {
                 return;
             }
-            else if (IsThisAFirstSymbolInALine(position, currentLinePrefix) && IsThisNotAFirstLine())
+            else if (position <= prefixLength - 1 && IsThisNotAFirstLine())
             {
                 var previousLine = _formatter.GroupOutputLineAt(CursorPositionFromTop);
 
                 CursorPositionFromTop--;
                 CursorPositionFromLeft = previousLine.Length - 1;
             }
-            else if (IsThisAFirstSymbolInALine(position, currentLinePrefix) && IsThisAFirstLine())
+            else if (position <= prefixLength - 1 && IsThisAFirstLine())
             {
                 return;
             }
@@ -122,9 +118,6 @@ namespace Domain.Core.Cursors
 
         private bool IsThisTheLastLine()
             => CursorPositionFromTop == _sourceCode.Count - 1;
-
-        private bool IsThisAFirstSymbolInALine(int position, string currentLinePrefix)
-            => position <= currentLinePrefix.Length - 1;
 
         private bool IsThisNotAFirstLine()
             => CursorPositionFromTop > 0;

@@ -15,5 +15,6 @@ namespace Domain.Core.CodeFormatters
         string GetSourceCode();
         int IndexToLineNumber(int index);
         int LineNumberToIndex(int lineNumber);
+        int GetPrefixLength(int currentLineNumber);
     }
 }
