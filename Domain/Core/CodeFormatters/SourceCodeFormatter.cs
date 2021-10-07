@@ -3,11 +3,11 @@ using System.Linq;
 using System.Text.RegularExpressions;
 using Domain.Core.Exceptions;
 
-namespace Domain.Core
+namespace Domain.Core.CodeFormatters
 {
-    public sealed class SourceCodeFormatter
+    public class SourceCodeFormatter : ICodeFormatter
     {
-        public readonly List<string> SourceCode;
+        public List<string> SourceCode { get; }
 
         public SourceCodeFormatter(List<string> sourceCode)
         {
@@ -22,11 +22,11 @@ namespace Domain.Core
             return currentLine[..cursorPositionFromLeft] + newPart + currentLine[cursorPositionFromLeft..];
         }
 
+        public string GroupOutputLineAt(int lineNumber)
+            => $"  {lineNumber}{GetOutputSpacesForLineAt(lineNumber)}|{SourceCode[LineNumberToIndex(lineNumber)]}\n";
+
         public string SeparateLineFromLineNumber(string line)
             => string.Join("|", line.Split("|")[1..]);
-
-        public string ModifyLine(string line, int lineNumber)
-            => GetTabulationForLineAt(lineNumber, line) + line.Trim();
 
         public string GetTabulationForLineAt(int lineNumber, string line)
         {
@@ -46,7 +46,23 @@ namespace Domain.Core
             return new string(' ', previousTabulationLength + additionalTabulationLength);
         }
 
-        public bool LineHasOpeningBrace(string line)
+        public string GetSourceCodeWithLineNumbers()
+            => string.Join("", SourceCode.Select((_, i) => GroupOutputLineAt(IndexToLineNumber(i))).ToArray());
+
+        public string GetLineAt(int lineNumber)
+        {
+            CheckIfLineExistsAt(lineNumber);
+            return SourceCode.ToArray()[LineNumberToIndex(lineNumber)];
+        }
+
+        public string GetSourceCode()
+            => string.Join("", SourceCode.Select(l => l + "\n"));
+
+        public int IndexToLineNumber(int index) => index + 1;
+
+        public int LineNumberToIndex(int lineNumber) => lineNumber - 1;
+
+        private bool LineHasOpeningBrace(string line)
         {
             RemoveAllButBracesIn(ref line);
             RemoveAllCoupleBracesIn(ref line);
@@ -54,7 +70,7 @@ namespace Domain.Core
             return IsOpeningBrace(line);
         }
 
-        public bool LineHasClosingBrace(string line)
+        private bool LineHasClosingBrace(string line)
         {
             RemoveAllButBracesIn(ref line);
             RemoveAllCoupleBracesIn(ref line);
@@ -62,47 +78,35 @@ namespace Domain.Core
             return IsClosingBrace(line);
         }
 
-        public bool IsClosingBrace(string line) => line.Equals("}");
+        public string ModifyLine(string line, int lineNumber)
+            => GetTabulationForLineAt(lineNumber, line) + line.Trim();
 
-        public bool IsOpeningBrace(string line) => line.Equals("{");
+        private bool IsClosingBrace(string line)
+            => line.Equals("}");
 
-        public string RemoveAllButBracesIn(ref string line)
+        private bool IsOpeningBrace(string line)
+            => line.Equals("{");
+
+        private string RemoveAllButBracesIn(ref string line)
             => line = Regex.Replace(line, @"[^{}]", string.Empty);
 
-        public void RemoveAllCoupleBracesIn(ref string line)
+        private void RemoveAllCoupleBracesIn(ref string line)
         {
             while (LineContainsBraces(line))
                 line = RemoveCoupleBracesIn(ref line);
         }
 
-        public string RemoveCoupleBracesIn(ref string line)
+        private string RemoveCoupleBracesIn(ref string line)
             => line = line.Replace(@"{}", string.Empty);
 
-        public bool LineContainsBraces(string line)
+        private bool LineContainsBraces(string line)
             => line.Contains("{") && line.Contains(("}"));
-        public string GetLineAt(int lineNumber)
-        {
-            CheckIfLineExistsAt(lineNumber);
-            return SourceCode.ToArray()[LineNumberToIndex(lineNumber)];
-        }
 
-        public string GetSourceCodeWithLineNumbers()
-            => string.Join("", SourceCode.Select((_, i) => GroupOutputLineAt(IndexToLineNumber(i))).ToArray());
-
-        public string GroupOutputLineAt(int lineNumber)
-            => $"  {lineNumber}{GetOutputSpacesForLineAt(lineNumber)}|{SourceCode[LineNumberToIndex(lineNumber)]}\n";
-
-        public string GetOutputSpacesForLineAt(int lineNumber)
+        private string GetOutputSpacesForLineAt(int lineNumber)
             => ' ' + new string(' ', GetTimesOfSpacesRepeationForLineAt(lineNumber));
 
-        public int GetTimesOfSpacesRepeationForLineAt(int lineNumber)
+        private int GetTimesOfSpacesRepeationForLineAt(int lineNumber)
             => SourceCode.Count.ToString().Length - lineNumber.ToString().Length;
-
-        public string GetSourceCode() => string.Join("", SourceCode.Select(l => l + "\n"));
-
-        public int IndexToLineNumber(int index) => index + 1;
-
-        public int LineNumberToIndex(int lineNumber) => lineNumber - 1;
 
         private void CheckIfLineExistsAt(int lineNumber)
         {

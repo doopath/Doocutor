@@ -2,6 +2,8 @@
 using System.Collections.Generic;
 using System.Text.RegularExpressions;
 using Domain.Core.CodeBuffers.CodePointers;
+using Domain.Core.CodeFormatters;
+using Domain.Core.Cursors;
 using Domain.Core.Exceptions;
 
 namespace Domain.Core.CodeBuffers
@@ -9,12 +11,14 @@ namespace Domain.Core.CodeBuffers
     public class SourceCodeBuffer : ICodeBuffer
     {
         private static readonly List<string> SourceCode = InitialSourceCode.GetInitialSourceCode();
-        private static readonly SourceCodeFormatter CodeFormatter = new(SourceCode);
-        private static readonly CodeBufferCursor Cursor = new(
+        private static readonly ICodeFormatter CodeFormatter = new SourceCodeFormatter(SourceCode);
+        private static readonly ICursor Cursor = new CodeBufferCursor(
             SourceCode,
             CodeFormatter,
             InitialSourceCode.InitialCursorPositionFromLeft,
             InitialSourceCode.InitialCursorPositionFromTop);
+        private static readonly KeyboardCommandsProvider KeyboardCommandsProvider =
+            new(SourceCode, CodeFormatter, Cursor);
 
         public int BufferSize => SourceCode.Count;
 
@@ -123,7 +127,7 @@ namespace Domain.Core.CodeBuffers
             else if (IsLowerCaseSymbol(newPart))
                 newPart = newPart.ToLower();
 
-            var lineNumber = CursorPositionFromTop + 1;
+            var lineNumber = CodeFormatter.IndexToLineNumber(CursorPositionFromTop);
             var newLine = CodeFormatter.SeparateLineFromLineNumber(
                 CodeFormatter.GroupNewLineOfACurrentOne(newPart, CursorPositionFromTop, CursorPositionFromLeft));
 
@@ -132,49 +136,10 @@ namespace Domain.Core.CodeBuffers
         }
 
         public void Enter()
-        {
-            var lineNumber = CodeFormatter.IndexToLineNumber(CursorPositionFromTop);
-            var line = CodeFormatter.GroupOutputLineAt(lineNumber)[..^1];
-
-            SourceCode[CursorPositionFromTop] = CodeFormatter.SeparateLineFromLineNumber(line[..CursorPositionFromLeft]);
-
-            var newLine = line[CursorPositionFromLeft..];
-            var targetIndex = CursorPositionFromTop + 1;
-            newLine = CodeFormatter.GetTabulationForLineAt(CodeFormatter.IndexToLineNumber(targetIndex), newLine) + newLine;
-
-            SourceCode.Insert(targetIndex, newLine);
-            Cursor.IncCursorPositionFromTop();
-        }
+            => KeyboardCommandsProvider.Enter();
 
         public void Backspace()
-        {
-            var lineNumber = CodeFormatter.IndexToLineNumber(CursorPositionFromTop);
-            var line = CodeFormatter.GroupOutputLineAt(lineNumber)[..^1];
-            var lineContent = CodeFormatter.SeparateLineFromLineNumber(line);
-
-            var isThisAFirstSymbol = line.Length - lineContent.Length == CursorPositionFromLeft;
-            var isThisAFirstLine = CursorPositionFromTop == 0;
-            var isLineEmpty = lineContent == "";
-            var isThisALastLine = CursorPositionFromTop == SourceCode.Count - 1;
-
-            if (isThisAFirstSymbol && !isThisAFirstLine)
-            {
-                var previousLine = CodeFormatter.GroupOutputLineAt(CursorPositionFromTop)[..^1];
-                var previousLineContent = CodeFormatter.GetLineAt(CodeFormatter.IndexToLineNumber(CursorPositionFromTop));
-
-                DecCursorPositionFromTop();
-                SourceCode[CursorPositionFromTop] += lineContent;
-                SourceCode.RemoveAt(CodeFormatter.IndexToLineNumber(CursorPositionFromTop));
-                SetCursorPositionFromLeftAt(previousLine.Length - (previousLineContent == "" ? 0 : 1));
-            }
-            else if ((!isLineEmpty && !isThisAFirstLine) || (isThisAFirstLine && !isThisAFirstSymbol))
-            {
-                DecCursorPositionFromLeft();
-
-                SourceCode[CursorPositionFromTop] = CodeFormatter.SeparateLineFromLineNumber(
-                    line.Remove(CursorPositionFromLeft, 1));
-            }
-        }
+            => KeyboardCommandsProvider.Backspace();
 
         private void CheckIfLineExistsAt(int lineNumber)
         {
@@ -183,9 +148,6 @@ namespace Domain.Core.CodeBuffers
                 throw new OutOfCodeBufferSizeException($"Line number {lineNumber} does not exist!");
             }
         }
-
-        private bool IsOneSymbol(string key)
-            => IsUpperCaseSymbol(key) || IsLowerCaseSymbol(key);
 
         private bool IsUpperCaseSymbol(string key)
             => Regex.IsMatch(key, @"Shift\+[\w]", RegexOptions.IgnoreCase) || Console.CapsLock;

@@ -1,19 +1,19 @@
 ﻿using System.Collections.Generic;
+using Domain.Core.CodeFormatters;
 using Domain.Core.Exceptions;
-using Microsoft.CodeAnalysis.Operations;
 
-namespace Domain.Core
+namespace Domain.Core.Cursors
 {
-    public sealed class CodeBufferCursor
+    public sealed class CodeBufferCursor : ICursor
     {
         private readonly List<string> _sourceCode;
-        private readonly SourceCodeFormatter _formatter;
+        private readonly ICodeFormatter _formatter;
         public int CursorPositionFromLeft { get; set; }
         public int CursorPositionFromTop { get; set; }
 
         public CodeBufferCursor(
             List<string> sourceCode,
-            SourceCodeFormatter formatter,
+            ICodeFormatter formatter,
             int initialPositionFromLeft,
             int initialPositionFromTop)
         {
