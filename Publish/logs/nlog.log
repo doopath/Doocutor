@@ -1,0 +1,26 @@
+2021-10-04 19:53:59.5345 Info Message Template Auto Format enabled
+2021-10-04 19:53:59.6012 Info Adding target FileTarget(Name=logfile)
+2021-10-04 19:53:59.6012 Info Adding target ConsoleTarget(Name=logconsole)
+2021-10-04 19:53:59.6379 Info Validating config: TargetNames=logfile, logconsole, ConfigItems=29, FilePath=C:\Users\doopa\Files\Coderpool\CSharp\Doocutor\Publish\NLog.config
+2021-10-04 19:53:59.6706 Info Configuration initialized.
+2021-10-04 19:53:59.6706 Info NLog, Version=4.0.0.0, Culture=neutral, PublicKeyToken=5120e14c03d0593c. File version: 4.7.11.13229. Product version: 4.7.11+33ed3a9f86277651e93ddf39cda64a046a06778b. GlobalAssemblyCache: False
+2021-10-07 17:09:16.5306 Info Message Template Auto Format enabled
+2021-10-07 17:09:16.5794 Info Adding target FileTarget(Name=logfile)
+2021-10-07 17:09:16.5794 Info Adding target ConsoleTarget(Name=logconsole)
+2021-10-07 17:09:16.6045 Info Validating config: TargetNames=logfile, logconsole, ConfigItems=29, FilePath=C:\Users\doopa\Files\Coderpool\CSharp\Doocutor\Publish\NLog.config
+2021-10-07 17:09:16.6045 Info Configuration initialized.
+2021-10-07 17:09:16.6188 Info NLog, Version=4.0.0.0, Culture=neutral, PublicKeyToken=5120e14c03d0593c. File version: 4.7.11.13229. Product version: 4.7.11+33ed3a9f86277651e93ddf39cda64a046a06778b. GlobalAssemblyCache: False
+2021-10-07 17:09:18.5353 Info AppDomain Shutting down. Logger closing...
+2021-10-07 17:09:18.5547 Info Logger has been shut down.
+2021-10-07 17:09:28.9823 Info Message Template Auto Format enabled
+2021-10-07 17:09:29.0221 Info Adding target FileTarget(Name=logfile)
+2021-10-07 17:09:29.0221 Info Adding target ConsoleTarget(Name=logconsole)
+2021-10-07 17:09:29.0462 Info Validating config: TargetNames=logfile, logconsole, ConfigItems=29, FilePath=C:\Users\doopa\Files\Coderpool\CSharp\Doocutor\Publish\NLog.config
+2021-10-07 17:09:29.0581 Info Configuration initialized.
+2021-10-07 17:09:29.0581 Info NLog, Version=4.0.0.0, Culture=neutral, PublicKeyToken=5120e14c03d0593c. File version: 4.7.11.13229. Product version: 4.7.11+33ed3a9f86277651e93ddf39cda64a046a06778b. GlobalAssemblyCache: False
+2021-10-07 17:10:25.8111 Info Message Template Auto Format enabled
+2021-10-07 17:10:25.8503 Info Adding target FileTarget(Name=logfile)
+2021-10-07 17:10:25.8503 Info Adding target ConsoleTarget(Name=logconsole)
+2021-10-07 17:10:25.8705 Info Validating config: TargetNames=logfile, logconsole, ConfigItems=29, FilePath=C:\Users\doopa\Files\Coderpool\CSharp\Doocutor\Publish\NLog.config
+2021-10-07 17:10:25.8705 Info Configuration initialized.
+2021-10-07 17:10:25.8849 Info NLog, Version=4.0.0.0, Culture=neutral, PublicKeyToken=5120e14c03d0593c. File version: 4.7.11.13229. Product version: 4.7.11+33ed3a9f86277651e93ddf39cda64a046a06778b. GlobalAssemblyCache: False
