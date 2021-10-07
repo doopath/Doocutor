@@ -8,11 +8,20 @@ Doocutor/Properties
 Doocutor/bin
 Tests/bin
 Libraries/bin
+DynamicEditor/bin
+StaticEditor/bin
+Domain/bin
+
+# Publish
+Publish
 
 # obj
 Doocutor/obj
 Tests/obj
 Libraries/obj
+DynamicEditor/obj
+StaticEditor/obj
+Domain/obj
 
 # IDES
 .idea
@@ -22,8 +31,11 @@ Libraries/obj
 # Local deploy script. Helps me update my local version of doocutor.
 install_local.py
 
-# Built version of doocutor (aka the binary branch).
+# Built version of Doocutor (aka the binary branch).
 Build
+
+# SN keys for Doocutor
+Doocutor.PublicKey
 
 # Wow, what is these?
 .fake

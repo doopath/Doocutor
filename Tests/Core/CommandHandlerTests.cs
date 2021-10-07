@@ -1,10 +1,10 @@
 using System;
-using Doocutor.Core;
-using Doocutor.Core.CommandHandlers;
-using Doocutor.Core.Commands;
-using Doocutor.Core.Executors;
-using Doocutor.Tests;
+using Domain.Core.CommandHandlers;
+using Domain.Core.CommandRecognizers;
+using Domain.Core.Commands;
+using Domain.Core.Executors;
 using NUnit.Framework;
+using StaticEditor.Core.CommandHandlers;
 
 namespace Tests.Core
 {
@@ -17,13 +17,13 @@ namespace Tests.Core
         public void Setup()
         {
             Checkbox.TurnOff();
-            _testCommandHandler = CommandHandler.GetBuilder()
+            _testCommandHandler = StaticCommandHandler.GetBuilder()
                 .SetCommandRecognizer(new MockCommandRecognizer())
                 .SetNativeCommandExecutor(new MockNativeExecutor())
                 .SetEditorCommandExecutor(new MockEditorExecutor())
                 .Build();
         }
-        
+
         [TearDown]
         public void TearDown() => Checkbox.TurnOff();
 
@@ -46,7 +46,7 @@ namespace Tests.Core
     {
         public void Execute(NativeCommand command) => Checkbox.TurnOn();
     }
-    
+
     internal class MockEditorExecutor : ICommandExecutor<EditorCommand>
     {
         public void Execute(EditorCommand command) => Checkbox.TurnOn();
@@ -61,5 +61,17 @@ namespace Tests.Core
                 "editor" => new EditorCommand(command),
                 _ => throw new Exception("Should test only native and editor commands!")
             };
+
+        public ICommand? TryRecognize(string command)
+        {
+            try
+            {
+                return Recognize(command);
+            }
+            catch (Exception)
+            {
+                return null;
+            }
+        }
     }
 }

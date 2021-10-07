@@ -1,4 +1,4 @@
-namespace Doocutor.Tests
+namespace Tests
 {
     internal static class Checkbox
     {

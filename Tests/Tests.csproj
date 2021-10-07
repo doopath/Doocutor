@@ -12,7 +12,9 @@
     </ItemGroup>
 
     <ItemGroup>
-      <ProjectReference Include="..\Doocutor\Doocutor.csproj" />
+      <ProjectReference Include="..\Domain\Domain.csproj" />
+      <ProjectReference Include="..\DynamicEditor\DynamicEditor.csproj" />
+      <ProjectReference Include="..\StaticEditor\StaticEditor.csproj" />
     </ItemGroup>
 
 </Project>

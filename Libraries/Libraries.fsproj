@@ -6,10 +6,16 @@
         <GenerateProgramFile>false</GenerateProgramFile>
     </PropertyGroup>
 
-    <ItemGroup>
-        <Compile Include="Logging.fs" />
-        <Compile Include="Core.fs" />
-    </ItemGroup>
+	<ItemGroup>
+		<Compile Include="Logging.fs" />
+		<Compile Include="Core\Utils.fs" />
+        <Compile Include="Core\FileSystem.fs" />
+		<Compile Include="Core\SourceCodeSaving.fs" />
+		<Compile Include="Core\OutputColorizing.fs" />
+		<Compile Include="Core\ErrorHandling.fs" />
+		<Compile Include="Core\Common.fs" />
+		<Compile Include="Core\AssemblySaving.fs" />
+	</ItemGroup>
     
     <ItemGroup>
         <None Update="nlog.config" CopyToOutputDirectory="Always" />
@@ -17,6 +23,7 @@
     
     <ItemGroup>
       <PackageReference Include="NLog" Version="4.7.10" />
+      <PackageReference Include="Spectre.Console" Version="0.41.0" />
     </ItemGroup>
 
 </Project>

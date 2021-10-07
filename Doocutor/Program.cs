@@ -1,53 +1,80 @@
 ﻿using System;
-using NLog;
-using Doocutor.Core;
-using Doocutor.Core.Descriptors;
-using Doocutor.Core.Exceptions;
+using CommandLine;
+using Domain.Core;
+using Domain.Core.Exceptions;
+using Doocutor.Options;
+using DynamicEditor;
 using Libraries.Core;
-
-using Info = Doocutor.Core.Info;
-using ErrorHandler = Libraries.Core.ErrorHandler;
+using NLog;
+using StaticEditor;
 
 namespace Doocutor
 {
-    internal static class Program
+    public static class Program
     {
-        private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
+        private static readonly Logger Logger = LogManager.GetLogger("Doocutor.Program");
 
         public static void Main(string[] args)
         {
-            Start();
-
             try
             {
-                IInputFlowDescriptor descriptor = new ConsoleInputFlowDescriptor();
-                IInputFlowHandler handler = new CommandFlowHandler(descriptor);
-                handler.Handle();
+                var ops = ParseCommandLineOptions(args);
+                var editor = SelectEditor(ops.EditorMode);
+
+                Start();
+
+                editor.Run(args);
             }
             catch (InterruptedExecutionException error)
             {
-                ErrorHandler.handleInterruptedExecutionException(error, End);
+                ErrorHandling.handleInterruptedExecutionException(error, End);
             }
             catch (Exception error)
             {
-                ErrorHandler.showError(error);
+                ErrorHandling.showError(error);
             }
-
-            End();
+            finally
+            {
+                End();
+            }
         }
 
+        private static EditorSetup SelectEditor(string mode) => mode.ToLower() switch
+        {
+            "dynamic" => new DynamicEditorSetup(),
+            "static" => new StaticEditorSetup(),
+            _ => throw new ArgumentException($"Cannot run editor in mode={mode}")
+        };
+
+
         private static void Start()
-            => OutputColorizer.colorizeForeground(ConsoleColor.Cyan, () => {
+            => OutputColorizing.colorizeForeground(ConsoleColor.Cyan, () =>
+            {
                 Logger.Debug("Start of the program");
                 Info.ShowDoocutorInfo();
             });
 
         private static void End()
-            => OutputColorizer.colorizeForeground(ConsoleColor.Cyan,
+            => OutputColorizing.colorizeForeground(ConsoleColor.Cyan,
                 () =>
                 {
                     Logger.Debug("End of the program\n\n");
-                    OutputColorizer.colorizeForeground(ConsoleColor.Cyan, () => Console.WriteLine("\nGood bye!\n"));
+                    OutputColorizing.colorizeForeground(ConsoleColor.Cyan, () => Console.WriteLine("\nGood bye!\n"));
                 });
+
+        private static ProgramOptions ParseCommandLineOptions(string[] args)
+        {
+            var parser = new Parser(with =>
+            {
+                with.IgnoreUnknownArguments = true;
+            });
+
+            var ops = parser.ParseArguments<ProgramOptions>(args);
+            var result = new ProgramOptions();
+
+            ops.WithParsed(ops => result = ops);
+
+            return result;
+        }
     }
 }
