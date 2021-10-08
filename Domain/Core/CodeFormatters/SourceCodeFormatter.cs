@@ -14,6 +14,25 @@ namespace Domain.Core.CodeFormatters
             SourceCode = sourceCode;
         }
 
+        public void AdaptCodeForBufferSize(int maxLineLength)
+        {
+            for (var i = 0; i < SourceCode.Count; i++)
+            {
+                var lineNumber = i + 1;
+                var line = GroupOutputLineAt(lineNumber)[..^1];
+
+                if (line.Length > maxLineLength)
+                {
+                    SourceCode[i] = line[..maxLineLength];
+                    SourceCode.Insert(i + 1, line[maxLineLength..]);
+
+                    AdaptCodeForBufferSize(maxLineLength);
+
+                    return;
+                }
+            }
+        }
+
         public string GroupNewLineOfACurrentOne(string newPart, int cursorPositionFromTop, int cursorPositionFromLeft)
         {
             var lineNumber = cursorPositionFromTop + 1;

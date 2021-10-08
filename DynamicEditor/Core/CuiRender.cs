@@ -11,8 +11,10 @@ namespace DynamicEditor.Core
         private readonly ICodeBuffer _codeBuffer;
         private readonly DeveloperMonitor _developerMonitor;
         private readonly IOutBuffer _outBuffer;
+        private int RightEdge => _outBuffer.Width - 2;
+        private int BottomEdge => _outBuffer.Height - 2;
+        private const int TopEdge = 1;
         public int TopOffset { get; set; }
-        public int LeftOffset { get; set; }
 
         public CuiRender(ICodeBuffer codeBuffer, IOutBuffer outBuffer)
         {
@@ -20,29 +22,31 @@ namespace DynamicEditor.Core
             _outBuffer = outBuffer;
 
             TopOffset = 0;
-            LeftOffset = 0;
 
             _developerMonitor = new DeveloperMonitor(
                 TopOffset,
-                LeftOffset,
                 _codeBuffer.CursorPositionFromTop,
                 _codeBuffer.CursorPositionFromLeft);
         }
 
         public void Render()
         {
-            var code = _codeBuffer.CodeWithLineNumbers;
             var width = _outBuffer.Width;
             var height = _outBuffer.Height;
+
+            _codeBuffer.AdaptCodeForBufferSize(width - 1);
+
+            var code = _codeBuffer.CodeWithLineNumbers;
             var output = PrepareOutput(width, height, code);
+            var renderBottomEdge = height - 1;
 
             DisableCursor();
             _outBuffer.SetCursorPosition(0, 0);
 
-            for (var i = 0; i < height - 1; i++)
+            for (var i = 0; i < renderBottomEdge; i++)
                 _outBuffer.Write(output[i]);
 
-            FixCursorPosition(width, height);
+            FixCursorPosition();
             UpdateCursorPosition();
             ShowDeveloperMonitor(); // Dev-only feature
             EnableCursor();
@@ -93,30 +97,38 @@ namespace DynamicEditor.Core
         private void DisableCursor()
             => _outBuffer.CursorVisible = false;
 
-        private void FixCursorPosition(int width, int height)
+        private void FixCursorPosition()
         {
-            var bottomEdge = height - 2;
-            var topEdge = 1;
-
             var internalCursorPositionFromTop = _codeBuffer.CursorPositionFromTop - TopOffset;
+            var cursorPositionFromLeft = _codeBuffer.CursorPositionFromLeft;
+            var cursorPositionFromTop = _codeBuffer.CursorPositionFromTop;
+
             var isItNotFirstLine = TopOffset != 0;
 
-            if (internalCursorPositionFromTop >= bottomEdge)
+            if (internalCursorPositionFromTop >= BottomEdge)
             {
                 TopOffset++;
                 Render();
             }
-            else if (internalCursorPositionFromTop < topEdge && isItNotFirstLine)
+            else if (internalCursorPositionFromTop < TopEdge && isItNotFirstLine)
             {
                 TopOffset--;
                 Render();
+            }
+
+            if (cursorPositionFromLeft >= RightEdge && cursorPositionFromTop >= _codeBuffer.BufferSize - 1)
+            {
+                _codeBuffer.WriteAfter(_codeBuffer.BufferSize, "");
+                Render();
+                _codeBuffer.IncCursorPositionFromTop();
+
             }
         }
 
         private void UpdateCursorPosition()
             => _outBuffer.SetCursorPosition(
-            _codeBuffer.CursorPositionFromLeft - LeftOffset,
-            _codeBuffer.CursorPositionFromTop - TopOffset);
+                _codeBuffer.CursorPositionFromLeft,
+                _codeBuffer.CursorPositionFromTop - TopOffset);
 
         private void ShowDeveloperMonitor()
         {
@@ -132,17 +144,12 @@ namespace DynamicEditor.Core
         private void UpdateDeveloperMonitor()
             => _developerMonitor.Update(
                 TopOffset,
-                LeftOffset,
                 _codeBuffer.CursorPositionFromTop,
                 _codeBuffer.CursorPositionFromLeft);
 
         private List<string> PrepareOutput(int width, int height, string code)
         {
-            var output = code
-                .Split("\n")[TopOffset..]
-                .AsParallel()
-                .Select(l => l + (l.Length < width ? new string(' ', width - l.Length) : ""))
-                .ToList();
+            var output = GetOutput(width, code);
 
             if (output.Count < height)
             {
@@ -154,5 +161,12 @@ namespace DynamicEditor.Core
 
             return output;
         }
+
+        private List<string> GetOutput(int width, string code)
+            => code
+                .Split("\n")[TopOffset..]
+                .AsParallel()
+                .Select(l => l + (l.Length < width ? new string(' ', width - l.Length) : ""))
+                .ToList();
     }
 }

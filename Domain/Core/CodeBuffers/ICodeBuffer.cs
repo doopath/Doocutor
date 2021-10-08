@@ -13,6 +13,7 @@ namespace Domain.Core.CodeBuffers
         void RemoveLineAt(int lineNumber);
         void RemoveCodeBlock(ICodeBlockPointer pointer);
         void ReplaceLineAt(int lineNumber, string newLine);
+        void AdaptCodeForBufferSize(int maxLineLength);
         void SetCursorPositionFromTopAt(int lineNumber);
         void SetCursorPositionFromLeftAt(int position);
         void IncCursorPositionFromLeft();

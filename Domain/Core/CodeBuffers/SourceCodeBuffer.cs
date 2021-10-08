@@ -73,6 +73,9 @@ namespace Domain.Core.CodeBuffers
             SetPointerAtLastLineIfNecessary();
         }
 
+        public void AdaptCodeForBufferSize(int maxLineLength)
+            => CodeFormatter.AdaptCodeForBufferSize(maxLineLength);
+
         public void SetCursorPositionFromTopAt(int position)
             => Cursor.SetCursorPositionFromTopAt(position);
 
