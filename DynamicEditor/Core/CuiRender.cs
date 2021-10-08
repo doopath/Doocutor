@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using Domain.Core.CodeBuffers;
+using Domain.Core.OutBuffers;
 
 namespace DynamicEditor.Core
 {
@@ -9,12 +10,14 @@ namespace DynamicEditor.Core
     {
         private readonly ICodeBuffer _codeBuffer;
         private readonly DeveloperMonitor _developerMonitor;
+        private readonly IOutBuffer _outBuffer;
         public int TopOffset { get; set; }
         public int LeftOffset { get; set; }
 
-        public CuiRender(ICodeBuffer codeBuffer)
+        public CuiRender(ICodeBuffer codeBuffer, IOutBuffer outBuffer)
         {
             _codeBuffer = codeBuffer;
+            _outBuffer = outBuffer;
 
             TopOffset = 0;
             LeftOffset = 0;
@@ -29,15 +32,15 @@ namespace DynamicEditor.Core
         public void Render()
         {
             var code = _codeBuffer.CodeWithLineNumbers;
-            var width = Console.WindowWidth;
-            var height = Console.WindowHeight;
+            var width = _outBuffer.Width;
+            var height = _outBuffer.Height;
             var output = PrepareOutput(width, height, code);
 
             DisableCursor();
-            Console.SetCursorPosition(0, 0);
+            _outBuffer.SetCursorPosition(0, 0);
 
             for (var i = 0; i < height - 1; i++)
-                Console.Write(output[i]);
+                _outBuffer.Write(output[i]);
 
             FixCursorPosition(width, height);
             UpdateCursorPosition();
@@ -46,7 +49,7 @@ namespace DynamicEditor.Core
         }
 
         public void Clear()
-            => Console.Clear();
+            => _outBuffer.Clear();
 
         public void MoveCursorUp()
             => DoCursorMovement(_codeBuffer.DecCursorPositionFromTop);
@@ -68,8 +71,8 @@ namespace DynamicEditor.Core
             Render();
             watch.Stop();
 
-            Console.Clear();
-            Console.WriteLine($"Time spent: {watch.ElapsedMilliseconds}ms");
+            _outBuffer.Clear();
+            _outBuffer.WriteLine($"Time spent: {watch.ElapsedMilliseconds}ms");
         }
 
         private void DoCursorMovement(Action movement)
@@ -85,10 +88,10 @@ namespace DynamicEditor.Core
         }
 
         private void EnableCursor()
-            => Console.CursorVisible = true;
+            => _outBuffer.CursorVisible = true;
 
         private void DisableCursor()
-            => Console.CursorVisible = false;
+            => _outBuffer.CursorVisible = false;
 
         private void FixCursorPosition(int width, int height)
         {
@@ -111,7 +114,7 @@ namespace DynamicEditor.Core
         }
 
         private void UpdateCursorPosition()
-            => Console.SetCursorPosition(
+            => _outBuffer.SetCursorPosition(
             _codeBuffer.CursorPositionFromLeft - LeftOffset,
             _codeBuffer.CursorPositionFromTop - TopOffset);
 
