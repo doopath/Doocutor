@@ -19,16 +19,17 @@ namespace Domain.Core.CodeFormatters
             for (var i = 0; i < SourceCode.Count; i++)
             {
                 var lineNumber = i + 1;
-                var line = GroupOutputLineAt(lineNumber)[..^1];
+                var line = GetLineAt(lineNumber);
+                var prefixLength = GetPrefixLength(lineNumber);
 
-                if (line.Length > maxLineLength)
+                if (line.Length + prefixLength > maxLineLength)
                 {
-                    SourceCode[i] = line[..maxLineLength];
-                    SourceCode.Insert(i + 1, line[maxLineLength..]);
+                    SourceCode[i] = line[..(maxLineLength - prefixLength)];
 
-                    AdaptCodeForBufferSize(maxLineLength);
+                    if (SourceCode.Count - 1 < i + 1)
+                        SourceCode.Insert(i + 1, "");
 
-                    return;
+                    SourceCode[i + 1] = line[(maxLineLength - prefixLength)..] + SourceCode[i + 1];
                 }
             }
         }

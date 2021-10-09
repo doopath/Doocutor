@@ -11,6 +11,8 @@ namespace Domain.Core.CodeBuffers
         void Enter();
         void Backspace();
         void RemoveLineAt(int lineNumber);
+        void IncreaseBufferSize();
+        int GetPrefixLength();
         void RemoveCodeBlock(ICodeBlockPointer pointer);
         void ReplaceLineAt(int lineNumber, string newLine);
         void AdaptCodeForBufferSize(int maxLineLength);

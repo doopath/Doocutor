@@ -2,7 +2,6 @@ using System;
 using System.Collections.Generic;
 using Domain.Core.CodeFormatters;
 using NUnit.Framework;
-using NUnit.Framework.Constraints;
 
 namespace Tests.Core.CodeFormatters
 {
@@ -34,12 +33,14 @@ namespace Tests.Core.CodeFormatters
         public void AdaptCodeForBufferSizeTest()
         {
             var maxLineLength = 50;
+            var prefixLength = 5;
+            var firstLineLength = 72;
 
             _formatter.AdaptCodeForBufferSize(maxLineLength);
 
             var hasTargetLinesCount = _code.Count == 10;
-            var firstLineIsCorrect = _code[0] == "--------------------------------------------------";
-            var secondLineIsCorrect = _code[1] == "----------------------";
+            var firstLineIsCorrect = _code[0].Length == maxLineLength - prefixLength;
+            var secondLineIsCorrect = _code[1].Length == firstLineLength - (maxLineLength - prefixLength);
 
             Console.WriteLine(string.Join("\n", _code));
 

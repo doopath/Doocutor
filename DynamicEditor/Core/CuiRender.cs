@@ -11,7 +11,9 @@ namespace DynamicEditor.Core
         private readonly ICodeBuffer _codeBuffer;
         private readonly DeveloperMonitor _developerMonitor;
         private readonly IOutBuffer _outBuffer;
-        private int RightEdge => _outBuffer.Width - 2;
+        private readonly int WindowWidth;
+        private readonly int WindowHeight;
+        private int RightEdge => _outBuffer.Width - 3;
         private int BottomEdge => _outBuffer.Height - 2;
         private const int TopEdge = 1;
         public int TopOffset { get; set; }
@@ -20,6 +22,9 @@ namespace DynamicEditor.Core
         {
             _codeBuffer = codeBuffer;
             _outBuffer = outBuffer;
+
+            WindowWidth = _outBuffer.Width;
+            WindowHeight = _outBuffer.Height;
 
             TopOffset = 0;
 
@@ -34,7 +39,8 @@ namespace DynamicEditor.Core
             var width = _outBuffer.Width;
             var height = _outBuffer.Height;
 
-            _codeBuffer.AdaptCodeForBufferSize(width - 1);
+            FixWindowSize();
+            _codeBuffer.AdaptCodeForBufferSize(RightEdge);
 
             var code = _codeBuffer.CodeWithLineNumbers;
             var output = PrepareOutput(width, height, code);
@@ -97,6 +103,16 @@ namespace DynamicEditor.Core
         private void DisableCursor()
             => _outBuffer.CursorVisible = false;
 
+        private void FixWindowSize()
+        {
+            if (_outBuffer.Width != WindowWidth || _outBuffer.Height != WindowHeight)
+            {
+                _outBuffer.Width = WindowWidth;
+                _outBuffer.Height = WindowHeight;
+                Render();
+            }
+        }
+
         private void FixCursorPosition()
         {
             var internalCursorPositionFromTop = _codeBuffer.CursorPositionFromTop - TopOffset;
@@ -116,12 +132,14 @@ namespace DynamicEditor.Core
                 Render();
             }
 
-            if (cursorPositionFromLeft >= RightEdge && cursorPositionFromTop >= _codeBuffer.BufferSize - 1)
+            if (cursorPositionFromLeft >= RightEdge)
             {
-                _codeBuffer.WriteAfter(_codeBuffer.BufferSize, "");
-                Render();
-                _codeBuffer.IncCursorPositionFromTop();
+                if (cursorPositionFromTop >= _codeBuffer.BufferSize - 2)
+                    _codeBuffer.IncreaseBufferSize();
 
+                _codeBuffer.SetCursorPositionFromLeftAt(_codeBuffer.GetPrefixLength());
+                _codeBuffer.IncCursorPositionFromTop();
+                Render();
             }
         }
 

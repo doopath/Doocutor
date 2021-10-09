@@ -77,7 +77,10 @@ namespace Domain.Core
         public static readonly List<string> SupportedCommands = CommandsMap.Keys.ToList();
 
         private static void ExecuteQuitCommand(NativeCommand command)
-            => throw new InterruptedExecutionException("You have came out of the doocutor! Good bye!");
+        {
+            ExecuteClearCommand(command);
+            throw new InterruptedExecutionException("You have came out of the doocutor! Good bye!");
+        }
 
         private static void ExecuteViewCommand(NativeCommand command)
         {

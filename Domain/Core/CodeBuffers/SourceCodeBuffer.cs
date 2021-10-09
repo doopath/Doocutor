@@ -73,6 +73,15 @@ namespace Domain.Core.CodeBuffers
             SetPointerAtLastLineIfNecessary();
         }
 
+        public void IncreaseBufferSize()
+        {
+            var lastIndex = SourceCode.Count - 1;
+            SourceCode.Insert(lastIndex + 1, "");
+        }
+
+        public int GetPrefixLength()
+            => CodeFormatter.GetPrefixLength(CodeFormatter.IndexToLineNumber(CursorPositionFromTop));
+
         public void AdaptCodeForBufferSize(int maxLineLength)
             => CodeFormatter.AdaptCodeForBufferSize(maxLineLength);
 
