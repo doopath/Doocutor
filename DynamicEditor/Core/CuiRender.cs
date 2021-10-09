@@ -36,18 +36,16 @@ namespace DynamicEditor.Core
 
         public void Render()
         {
+            FixWindowSize();
+            DisableCursor();
+            _codeBuffer.AdaptCodeForBufferSize(RightEdge);
+            _outBuffer.SetCursorPosition(0, 0);
+
             var width = _outBuffer.Width;
             var height = _outBuffer.Height;
-
-            FixWindowSize();
-            _codeBuffer.AdaptCodeForBufferSize(RightEdge);
-
             var code = _codeBuffer.CodeWithLineNumbers;
             var output = PrepareOutput(width, height, code);
             var renderBottomEdge = height - 1;
-
-            DisableCursor();
-            _outBuffer.SetCursorPosition(0, 0);
 
             for (var i = 0; i < renderBottomEdge; i++)
                 _outBuffer.Write(output[i]);
@@ -115,10 +113,13 @@ namespace DynamicEditor.Core
 
         private void FixCursorPosition()
         {
-            var internalCursorPositionFromTop = _codeBuffer.CursorPositionFromTop - TopOffset;
-            var cursorPositionFromLeft = _codeBuffer.CursorPositionFromLeft;
-            var cursorPositionFromTop = _codeBuffer.CursorPositionFromTop;
+            FixVerticalCursorPosition();
+            FixHorizontalCursorPosition();
+        }
 
+        private void FixVerticalCursorPosition()
+        {
+            var internalCursorPositionFromTop = _codeBuffer.CursorPositionFromTop - TopOffset;
             var isItNotFirstLine = TopOffset != 0;
 
             if (internalCursorPositionFromTop >= BottomEdge)
@@ -131,10 +132,13 @@ namespace DynamicEditor.Core
                 TopOffset--;
                 Render();
             }
+        }
 
-            if (cursorPositionFromLeft > RightEdge)
+        private void FixHorizontalCursorPosition()
+        {
+            if (_codeBuffer.CursorPositionFromLeft > RightEdge)
             {
-                if (cursorPositionFromTop >= _codeBuffer.BufferSize)
+                if (_codeBuffer.CursorPositionFromTop >= _codeBuffer.BufferSize)
                     _codeBuffer.IncreaseBufferSize();
 
                 _codeBuffer.SetCursorPositionFromLeftAt(_codeBuffer.GetPrefixLength());
