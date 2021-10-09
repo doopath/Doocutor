@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
+using System.IO;
 using System.Linq;
 using Domain.Core.CodeBuffers;
 using Domain.Core.OutBuffers;
@@ -15,11 +17,14 @@ namespace DynamicEditor.Core
         private readonly int WindowHeight;
         private int RightEdge => _outBuffer.Width - 3;
         private int BottomEdge => _outBuffer.Height - 2;
+        private Stopwatch _watch;
+        private long _lastFrameRenderTime;
         private const int TopEdge = 1;
         public int TopOffset { get; set; }
 
         public CuiRender(ICodeBuffer codeBuffer, IOutBuffer outBuffer)
         {
+            _watch = new Stopwatch();
             _codeBuffer = codeBuffer;
             _outBuffer = outBuffer;
 
@@ -36,6 +41,7 @@ namespace DynamicEditor.Core
 
         public void Render()
         {
+            StartWatching(); // Disable this if DeveloperMonitor is disabled;
             FixWindowSize();
             DisableCursor();
             _codeBuffer.AdaptCodeForBufferSize(RightEdge);
@@ -52,6 +58,7 @@ namespace DynamicEditor.Core
 
             FixCursorPosition();
             UpdateCursorPosition();
+            StopWatching(); // Disable this if DeveloperMonitor is disabled;
             ShowDeveloperMonitor(); // Dev-only feature
             EnableCursor();
         }
@@ -71,16 +78,14 @@ namespace DynamicEditor.Core
         public void MoveCursorRight()
             => DoCursorMovement(_codeBuffer.IncCursorPositionFromLeft);
 
-        public void ShowRenderTime()
+        private void StartWatching()
+            => _watch.Start();
+
+        private void StopWatching()
         {
-            var watch = new System.Diagnostics.Stopwatch();
-
-            watch.Start();
-            Render();
-            watch.Stop();
-
-            _outBuffer.Clear();
-            _outBuffer.WriteLine($"Time spent: {watch.ElapsedMilliseconds}ms");
+            _watch.Stop();
+            _lastFrameRenderTime = _watch.ElapsedMilliseconds;
+            _watch = new Stopwatch();
         }
 
         private void DoCursorMovement(Action movement)
@@ -167,7 +172,8 @@ namespace DynamicEditor.Core
             => _developerMonitor.Update(
                 TopOffset,
                 _codeBuffer.CursorPositionFromTop,
-                _codeBuffer.CursorPositionFromLeft);
+                _codeBuffer.CursorPositionFromLeft,
+                (ulong)_lastFrameRenderTime);
 
         private List<string> PrepareOutput(int width, int height, string code)
         {

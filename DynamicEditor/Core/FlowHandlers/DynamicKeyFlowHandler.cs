@@ -39,10 +39,10 @@ namespace DynamicEditor.Core.FlowHandlers
             {
                 var input = _inputFlowIterator.Next();
                 var command = _keyCombinationTranslating.TryGetCommandFor(input) ?? input;
-                command = DoesMapHasPattern(input) ? GetCommand(input) : command;
+                command = IsMatchedWithAPattern(input) ? GetCommand(input) : command;
 
-                if (IsAppendLineCommand(command))
-                    command += ConvertToSymbol(input);
+                if (IsTheAppendLineCommand(command))
+                    command += ConvertToASymbol(input);
 
                 if (MovementKeysMap.Map.ContainsKey(input))
                 {
@@ -63,7 +63,7 @@ namespace DynamicEditor.Core.FlowHandlers
             IsClosed = true;
         }
 
-        private bool DoesMapHasPattern(string input)
+        private bool IsMatchedWithAPattern(string input)
         {
             foreach (var key in KeyCombinationsMap.Map.Keys)
             {
@@ -85,10 +85,10 @@ namespace DynamicEditor.Core.FlowHandlers
             throw new ItemNotFoundException($"{input} matches no pattern");
         }
 
-        private bool IsAppendLineCommand(string command)
+        private bool IsTheAppendLineCommand(string command)
             => command == ":appendLine ";
 
-        private string ConvertToSymbol(string input)
+        private string ConvertToASymbol(string input)
             => _keyToSymbolTranslating.TryGetSymbolFor(input) ?? input;
     }
 }
