@@ -132,9 +132,9 @@ namespace DynamicEditor.Core
                 Render();
             }
 
-            if (cursorPositionFromLeft >= RightEdge)
+            if (cursorPositionFromLeft > RightEdge)
             {
-                if (cursorPositionFromTop >= _codeBuffer.BufferSize - 2)
+                if (cursorPositionFromTop >= _codeBuffer.BufferSize)
                     _codeBuffer.IncreaseBufferSize();
 
                 _codeBuffer.SetCursorPositionFromLeftAt(_codeBuffer.GetPrefixLength());
