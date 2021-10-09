@@ -30,8 +30,11 @@ In our case the Main method does not require arguments, so just type :run and yo
 <br/>
 Hello world
 
-![no image](https://raw.githubusercontent.com/doopath/doocutor/functional_design/Doocutor/Resources/img/DoocutorScreen.png)
+![no image](https://raw.githubusercontent.com/doopath/Doocutor/develop/Doocutor/Resources/img/Doocutor_DynamicEditor.png)
+![no image](https://raw.githubusercontent.com/doopath/Doocutor/develop/Doocutor/Resources/img/Doocutor_StaticEditor.png)
 
+(On the pictures shown dynamic and static editors preview. If you want to use dynamic editor you should use *"--editor-mode dynamic"* launch option)
+<br/>
 When you write lines of code you don't must set tabulation because **Doocutor** will set it
 automatically.
 ****
