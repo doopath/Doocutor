@@ -29,10 +29,11 @@ namespace Domain.Core
 
             var newLine = line[CursorPositionFromLeft..];
             var targetIndex = CursorPositionFromTop + 1;
-            newLine = _formatter.GetTabulationForLineAt(_formatter.IndexToLineNumber(targetIndex), newLine) + newLine;
+            var targetLineNumber = _formatter.IndexToLineNumber(targetIndex);
 
             _code.Insert(targetIndex, newLine);
             _cursor.IncCursorPositionFromTop();
+            _cursor.SetCursorPositionFromLeftAt(_formatter.GetPrefixLength(targetLineNumber));
         }
 
         public void Backspace()

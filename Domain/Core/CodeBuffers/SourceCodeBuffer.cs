@@ -15,8 +15,8 @@ namespace Domain.Core.CodeBuffers
         private static readonly ICursor Cursor = new CodeBufferCursor(
             SourceCode,
             CodeFormatter,
-            InitialSourceCode.InitialCursorPositionFromLeft,
-            InitialSourceCode.InitialCursorPositionFromTop);
+            InitialSourceCode.InitialCursorPositionFromTop,
+            InitialSourceCode.InitialCursorPositionFromLeft);
         private static readonly KeyboardCommandsProvider KeyboardCommandsProvider =
             new(SourceCode, CodeFormatter, Cursor);
 

@@ -14,8 +14,8 @@ namespace Domain.Core.Cursors
         public CodeBufferCursor(
             List<string> sourceCode,
             ICodeFormatter formatter,
-            int initialPositionFromLeft,
-            int initialPositionFromTop)
+            int initialPositionFromTop,
+            int initialPositionFromLeft)
         {
             _sourceCode = sourceCode;
             _formatter = formatter;

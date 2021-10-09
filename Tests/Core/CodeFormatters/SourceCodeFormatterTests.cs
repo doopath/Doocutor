@@ -47,12 +47,12 @@ namespace Tests.Core.CodeFormatters
 
             Console.WriteLine(string.Join("\n", _code));
 
-            Assert.True(hasTargetLinesCount, "Adapted code has incorrect line number!");
-            Assert.True(firstLineIsCorrect, "First line of code is incorrect!");
-            Assert.True(secondLineIsCorrect, "Second line of code is incorrect");
-            Assert.True(thirdLineIsCorrect, "Third line of code is incorrect");
-            Assert.True(fourthLineIsCorrect, "Fourth line of code is incorrect");
-            Assert.True(fifthLineIsCorrect, "Fifth line of code is incorrect");
+            Assert.True(hasTargetLinesCount, "Adapted code has an incorrect line number!");
+            Assert.True(firstLineIsCorrect, "The first line of code is incorrect!");
+            Assert.True(secondLineIsCorrect, "The second line of code is incorrect!");
+            Assert.True(thirdLineIsCorrect, "The third line of code is incorrect!");
+            Assert.True(fourthLineIsCorrect, "The fourth line of code is incorrect!");
+            Assert.True(fifthLineIsCorrect, "The fifth line of code is incorrect!");
         }
 
         private void FillCode()
