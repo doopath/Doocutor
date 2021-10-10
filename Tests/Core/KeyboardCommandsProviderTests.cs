@@ -73,21 +73,21 @@ namespace Tests.Core
 
             var isTheFirstLineCorrect = _code[0] == initialFirstLine[..(middlePositionOfTheCurrentLine - prefixLength)];
             var isTheSecondLineCorrect = _code[1] == initialFirstLine[(middlePositionOfTheCurrentLine - prefixLength)..];
-            var isLeftPositionOfTheCursorCorrect = _cursor.CursorPositionFromLeft == prefixLength;
             var isTopPositionOfTheCursorCorrect = _cursor.CursorPositionFromTop == 1;
+            var isLeftPositionOfTheCursorCorrect = _cursor.CursorPositionFromLeft == prefixLength;
             var isCodeLinesCountCorrect = _code.Count == 3;
 
             Assert.True(isTheFirstLineCorrect, "The first line isn't correct!");
             Assert.True(isTheSecondLineCorrect, "The second line isn't correct!");
-            Assert.True(isLeftPositionOfTheCursorCorrect,
-                $"Left position of the cursor isn't correct ({_cursor.CursorPositionFromLeft} != {prefixLength})");
             Assert.True(isTopPositionOfTheCursorCorrect,
                 $"Top position of the cursor isn't correct ({_cursor.CursorPositionFromTop} != 1)");
+            Assert.True(isLeftPositionOfTheCursorCorrect,
+                $"Left position of the cursor isn't correct ({_cursor.CursorPositionFromLeft} != {prefixLength})");
             Assert.True(isCodeLinesCountCorrect, $"Code lines count isn't correct! ({_code.Count} != 3)");
         }
 
         [Test]
-        public void EnterAthTheEndOfTheLineTest()
+        public void EnterAtTheEndOfTheLineTest()
         {
             var prefixLength = _formatter.GetPrefixLength(1);
             var initialFirstLine = _code[0];
@@ -97,17 +97,43 @@ namespace Tests.Core
 
             var isTheFirstLineCorrect = _code[0] == initialFirstLine;
             var isTheSecondLineCorrect = _code[1] == string.Empty;
-            var isLeftPositionOfTheCursorCorrect = _cursor.CursorPositionFromLeft == prefixLength;
             var isTopPositionOfTheCursorCorrect = _cursor.CursorPositionFromTop == 1;
+            var isLeftPositionOfTheCursorCorrect = _cursor.CursorPositionFromLeft == prefixLength;
 
             Assert.True(isTheFirstLineCorrect,
                 $"The first line isn't correct! ({_code[0]} != {initialFirstLine})");
             Assert.True(isTheSecondLineCorrect,
                 $"The second line isn't correct! ({_code[1]} != \"\")");
-            Assert.True(isLeftPositionOfTheCursorCorrect,
-                $"Left position of the cursor isn't correct! ({_cursor.CursorPositionFromLeft} != {prefixLength})");
             Assert.True(isTopPositionOfTheCursorCorrect,
                 $"Top position of the cursor isn't correct! ({_cursor.CursorPositionFromTop} != 1)");
+            Assert.True(isLeftPositionOfTheCursorCorrect,
+                $"Left position of the cursor isn't correct! ({_cursor.CursorPositionFromLeft} != {prefixLength})");
+
+        }
+
+        [Test]
+        public void EnterAtTheEndOfTheLastLineTest()
+        {
+            var prefixLength = _formatter.GetPrefixLength(1);
+            var initialSecondLine = _code[1];
+
+            _cursor.SetCursorPositionFromTopAt(1);
+            _cursor.SetCursorPositionFromLeftAt(initialSecondLine.Length + prefixLength);
+            _provider.Enter();
+
+            var isTheSecondLineCurrect = _code[1] == initialSecondLine;
+            var isTheThirdLineCorrect = _code[2] == string.Empty;
+            var isTheCursorPositionFromTopCorrect = _cursor.CursorPositionFromTop == 2;
+            var isTheCursorPositionFromLeftCorrect = _cursor.CursorPositionFromLeft == prefixLength;
+
+            Assert.True(isTheSecondLineCurrect,
+                $"The second line isn't correct! ({_code[1]} != {initialSecondLine})");
+            Assert.True(isTheThirdLineCorrect,
+                $"The third line isn't correct! ({_code[2]} != \"\")");
+            Assert.True(isTheCursorPositionFromTopCorrect,
+                $"Top position of the cursor isn't correct! ({_cursor.CursorPositionFromTop} != 2)");
+            Assert.True(isTheCursorPositionFromLeftCorrect,
+                $"Left position of the cursor isn't correct! ({_cursor.CursorPositionFromLeft} != {prefixLength})");
         }
 
         private void FillCode()
