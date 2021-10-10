@@ -39,7 +39,7 @@ namespace Domain.Core.CodeFormatters
             var lineNumber = cursorPositionFromTop + 1;
             var currentLine = GroupOutputLineAt(lineNumber)[..^1];
 
-            return currentLine[..cursorPositionFromLeft] + newPart + currentLine[cursorPositionFromLeft..];
+            return currentLine.Insert(cursorPositionFromLeft, newPart);
         }
 
         public string GroupOutputLineAt(int lineNumber)
