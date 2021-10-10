@@ -49,13 +49,13 @@ namespace Domain.Core
 
             if (isThisAFirstSymbol && !isThisAFirstLine)
             {
-                var previousLine = _formatter.GroupOutputLineAt(CursorPositionFromTop)[..^1];
-                var previousLineContent = _formatter.GetLineAt(_formatter.IndexToLineNumber(CursorPositionFromTop));
-
                 _cursor.DecCursorPositionFromTop();
                 _code[CursorPositionFromTop] += lineContent;
                 _code.RemoveAt(_formatter.IndexToLineNumber(CursorPositionFromTop));
-                _cursor.SetCursorPositionFromLeftAt(previousLine.Length - (previousLineContent == "" ? 0 : 1));
+
+                var currentLine = _formatter.GroupOutputLineAt(CursorPositionFromTop + 1)[..^1];
+
+                _cursor.SetCursorPositionFromLeftAt(currentLine.Length - lineContent.Length);
             }
             else if ((!isLineEmpty && !isThisAFirstLine) || (isThisAFirstLine && !isThisAFirstSymbol))
             {

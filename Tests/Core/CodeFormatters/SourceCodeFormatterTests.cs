@@ -38,21 +38,21 @@ namespace Tests.Core.CodeFormatters
 
             _formatter.AdaptCodeForBufferSize(maxLineLength);
 
-            var hasTargetLinesCount = _code.Count == 8;
-            var firstLineIsCorrect = _code[0].Length == firstFourLinesLength;
-            var secondLineIsCorrect = _code[1].Length == firstFourLinesLength;
-            var thirdLineIsCorrect = _code[2].Length == firstFourLinesLength;
-            var fourthLineIsCorrect = _code[3].Length == firstFourLinesLength;
-            var fifthLineIsCorrect = _code[4].Length == fifthLineLength;
+            var doesHaveTargetLinesCount = _code.Count == 8;
+            var isTheFirstLineCorrect = _code[0].Length == firstFourLinesLength;
+            var isTheSecondLineCorrect = _code[1].Length == firstFourLinesLength;
+            var isTheThirdLineCorrect = _code[2].Length == firstFourLinesLength;
+            var isTheFourthLineCorrect = _code[3].Length == firstFourLinesLength;
+            var isTheFifthLineCorrect = _code[4].Length == fifthLineLength;
 
             Console.WriteLine(string.Join("\n", _code));
 
-            Assert.True(hasTargetLinesCount, "Adapted code has an incorrect line number!");
-            Assert.True(firstLineIsCorrect, "The first line of code is incorrect!");
-            Assert.True(secondLineIsCorrect, "The second line of code is incorrect!");
-            Assert.True(thirdLineIsCorrect, "The third line of code is incorrect!");
-            Assert.True(fourthLineIsCorrect, "The fourth line of code is incorrect!");
-            Assert.True(fifthLineIsCorrect, "The fifth line of code is incorrect!");
+            Assert.True(doesHaveTargetLinesCount, "Adapted code has an incorrect line number!");
+            Assert.True(isTheFirstLineCorrect, "The first line of code isn't correct!");
+            Assert.True(isTheSecondLineCorrect, "The second line of code isn't correct!");
+            Assert.True(isTheThirdLineCorrect, "The third line of code isn't correct!");
+            Assert.True(isTheFourthLineCorrect, "The fourth line of code isn't correct!");
+            Assert.True(isTheFifthLineCorrect, "The fifth line of code isn't correct!");
         }
 
         private void FillCode()
