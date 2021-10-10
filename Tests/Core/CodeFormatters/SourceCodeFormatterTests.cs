@@ -11,7 +11,6 @@ namespace Tests.Core.CodeFormatters
         private List<string> _code;
         private ICodeFormatter _formatter;
 
-
         [SetUp]
         public void Setup()
         {
@@ -58,26 +57,51 @@ namespace Tests.Core.CodeFormatters
         [Test]
         public void GroupNewLineOfACurrentOneTest()
         {
-            var initialCodeLinesCount = _code.Count;
-            var initialFirstLine = _code[0];
+            var firstLine = _code[0];
 
             var prefixLength = _formatter.GetPrefixLength(1);
             var cursorPositionFromTop = 0;
-            var cursorPositionFromLeft = (initialFirstLine.Length + prefixLength) / 2;
+            var cursorPositionFromLeft = (firstLine.Length + prefixLength) / 2;
 
             var additionalSymbol = "|";
 
             var newLine = _formatter.GroupNewLineOfACurrentOne(
                 additionalSymbol, cursorPositionFromTop, cursorPositionFromLeft)[prefixLength..];
-            var supposedNewLine = initialFirstLine.Insert(
+            var supposedNewLine = firstLine.Insert(
                 cursorPositionFromLeft - prefixLength, additionalSymbol);
 
             var isTheNewLineCorrect = newLine == supposedNewLine;
-            var isCountOfTheCodeLinesCorrect = _code.Count == initialCodeLinesCount;
 
             Assert.True(isTheNewLineCorrect, $"The new line isn't correct! ({newLine} != {supposedNewLine})");
-            Assert.True(isCountOfTheCodeLinesCorrect,
-                $"The count of the code lines isn't correct! ({_code.Count} != {initialCodeLinesCount})");
+        }
+
+        [Test]
+        public void GroupOutputLineAtTest()
+        {
+            var index = 4;
+            var lineNumber = 4 + 1;
+            var pureLine = _code[index];
+            var outputLine = _formatter.GroupOutputLineAt(lineNumber);
+            var supposedLine = $"  {lineNumber} |{pureLine}\n";
+
+            var isTheOutputLineCorrect = outputLine == supposedLine;
+
+            Assert.True(isTheOutputLineCorrect,
+                $"The gotten output line isn't correct! ({outputLine} != {supposedLine})");
+        }
+
+        [Test]
+        public void SeparateLineFromLineNumberTest()
+        {
+            var content = "line content";
+            var line = $"  1 |{content}";
+
+            var separatedLineContent = _formatter.SeparateLineFromLineNumber(line);
+
+            var isTheSeparatedLineContentCorrect = separatedLineContent == content;
+
+            Assert.True(isTheSeparatedLineContentCorrect,
+                $"The separated line content isn't correct! ({separatedLineContent} != {content})");
         }
 
         private void FillCode()
