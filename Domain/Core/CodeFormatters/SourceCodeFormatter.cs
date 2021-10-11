@@ -48,6 +48,10 @@ namespace Domain.Core.CodeFormatters
         public string SeparateLineFromLineNumber(string line)
             => string.Join("|", line.Split("|")[1..]);
 
+        // TODO: remove this method when the Doocutor gets new major version;
+        // This feature will be still available, but will be contained in a plugin for the C#;
+        // The Doocutor will have an empty buffer by deafult (instead of the namespace, class, etc)
+        // instead of the current one.
         public string GetTabulationForLineAt(int lineNumber, string line)
         {
 
@@ -69,7 +73,7 @@ namespace Domain.Core.CodeFormatters
         }
 
         public string GetSourceCodeWithLineNumbers()
-            => string.Join("", SourceCode.Select((_, i) => GroupOutputLineAt(IndexToLineNumber(i))).ToArray());
+            => string.Join("", SourceCode.Select((_, i) => GroupOutputLineAt(IndexToLineNumber(i))).ToArray())[..^1];
 
         public string GetLineAt(int lineNumber)
         {

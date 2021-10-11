@@ -5,6 +5,7 @@ using System.IO;
 using System.Linq;
 using Domain.Core.CodeBuffers;
 using Domain.Core.OutBuffers;
+using Spectre.Console;
 
 namespace DynamicEditor.Core
 {
@@ -146,7 +147,9 @@ namespace DynamicEditor.Core
                 if (_codeBuffer.CursorPositionFromTop >= _codeBuffer.BufferSize)
                     _codeBuffer.IncreaseBufferSize();
 
-                _codeBuffer.SetCursorPositionFromLeftAt(_codeBuffer.GetPrefixLength());
+                var targetPositionFromLeft = _codeBuffer.GetPrefixLength() + 1;
+
+                _codeBuffer.SetCursorPositionFromLeftAt(targetPositionFromLeft);
                 _codeBuffer.IncCursorPositionFromTop();
                 Render();
             }

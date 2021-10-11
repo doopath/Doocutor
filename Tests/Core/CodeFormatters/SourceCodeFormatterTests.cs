@@ -104,6 +104,29 @@ namespace Tests.Core.CodeFormatters
                 $"The separated line content isn't correct! ({separatedLineContent} != {content})");
         }
 
+        [Test]
+        public void GetSourceCodeWithLineNumbersTest()
+        {
+            var supposedCodeWithLineNumbers = string.Join("\n", new List<string>()
+            {
+                "  1 |--------------------------------------------------------",
+                "  2 |------------------------------------------------------",
+                "  3 |------------------------------------------------------------",
+                "  4 |---------------------------------------------",
+                "  5 |-",
+                "  6 | ",
+                "  7 |\\",
+                "  8 |"
+            });
+
+            var codeWithLineNumbers = _formatter.GetSourceCodeWithLineNumbers();
+
+            var isTheCodeWithLineNumbersCorrect = codeWithLineNumbers == supposedCodeWithLineNumbers;
+
+            Assert.True(isTheCodeWithLineNumbersCorrect,
+                $"The gotten code with line numbers isn't correct! \n{codeWithLineNumbers}\n!=\n{supposedCodeWithLineNumbers}");
+        }
+
         private void FillCode()
         {
             _code.Add("--------------------------------------------------------");
