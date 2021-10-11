@@ -127,6 +127,57 @@ namespace Tests.Core.CodeFormatters
                 $"The gotten code with line numbers isn't correct! \n{codeWithLineNumbers}\n!=\n{supposedCodeWithLineNumbers}");
         }
 
+        [Test]
+        public void GetLineAtTest()
+        {
+            var index = 0;
+            var lineNumber = index + 1;
+
+            var supposedLine = _code[index];
+            var line = _formatter.GetLineAt(lineNumber);
+
+            var isTheLineCorrect = line == supposedLine;
+
+            Assert.True(isTheLineCorrect, $"The gotten line isn't correct! ({line} != {supposedLine})");
+        }
+
+        [Test]
+        public void GetSourceCodeTest()
+        {
+            var supposedCode = string.Join("\n", _code);
+            var code = _formatter.GetSourceCode();
+
+            var isTheCodeCorrect = code == supposedCode;
+
+            Assert.True(isTheCodeCorrect,
+                $"The gotten code isn't correct! (\n{code}\n!=\n{supposedCode})");
+        }
+
+        [Test]
+        public void IndexToLineNumberTest()
+        {
+            var index = 0;
+            var supposedLineNumber = index + 1;
+            var lineNumber = _formatter.IndexToLineNumber(index);
+
+            var isTheLineNumberCorrect = lineNumber == supposedLineNumber;
+
+            Assert.True(isTheLineNumberCorrect,
+                $"The gotten line number isn't correct! ({lineNumber} != {supposedLineNumber})");
+        }
+
+        [Test]
+        public void LineNumberToIndexTest()
+        {
+            var lineNumber = 1;
+            var supposedIndex = lineNumber - 1;
+            var index = _formatter.LineNumberToIndex(lineNumber);
+
+            var isTheIndexCorrect = index == supposedIndex;
+
+            Assert.True(isTheIndexCorrect, $"The gotten index isn't correct! ({index} != {supposedIndex})");
+        }
+
         private void FillCode()
         {
             _code.Add("--------------------------------------------------------");

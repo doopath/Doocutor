@@ -82,7 +82,7 @@ namespace Domain.Core.CodeFormatters
         }
 
         public string GetSourceCode()
-            => string.Join("", SourceCode.Select(l => l + "\n"));
+            => string.Join("\n", SourceCode);
 
         public int IndexToLineNumber(int index) => index + 1;
 
