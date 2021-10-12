@@ -178,6 +178,29 @@ namespace Tests.Core.CodeFormatters
             Assert.True(isTheIndexCorrect, $"The gotten index isn't correct! ({index} != {supposedIndex})");
         }
 
+        [Test]
+        public void GetPrefixLengthTest()
+        {
+            var lineNumber = 1;
+            var supposedPrefixLength = "  x |".Length;
+            var prefixLength = _formatter.GetPrefixLength(lineNumber);
+            var isThePrefixLengthCorrect = prefixLength == supposedPrefixLength;
+
+            Assert.True(isThePrefixLengthCorrect,
+                $"The gotten prefix length isn't correct! ({prefixLength} != {supposedPrefixLength})");
+
+            while (_code.Count < 10)
+                _code.Add("-");
+
+            supposedPrefixLength++;
+            prefixLength = _formatter.GetPrefixLength(lineNumber);
+
+            isThePrefixLengthCorrect = prefixLength == supposedPrefixLength;
+
+            Assert.True(isThePrefixLengthCorrect,
+                $"The gotten prefix length isn't correct! ({prefixLength} != {supposedPrefixLength})");
+        }
+
         private void FillCode()
         {
             _code.Add("--------------------------------------------------------");

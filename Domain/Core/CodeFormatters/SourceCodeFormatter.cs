@@ -43,8 +43,11 @@ namespace Domain.Core.CodeFormatters
         }
 
         public string GroupOutputLineAt(int lineNumber)
-            => $"  {lineNumber}{GetOutputSpacesForLineAt(lineNumber)}|{SourceCode[LineNumberToIndex(lineNumber)]}\n";
+        {
+            CheckIfLineExistsAt(lineNumber);
 
+            return $"  {lineNumber}{GetOutputSpacesForLineAt(lineNumber)}|{SourceCode[LineNumberToIndex(lineNumber)]}\n";
+        }
         public string SeparateLineFromLineNumber(string line)
             => string.Join("|", line.Split("|")[1..]);
 
@@ -54,7 +57,6 @@ namespace Domain.Core.CodeFormatters
         // instead of the current one.
         public string GetTabulationForLineAt(int lineNumber, string line)
         {
-
             int previousTabulationLength = 0;
             int additionalTabulationLength = 0;
 
@@ -90,6 +92,8 @@ namespace Domain.Core.CodeFormatters
 
         public int GetPrefixLength(int currentLineNumber)
         {
+            CheckIfLineExistsAt(currentLineNumber);
+
             var lastLineNumber = SourceCode.Count;
             var lastLine = GroupOutputLineAt(lastLineNumber)[..^1];
             var lastLineContent = SeparateLineFromLineNumber(lastLine);
@@ -99,6 +103,9 @@ namespace Domain.Core.CodeFormatters
             return lastLine.Length - lastLineContent.Length + (currentLineContent == "" ? 1 : 0);
         }
 
+        // TODO: This method will be removed as well as the group of methods
+        // which add a tabulation to a string, because of it will be done as
+        // a plugin for programming languages.
         public string ModifyLine(string line, int lineNumber)
             => GetTabulationForLineAt(lineNumber, line) + line.Trim();
 
