@@ -13,8 +13,8 @@ namespace DynamicEditor.Core
         private readonly ICodeBuffer _codeBuffer;
         private readonly DeveloperMonitor _developerMonitor;
         private readonly IOutBuffer _outBuffer;
-        private readonly int WindowWidth;
-        private readonly int WindowHeight;
+        private int WindowWidth => _outBuffer.Width;
+        private int WindowHeight => _outBuffer.Height;
         private int RightEdge => _outBuffer.Width - 3;
         private int BottomEdge => _outBuffer.Height - 2;
         private Stopwatch _watch;
@@ -28,9 +28,6 @@ namespace DynamicEditor.Core
             _codeBuffer = codeBuffer;
             _outBuffer = outBuffer;
 
-            WindowWidth = _outBuffer.Width;
-            WindowHeight = _outBuffer.Height;
-
             TopOffset = 0;
 
             _developerMonitor = new DeveloperMonitor(
@@ -42,16 +39,13 @@ namespace DynamicEditor.Core
         public void Render()
         {
             StartWatching(); // Disable this if DeveloperMonitor is disabled;
-            FixWindowSize();
             DisableCursor();
             _codeBuffer.AdaptCodeForBufferSize(RightEdge);
             _outBuffer.SetCursorPosition(0, 0);
 
-            var width = _outBuffer.Width;
-            var height = _outBuffer.Height;
             var code = _codeBuffer.CodeWithLineNumbers;
-            var output = PrepareOutput(width, height, code);
-            var renderBottomEdge = height - 1;
+            var output = PrepareOutput(code);
+            var renderBottomEdge = WindowHeight - 1;
 
             for (var i = 0; i < renderBottomEdge; i++)
                 _outBuffer.Write(output[i]);
@@ -105,16 +99,6 @@ namespace DynamicEditor.Core
 
         private void DisableCursor()
             => _outBuffer.CursorVisible = false;
-
-        private void FixWindowSize()
-        {
-            if (_outBuffer.Width != WindowWidth || _outBuffer.Height != WindowHeight)
-            {
-                _outBuffer.Width = WindowWidth;
-                _outBuffer.Height = WindowHeight;
-                Render();
-            }
-        }
 
         private void FixCursorPosition()
         {
@@ -177,16 +161,16 @@ namespace DynamicEditor.Core
                 _codeBuffer.CursorPositionFromLeft,
                 (ulong)_lastFrameRenderTime);
 
-        private List<string> PrepareOutput(int width, int height, string code)
+        private List<string> PrepareOutput(string code)
         {
-            var output = GetOutput(width, code);
+            var output = GetOutput(WindowWidth, code);
 
-            if (output.Count < height)
+            if (output.Count < WindowHeight)
             {
-                var emptyLinesCount = height - output.Count;
+                var emptyLinesCount = WindowHeight - output.Count;
 
                 for (var i = 0; i < emptyLinesCount; i++)
-                    output.Add(new string(' ', width));
+                    output.Add(new string(' ', WindowWidth));
             }
 
             return output;
