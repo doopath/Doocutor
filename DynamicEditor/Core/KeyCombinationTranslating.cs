@@ -13,22 +13,10 @@ namespace DynamicEditor.Core
             _keyCombinationsMap = keyCombinationsMap;
         }
 
-        public string? TryGetCommandFor(string keyCombination)
-        {
-            try
-            {
-                return GetCommandFor(keyCombination);
-            }
-            catch (ItemNotFoundException)
-            {
-                return null;
-            }
-        }
-
         public string GetCommandFor(string keyCombination)
         {
             if (!_keyCombinationsMap.ContainsKey(keyCombination))
-                throw new ItemNotFoundException($"Command for key combination [{keyCombination}] not found");
+                return "";
 
             return _keyCombinationsMap[keyCombination];
         }

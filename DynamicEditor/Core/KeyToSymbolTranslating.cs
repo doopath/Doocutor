@@ -12,22 +12,10 @@ namespace DynamicEditor.Core
             _keyMap = keyMap;
         }
 
-        public string? TryGetSymbolFor(string input)
-        {
-            try
-            {
-                return GetSymbolFor(input);
-            }
-            catch (ItemNotFoundException)
-            {
-                return null;
-            }
-        }
-
         public string GetSymbolFor(string input)
         {
             if (!_keyMap.ContainsKey(input))
-                throw new ItemNotFoundException($"Symbol for key={input} was not found");
+                return "";
 
             return _keyMap[input];
         }

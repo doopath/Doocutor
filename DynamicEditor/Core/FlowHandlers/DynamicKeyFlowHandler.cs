@@ -4,7 +4,6 @@ using Domain.Core.CommandHandlers;
 using Domain.Core.Exceptions;
 using Domain.Core.FlowHandlers;
 using Domain.Core.Iterators;
-using DynamicEditor.Core.Exceptions;
 
 namespace DynamicEditor.Core.FlowHandlers
 {
@@ -38,7 +37,9 @@ namespace DynamicEditor.Core.FlowHandlers
             while (_inputFlowIterator.HasNext())
             {
                 var input = _inputFlowIterator.Next();
-                var command = _keyCombinationTranslating.TryGetCommandFor(input) ?? input;
+
+                var command = _keyCombinationTranslating.GetCommandFor(input);
+                command = command is "" ? input : command;
                 command = IsMatchedWithAPattern(input) ? GetCommand(input) : command;
 
                 if (IsTheAppendLineCommand(command))
@@ -82,13 +83,17 @@ namespace DynamicEditor.Core.FlowHandlers
                     return KeyCombinationsMap.Map[key];
             }
 
-            throw new ItemNotFoundException($"{input} matches no pattern");
+            return string.Empty;
         }
 
         private bool IsTheAppendLineCommand(string command)
             => command == ":appendLine ";
 
         private string ConvertToASymbol(string input)
-            => _keyToSymbolTranslating.TryGetSymbolFor(input) ?? input;
+        {
+            var symbol = _keyToSymbolTranslating.GetSymbolFor(input);
+
+            return symbol is "" ? input : symbol;
+        }
     }
 }
