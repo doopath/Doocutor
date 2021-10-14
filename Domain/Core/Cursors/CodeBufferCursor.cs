@@ -54,13 +54,8 @@ namespace Domain.Core.Cursors
             if (LineLengthOverflowedByCursor(position, currentLine) && NextLineOfTheBufferExists())
             {
                 var nextLineNumber = currentLineNumber + 1;
-                var nextLine = _formatter.GroupOutputLineAt(nextLineNumber);
 
-                if (nextLine.Length < currentLine.Length)
-                    CursorPositionFromLeft = nextLine.Length - 1;
-                else
-                    CursorPositionFromLeft = currentLine.Length - 1;
-
+                CursorPositionFromLeft = _formatter.GetPrefixLength(nextLineNumber);
                 CursorPositionFromTop++;
             }
             else if (LineLengthOverflowedByCursor(position, currentLine) && IsThisTheLastLine())

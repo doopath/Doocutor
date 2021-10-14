@@ -21,7 +21,12 @@ namespace DynamicEditor.Core
         }
 
         public void Start()
-            => Task.Run(AdaptOutBufferSize);
+        {
+            if (!_isActive)
+                _isActive = true;
+
+            Task.Run(AdaptOutBufferSize);
+        }
 
         public void Stop()
             => _isActive = false;

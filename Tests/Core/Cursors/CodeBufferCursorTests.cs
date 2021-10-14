@@ -42,6 +42,40 @@ namespace Tests.Core.Cursors
                 $"Left position of the cursor isn't correct! ({_cursor.CursorPositionFromLeft} != {startOfTheFirstLine})");
         }
 
+        [Test]
+        public void SetCursorPositionAtTheEndOfALineTest()
+        {
+            var lineLength = _formatter.GroupOutputLineAt(1)[..^1].Length;
+
+            _cursor.SetCursorPositionFromLeftAt(lineLength);
+
+            var isTheCursorTopPositionCorrect = _cursor.CursorPositionFromTop == 0;
+            var isTheCursorLeftPositionCorrect = _cursor.CursorPositionFromLeft == lineLength;
+
+            Assert.True(isTheCursorTopPositionCorrect,
+                $"Top position of the cursor isn't correct! ({_cursor.CursorPositionFromTop} != 0)");
+            Assert.True(isTheCursorLeftPositionCorrect,
+                $"Left position of the cursor isn't correct! ({_cursor.CursorPositionFromLeft} != {lineLength})");
+        }
+
+        [Test]
+        public void SetCursorPositionAtAnOverflowedPositionTest()
+        {
+            var lineLength = _formatter.GroupOutputLineAt(1)[..^1].Length;
+
+            _cursor.SetCursorPositionFromLeftAt(lineLength + 1);
+
+            var targetPositionFromLeft = _formatter.GetPrefixLength(2);
+
+            var isTheCursorTopPositionCorrect = _cursor.CursorPositionFromTop == 1;
+            var isTheCursorLeftPositionCorrect = _cursor.CursorPositionFromLeft == targetPositionFromLeft;
+
+            Assert.True(isTheCursorTopPositionCorrect,
+                $"Top position of the cursor isn't correct! ({_cursor.CursorPositionFromTop} != 0)");
+            Assert.True(isTheCursorLeftPositionCorrect,
+                $"Left position of the cursor isn't correct! ({_cursor.CursorPositionFromLeft} != {targetPositionFromLeft})");
+        }
+
         private void FillCode()
         {
             _code.Add("----------");
