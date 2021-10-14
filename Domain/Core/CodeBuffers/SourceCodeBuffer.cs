@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text.RegularExpressions;
 using Domain.Core.CodeBuffers.CodePointers;
 using Domain.Core.CodeFormatters;
@@ -10,56 +11,75 @@ namespace Domain.Core.CodeBuffers
 {
     public class SourceCodeBuffer : ICodeBuffer
     {
-        private static readonly List<string> SourceCode = InitialSourceCode.GetInitialSourceCode();
-        private static readonly ICodeFormatter CodeFormatter = new SourceCodeFormatter(SourceCode);
-        private static readonly ICursor Cursor = new CodeBufferCursor(
-            SourceCode,
-            CodeFormatter,
-            InitialSourceCode.InitialCursorPositionFromTop,
-            InitialSourceCode.InitialCursorPositionFromLeft);
-        private static readonly KeyboardCommandsProvider KeyboardCommandsProvider =
-            new(SourceCode, CodeFormatter, Cursor);
+        private readonly List<string> _sourceCode;
+        private readonly ICodeFormatter _codeFormatter;
+        private readonly ICursor _cursor;
+        private readonly KeyboardCommandsProvider _keyboardCommandsProvider;
 
-        public int BufferSize => SourceCode.Count;
+        public SourceCodeBuffer()
+        {
+            _sourceCode = InitialSourceCode.GetInitialSourceCode();
+            _codeFormatter = new SourceCodeFormatter(_sourceCode);
+            _cursor = new CodeBufferCursor(
+                _sourceCode,
+                _codeFormatter,
+                InitialSourceCode.InitialCursorPositionFromTop,
+                InitialSourceCode.InitialCursorPositionFromLeft);
+            _keyboardCommandsProvider = new(_sourceCode, _codeFormatter, _cursor);
+        }
 
-        public int CursorPositionFromTop => Cursor.CursorPositionFromTop;
+        public SourceCodeBuffer(ICodeBuffer buffer)
+        {
+            _sourceCode = buffer.Lines.ToList();
+            _codeFormatter = new SourceCodeFormatter(_sourceCode);
+            _cursor = new CodeBufferCursor(
+                _sourceCode,
+                _codeFormatter,
+                buffer.CursorPositionFromTop,
+                buffer.CursorPositionFromLeft);
+            _keyboardCommandsProvider = new(_sourceCode, _codeFormatter, _cursor);
+        }
 
-        public int CursorPositionFromLeft => Cursor.CursorPositionFromLeft;
+        public int BufferSize => _sourceCode.Count;
+
+        public int CursorPositionFromTop => _cursor.CursorPositionFromTop;
+
+        public int CursorPositionFromLeft => _cursor.CursorPositionFromLeft;
 
         public string CurrentLine => GetCurrentLine();
 
         public string CurrentLinePrefix =>
-            CodeFormatter.GetLineAt(CodeFormatter.IndexToLineNumber(CursorPositionFromTop)).Split(CurrentLine)[0];
+            _codeFormatter.GetLineAt(_codeFormatter.IndexToLineNumber(CursorPositionFromTop)).Split(CurrentLine)[0];
 
         /// <summary>
         /// Get source code numerated by lines.
         /// For example then you do code in a text editor or and IDE you
         /// want to know numbers of lines for easier navigating.
         /// </summary>
-        public string CodeWithLineNumbers => CodeFormatter.GetSourceCodeWithLineNumbers();
+        public string CodeWithLineNumbers => _codeFormatter.GetSourceCodeWithLineNumbers();
 
         /// <summary>
         /// Get bare code. Without line numbers and '\n' symbols.
         /// </summary>
-        public string Code => CodeFormatter.GetSourceCode();
+        public string Code => _codeFormatter.GetSourceCode();
 
         /// <summary>
         /// Get bare code split by line ends.
         /// </summary>
-        public string[] Lines => SourceCode.ToArray();
+        public string[] Lines => _sourceCode.ToArray();
 
-        public string GetLineAt(int lineNumber) => CodeFormatter.GetLineAt(lineNumber);
+        public string GetLineAt(int lineNumber) => _codeFormatter.GetLineAt(lineNumber);
 
         public string[] GetCodeBlock(ICodeBlockPointer pointer)
-            => Lines[CodeFormatter.LineNumberToIndex(pointer.StartLineNumber)..CodeFormatter.LineNumberToIndex(pointer.EndLineNumber)];
+            => Lines[_codeFormatter.LineNumberToIndex(pointer.StartLineNumber).._codeFormatter.LineNumberToIndex(pointer.EndLineNumber)];
 
         public void RemoveCodeBlock(ICodeBlockPointer pointer)
         {
-            CheckIfLineExistsAt(CodeFormatter.LineNumberToIndex(pointer.EndLineNumber - 1));
+            CheckIfLineExistsAt(_codeFormatter.LineNumberToIndex(pointer.EndLineNumber - 1));
 
             for (var i = 0; i < pointer.EndLineNumber - pointer.StartLineNumber; i++)
             {
-                SourceCode.RemoveAt(CodeFormatter.LineNumberToIndex(pointer.StartLineNumber));
+                _sourceCode.RemoveAt(_codeFormatter.LineNumberToIndex(pointer.StartLineNumber));
             }
 
             AddLineIfBufferIsEmpty();
@@ -69,64 +89,64 @@ namespace Domain.Core.CodeBuffers
         public void RemoveLineAt(int lineNumber)
         {
             CheckIfLineExistsAt(lineNumber);
-            SourceCode.RemoveAt(CodeFormatter.LineNumberToIndex(lineNumber));
+            _sourceCode.RemoveAt(_codeFormatter.LineNumberToIndex(lineNumber));
             SetPointerAtLastLineIfNecessary();
         }
 
         public void IncreaseBufferSize()
         {
-            var lastIndex = SourceCode.Count - 1;
-            SourceCode.Insert(lastIndex + 1, "");
+            var lastIndex = _sourceCode.Count - 1;
+            _sourceCode.Insert(lastIndex + 1, "");
         }
 
         public int GetPrefixLength()
-            => CodeFormatter.GetPrefixLength(CodeFormatter.IndexToLineNumber(CursorPositionFromTop));
+            => _codeFormatter.GetPrefixLength(_codeFormatter.IndexToLineNumber(CursorPositionFromTop));
 
         public void AdaptCodeForBufferSize(int maxLineLength)
-            => CodeFormatter.AdaptCodeForBufferSize(maxLineLength);
+            => _codeFormatter.AdaptCodeForBufferSize(maxLineLength);
 
         public void SetCursorPositionFromTopAt(int position)
-            => Cursor.SetCursorPositionFromTopAt(position);
+            => _cursor.SetCursorPositionFromTopAt(position);
 
         public void SetCursorPositionFromLeftAt(int position)
-            => Cursor.SetCursorPositionFromLeftAt(position);
+            => _cursor.SetCursorPositionFromLeftAt(position);
 
         public void IncCursorPositionFromLeft()
-            => Cursor.IncCursorPositionFromLeft();
+            => _cursor.IncCursorPositionFromLeft();
 
         public void DecCursorPositionFromLeft()
-            => Cursor.DecCursorPositionFromLeft();
+            => _cursor.DecCursorPositionFromLeft();
 
         public void IncCursorPositionFromTop()
-            => Cursor.IncCursorPositionFromTop();
+            => _cursor.IncCursorPositionFromTop();
 
         public void DecCursorPositionFromTop()
-            => Cursor.DecCursorPositionFromTop();
+            => _cursor.DecCursorPositionFromTop();
 
         public void ReplaceLineAt(int lineNumber, string newLine)
         {
             CheckIfLineExistsAt(lineNumber);
-            SourceCode[CodeFormatter.LineNumberToIndex(lineNumber)] = CodeFormatter.ModifyLine(newLine, lineNumber);
+            _sourceCode[_codeFormatter.LineNumberToIndex(lineNumber)] = _codeFormatter.ModifyLine(newLine, lineNumber);
         }
 
         public void Write(string line)
         {
-            SourceCode.Insert(
-                Cursor.CursorPositionFromTop,
-                CodeFormatter.ModifyLine(line, CodeFormatter.IndexToLineNumber(Cursor.CursorPositionFromTop)));
-            Cursor.IncCursorPositionFromTop();
+            _sourceCode.Insert(
+                _cursor.CursorPositionFromTop,
+                _codeFormatter.ModifyLine(line, _codeFormatter.IndexToLineNumber(_cursor.CursorPositionFromTop)));
+            _cursor.IncCursorPositionFromTop();
         }
 
         public void WriteAfter(int lineNumber, string line)
         {
             CheckIfLineExistsAt(lineNumber);
-            SourceCode.Insert(lineNumber, CodeFormatter.ModifyLine(line, lineNumber));
+            _sourceCode.Insert(lineNumber, _codeFormatter.ModifyLine(line, lineNumber));
         }
 
         public void WriteBefore(int lineNumber, string line)
         {
-            if (CodeFormatter.LineNumberToIndex(lineNumber) > -1 && lineNumber <= SourceCode.Count)
-                SourceCode.Insert(CodeFormatter.LineNumberToIndex(lineNumber), CodeFormatter.ModifyLine(line, 1));
+            if (_codeFormatter.LineNumberToIndex(lineNumber) > -1 && lineNumber <= _sourceCode.Count)
+                _sourceCode.Insert(_codeFormatter.LineNumberToIndex(lineNumber), _codeFormatter.ModifyLine(line, 1));
             else
                 throw new OutOfCodeBufferSizeException(
            $"You cannot write line before the line with line number = {lineNumber}!");
@@ -139,23 +159,23 @@ namespace Domain.Core.CodeBuffers
             else if (IsLowerCaseSymbol(newPart))
                 newPart = newPart.ToLower();
 
-            var lineNumber = CodeFormatter.IndexToLineNumber(CursorPositionFromTop);
-            var newLine = CodeFormatter.SeparateLineFromLineNumber(
-                CodeFormatter.GroupNewLineOfACurrentOne(newPart, CursorPositionFromTop, CursorPositionFromLeft));
+            var lineNumber = _codeFormatter.IndexToLineNumber(CursorPositionFromTop);
+            var newLine = _codeFormatter.SeparateLineFromLineNumber(
+                _codeFormatter.GroupNewLineOfACurrentOne(newPart, CursorPositionFromTop, CursorPositionFromLeft));
 
-            SourceCode[CodeFormatter.LineNumberToIndex(lineNumber)] = newLine;
+            _sourceCode[_codeFormatter.LineNumberToIndex(lineNumber)] = newLine;
             SetCursorPositionFromLeftAt(CursorPositionFromLeft + newPart.Length);
         }
 
         public void Enter()
-            => KeyboardCommandsProvider.Enter();
+            => _keyboardCommandsProvider.Enter();
 
         public void Backspace()
-            => KeyboardCommandsProvider.Backspace();
+            => _keyboardCommandsProvider.Backspace();
 
         private void CheckIfLineExistsAt(int lineNumber)
         {
-            if (SourceCode.Count < lineNumber || lineNumber < 1)
+            if (_sourceCode.Count < lineNumber || lineNumber < 1)
             {
                 throw new OutOfCodeBufferSizeException($"Line number {lineNumber} does not exist!");
             }
@@ -171,18 +191,18 @@ namespace Domain.Core.CodeBuffers
             => key.Replace("Shift+", "").ToUpper();
 
         private void SetPointerAtLastLineIfNecessary()
-            => Cursor.CursorPositionFromTop = Cursor.CursorPositionFromTop <= SourceCode.Count
-                ? Cursor.CursorPositionFromTop
-                : SourceCode.Count;
+            => _cursor.CursorPositionFromTop = _cursor.CursorPositionFromTop <= _sourceCode.Count
+                ? _cursor.CursorPositionFromTop
+                : _sourceCode.Count;
 
         private void AddLineIfBufferIsEmpty()
         {
-            if (SourceCode.Count == 0)
-                SourceCode.Add("");
+            if (_sourceCode.Count == 0)
+                _sourceCode.Add("");
         }
 
         private string GetCurrentLine()
-            => SourceCode.Count > 0 ? SourceCode[CursorPositionFromTop] : "";
+            => _sourceCode.Count > 0 ? _sourceCode[CursorPositionFromTop] : "";
     }
 
     internal static class InitialSourceCode

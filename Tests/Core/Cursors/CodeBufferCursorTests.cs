@@ -40,7 +40,6 @@ namespace Tests.Core.Cursors
                 $"Top position of the cursor isn't correct! ({_cursor.CursorPositionFromTop} != 0)");
             Assert.True(isTheCursorLeftPositionCorrect,
                 $"Left position of the cursor isn't correct! ({_cursor.CursorPositionFromLeft} != {startOfTheFirstLine})");
-
         }
 
         private void FillCode()

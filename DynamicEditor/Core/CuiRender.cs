@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
+using System.Threading;
 using Domain.Core.CodeBuffers;
 using Domain.Core.OutBuffers;
 using Spectre.Console;
@@ -10,6 +11,7 @@ namespace DynamicEditor.Core
 {
     internal sealed class CuiRender
     {
+        private static readonly object Locker = new();
         private readonly ICodeBuffer _codeBuffer;
         private readonly DeveloperMonitor _developerMonitor;
         private readonly IOutBuffer _outBuffer;
@@ -37,6 +39,12 @@ namespace DynamicEditor.Core
         }
 
         public void Render()
+        {
+            lock (Locker)
+                ShowFrame();
+        }
+
+        private void ShowFrame()
         {
             StartWatching(); // Disable this if DeveloperMonitor is disabled;
             DisableCursor();
