@@ -1,6 +1,6 @@
 ﻿namespace Domain.Core
 {
-    public interface EditorSetup
+    public interface IEditorSetup
     {
         void Run(string[] args);
     }

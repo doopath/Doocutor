@@ -18,7 +18,7 @@ namespace Doocutor
         {
             try
             {
-                var ops = ParseCommandLineOptions(args);
+                var ops = ParseCommandLineArguments(args);
                 var editor = SelectEditor(ops.EditorMode);
 
                 Start();
@@ -39,10 +39,11 @@ namespace Doocutor
             }
         }
 
-        private static EditorSetup SelectEditor(string mode) => mode.ToLower() switch
+        private static IEditorSetup SelectEditor(string? mode) => mode?.ToLower() switch
         {
             "dynamic" => new DynamicEditorSetup(),
             "static" => new StaticEditorSetup(),
+            null => new StaticEditorSetup(),
             _ => throw new ArgumentException($"Cannot run editor in mode={mode}")
         };
 
@@ -62,17 +63,14 @@ namespace Doocutor
                     OutputColorizing.colorizeForeground(ConsoleColor.Cyan, () => Console.WriteLine("\nGood bye!\n"));
                 });
 
-        private static ProgramOptions ParseCommandLineOptions(string[] args)
+        private static ProgramOptions ParseCommandLineArguments(string[] args)
         {
-            var parser = new Parser(with =>
-            {
-                with.IgnoreUnknownArguments = true;
-            });
-
-            var ops = parser.ParseArguments<ProgramOptions>(args);
             var result = new ProgramOptions();
 
-            ops.WithParsed(ops => result = ops);
+            Parser
+                .Default
+                .ParseArguments<ProgramOptions>(args)
+                .WithParsed(ops => result = ops);
 
             return result;
         }

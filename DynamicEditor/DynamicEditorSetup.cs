@@ -7,7 +7,7 @@ using DynamicEditor.Core.Iterators;
 
 namespace DynamicEditor
 {
-    public class DynamicEditorSetup : EditorSetup
+    public class DynamicEditorSetup : IEditorSetup
     {
         public void Run(string[] args)
         {
