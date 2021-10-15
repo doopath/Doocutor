@@ -10,6 +10,8 @@ namespace DynamicEditor.Core
         private int _positionFromTop;
         private int _positionFromLeft;
         private ulong _renderTime;
+        private ulong _renderedFrames;
+        private int _avgRenderTime;
         private const int Padding = 1;
         private readonly ConsoleColor _foreground = ConsoleColor.White;
         private readonly ConsoleColor _background = ConsoleColor.Magenta;
@@ -20,6 +22,8 @@ namespace DynamicEditor.Core
             _positionFromTop = positionFromTop;
             _positionFromLeft = positionFromLeft;
             _renderTime = 0;
+            _avgRenderTime = 0;
+            _renderedFrames = 0;
         }
 
         public void Show()
@@ -29,11 +33,7 @@ namespace DynamicEditor.Core
             Console.BackgroundColor = _background;
 
             var monitor = GetMonitor();
-
-            // secondLine += new string(' ', firstLine.Length - secondLine.Length - 1);
-            // thirdLine += new string(' ', firstLine.Length - thirdLine.Length - 1);
-
-            var output = monitor;//.Split("\n").ToList();
+            var output = monitor;
 
             foreach (var l in output)
             {
@@ -52,6 +52,13 @@ namespace DynamicEditor.Core
             _positionFromTop = positionFromTop;
             _positionFromLeft = positionFromLeft;
             _renderTime = renderTime;
+            _renderedFrames++;
+
+            // avg(seq(n)) = (x(n) - avg(seq(n-1))) / n
+            // where x is an element of the sequence, avg - a function of
+            // an average number and n is a number (index) of an element of the
+            // sequence.
+            _avgRenderTime += ((int)renderTime - _avgRenderTime) / (int)_renderedFrames;
         }
 
         private List<string> GetMonitor()
@@ -60,14 +67,12 @@ namespace DynamicEditor.Core
             {
                 $" Top: [ offset: {_topOffset}; pos: {_positionFromTop} ]",
                 $" Left: [ pos: {_positionFromLeft} ]",
-                $" Render time: {_renderTime}ms "
+                $" Render [ avg: {_avgRenderTime}ms; last: {_renderTime}ms ] "
             };
 
-            var longesLine = monitor.OrderByDescending(l => l.Length).ToArray()[0];
+            var longestLine = monitor.OrderByDescending(l => l.Length).ToArray()[0];
 
-            monitor = monitor.Select(l => l + new string(' ', longesLine.Length - l.Length + 1)).ToList();
-
-            return monitor;
+            return monitor.Select(l => l + new string(' ', longestLine.Length - l.Length + 1)).ToList();
         }
     }
 }

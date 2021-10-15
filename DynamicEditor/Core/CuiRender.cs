@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
-using System.Threading;
 using Domain.Core.CodeBuffers;
 using Domain.Core.OutBuffers;
 using Spectre.Console;
