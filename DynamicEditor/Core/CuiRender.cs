@@ -4,16 +4,17 @@ using System.Diagnostics;
 using System.Linq;
 using Domain.Core.CodeBuffers;
 using Domain.Core.OutBuffers;
+using Domain.Core.Scenes;
 using Spectre.Console;
 
 namespace DynamicEditor.Core
 {
     internal sealed class CuiRender
     {
-        private static readonly object Locker = new();
         private readonly ICodeBuffer _codeBuffer;
         private readonly DeveloperMonitor _developerMonitor;
         private readonly IOutBuffer _outBuffer;
+        private readonly IScene _scene;
         private int WindowWidth => _outBuffer.Width;
         private int WindowHeight => _outBuffer.Height;
         private int RightEdge => _outBuffer.Width - 3;
@@ -23,11 +24,12 @@ namespace DynamicEditor.Core
         private const int TopEdge = 1;
         public int TopOffset { get; set; }
 
-        public CuiRender(ICodeBuffer codeBuffer, IOutBuffer outBuffer)
+        public CuiRender(ICodeBuffer codeBuffer, IOutBuffer outBuffer, IScene scene)
         {
             _watch = new Stopwatch();
             _codeBuffer = codeBuffer;
             _outBuffer = outBuffer;
+            _scene = scene;
 
             TopOffset = 0;
 
@@ -39,26 +41,36 @@ namespace DynamicEditor.Core
 
         public void Render()
         {
-            lock (Locker)
-                ShowFrame();
+            lock (this)
+                ShowFrame(GetScene());
         }
 
-        private void ShowFrame()
+        public void Render(List<string> scene)
+        {
+            lock (this)
+                ShowFrame(scene);
+        }
+
+        public List<string> GetScene()
+        {
+            _scene.Compose(_codeBuffer.CodeWithLineNumbers, WindowWidth, WindowHeight, TopOffset);
+
+            return _scene.CurrentScene;
+        }
+
+        private void ShowFrame(List<string> scene)
         {
             StartWatching(); // Disable this if DeveloperMonitor is disabled;
             DisableCursor();
+
             _codeBuffer.AdaptCodeForBufferSize(RightEdge);
+
             _outBuffer.SetCursorPosition(0, 0);
-
-            var code = _codeBuffer.CodeWithLineNumbers;
-            var output = PrepareOutput(code);
-            var renderBottomEdge = WindowHeight - 1;
-
-            for (var i = 0; i < renderBottomEdge; i++)
-                _outBuffer.Write(output[i]);
-
+            _outBuffer.Fill(scene);
+            
             FixCursorPosition();
             UpdateCursorPosition();
+
             StopWatching(); // Disable this if DeveloperMonitor is disabled;
             ShowDeveloperMonitor(); // Dev-only feature
             EnableCursor();
@@ -163,31 +175,9 @@ namespace DynamicEditor.Core
 
         private void UpdateDeveloperMonitor()
             => _developerMonitor.Update(
-                TopOffset,
-                _codeBuffer.CursorPositionFromTop,
-                _codeBuffer.CursorPositionFromLeft,
-                (ulong)_lastFrameRenderTime);
-
-        private List<string> PrepareOutput(string code)
-        {
-            var output = GetOutput(WindowWidth, code);
-
-            if (output.Count < WindowHeight)
-            {
-                var emptyLinesCount = WindowHeight - output.Count;
-
-                for (var i = 0; i < emptyLinesCount; i++)
-                    output.Add(new string(' ', WindowWidth));
-            }
-
-            return output;
-        }
-
-        private List<string> GetOutput(int width, string code)
-            => code
-                .Split("\n")[TopOffset..]
-                .AsParallel()
-                .Select(l => l + (l.Length < width ? new string(' ', width - l.Length) : ""))
-                .ToList();
+               TopOffset,
+               _codeBuffer.CursorPositionFromTop,
+               _codeBuffer.CursorPositionFromLeft,
+               (ulong)_lastFrameRenderTime);
     }
 }

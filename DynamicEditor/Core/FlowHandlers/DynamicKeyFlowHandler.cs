@@ -37,7 +37,6 @@ namespace DynamicEditor.Core.FlowHandlers
             while (_inputFlowIterator.HasNext())
             {
                 var input = _inputFlowIterator.Next();
-
                 var command = _keyCombinationTranslating.GetCommandFor(input);
                 command = command is "" ? input : command;
                 command = IsMatchedWithAPattern(input) ? GetCommand(input) : command;

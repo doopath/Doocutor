@@ -8,6 +8,7 @@
         <ApplicationIcon>Resources/img/DoocutorIcon.ico</ApplicationIcon>
         <SatelliteResourceLanguages>en</SatelliteResourceLanguages>
         <StartupObject>Doocutor.Program</StartupObject>
+        <SignAssembly>False</SignAssembly>
     </PropertyGroup>
 
     <ItemGroup>

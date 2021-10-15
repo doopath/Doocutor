@@ -4,6 +4,7 @@ using DynamicEditor.Core;
 using DynamicEditor.Core.CommandHandlers;
 using DynamicEditor.Core.FlowHandlers;
 using DynamicEditor.Core.Iterators;
+using DynamicEditor.Core.Scenes;
 
 namespace DynamicEditor
 {
@@ -18,7 +19,8 @@ namespace DynamicEditor
             var iterator = new DynamicConsoleInputFlowIterator();
             var commandHandler = new DynamicCommandHandler();
             var standardOutBuffer = new StandardConsoleOutBuffer();
-            var cuiRender = new CuiRender(NativeCommandExecutionProvider.SourceCode, standardOutBuffer);
+            var cuiScene = new CuiScene();
+            var cuiRender = new CuiRender(NativeCommandExecutionProvider.SourceCode, standardOutBuffer, cuiScene);
             var outBufferSizeHandler = new OutBufferSizeHandler(standardOutBuffer, cuiRender, bufferSizeUpdateRate);
             var handler = new DynamicKeyFlowHandler(iterator, commandHandler, KeyCombinationsMap.Map, KeyMap.Map, cuiRender);
 

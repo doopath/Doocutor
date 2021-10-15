@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 
 namespace Domain.Core.OutBuffers
 {
@@ -16,6 +17,12 @@ namespace Domain.Core.OutBuffers
 
         public void Write(string line)
             => Console.Write(line);
+
+        public void Fill(IEnumerable<string> scene)
+        {
+            foreach (var line in scene)
+                Write(line);
+        }
 
         public void WriteLine(string line)
             => Console.WriteLine(line);
