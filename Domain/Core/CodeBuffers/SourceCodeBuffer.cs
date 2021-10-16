@@ -61,10 +61,7 @@ namespace Domain.Core.CodeBuffers
         public int CursorPositionFromLeft => _cursor.CursorPositionFromLeft;
 
         public string CurrentLine => GetCurrentLine();
-
-        public string CurrentLinePrefix =>
-            _codeFormatter.GetLineAt(_codeFormatter.IndexToLineNumber(CursorPositionFromTop)).Split(CurrentLine)[0];
-
+        
         /// <summary>
         /// Get source code numerated by lines.
         /// For example then you do code in a text editor or and IDE you
@@ -85,7 +82,8 @@ namespace Domain.Core.CodeBuffers
         public string GetLineAt(int lineNumber) => _codeFormatter.GetLineAt(lineNumber);
 
         public string[] GetCodeBlock(ICodeBlockPointer pointer)
-            => Lines[_codeFormatter.LineNumberToIndex(pointer.StartLineNumber).._codeFormatter.LineNumberToIndex(pointer.EndLineNumber)];
+            => Lines[_codeFormatter.LineNumberToIndex(pointer.StartLineNumber)
+                .._codeFormatter.LineNumberToIndex(pointer.EndLineNumber)];
 
         public void RemoveCodeBlock(ICodeBlockPointer pointer)
         {

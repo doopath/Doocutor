@@ -2,6 +2,7 @@
 using Domain.Core.CodeBuffers;
 using NUnit.Framework;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace Tests.Core.CodeBuffers
 {
@@ -62,8 +63,7 @@ namespace Tests.Core.CodeBuffers
         public void CursorPositionFromLeftTest()
         {
             var initialCursorPositionFromLeft = _codeBufferContent.CursorPositionFromLeft;
-            var defaultPrefixLength = 5;
-            var increasedCursorPositionFromLeft = defaultPrefixLength;
+            var increasedCursorPositionFromLeft = initialCursorPositionFromLeft + 1;
             
             var isCursorPositionFromLeftCorrect = _codeBuffer.CursorPositionFromLeft == initialCursorPositionFromLeft;
 
@@ -71,13 +71,89 @@ namespace Tests.Core.CodeBuffers
                 "Cursor position from left isn't correct! " +
                 $"({_codeBuffer.CursorPositionFromLeft}) != {initialCursorPositionFromLeft}");
             
-            _codeBuffer.IncCursorPositionFromTop();
+            _codeBuffer.IncCursorPositionFromLeft();
             
             isCursorPositionFromLeftCorrect = _codeBuffer.CursorPositionFromLeft == increasedCursorPositionFromLeft;
             
             Assert.True(isCursorPositionFromLeftCorrect,
                 "Cursor position from left isn't correct! " +
                 $"({_codeBuffer.CursorPositionFromLeft}) != {increasedCursorPositionFromLeft}");
+        }
+
+        [Test]
+        public void CurrentLineTest()
+        {
+            var initialPositionFromTop = 0;
+            var supposedLine = _codeBufferContent.SourceCode[initialPositionFromTop];
+            var line = _codeBuffer.CurrentLine;
+
+            var isTheLineCorrect = line == supposedLine;
+
+            Assert.True(isTheLineCorrect,
+                $"The current line isn't correct! ({line} != {supposedLine})");
+            
+            _codeBuffer.IncCursorPositionFromTop();
+
+            supposedLine = _codeBufferContent.SourceCode[initialPositionFromTop + 1];
+            line = _codeBuffer.CurrentLine;
+
+            isTheLineCorrect = line == supposedLine;
+            
+            Assert.True(isTheLineCorrect,
+                $"The current line isn't correct! ({line} != {supposedLine})");
+        }
+
+        [Test]
+        public void CodeWithLineNumbersTest()
+        {
+            var code = _codeBuffer.CodeWithLineNumbers;
+            var supposedCode = string.Join("\n",
+                _codeBufferContent.SourceCode.Select((l, i) => $"  {i + 1} |{l}"));
+
+            var isTheCodeCorrect = code == supposedCode;
+            
+            Assert.True(isTheCodeCorrect,
+                $"The gotten code with line numbers isn't correct! \n{code}!=\n{supposedCode}");
+        }
+
+        [Test]
+        public void CodeTest()
+        {
+            var code = _codeBuffer.Code;
+            var supposedCode = string.Join("\n", _codeBufferContent.SourceCode);
+            
+            var isTheCodeCorrect = code == supposedCode;
+            
+            Assert.True(isTheCodeCorrect,
+                $"The gotten code isn't correct! \n{code}!=\n{supposedCode}");
+        }
+
+        [Test]
+        public void LinesTest()
+        {
+            var lines = string.Join("", _codeBuffer.Lines);
+            var supposedLines = string.Join("", _codeBufferContent.SourceCode.ToArray());
+
+            var areTheLinesCorrect = lines == supposedLines;
+
+            Assert.True(areTheLinesCorrect,
+                $"The gotten lines aren't correct! \n{lines}\n!=\n{supposedLines}");
+        }
+
+        [Test]
+        public void GetLineAtTest()
+        {
+            for (var i = 0; i < _codeBufferContent.SourceCode.Count; i++)
+            {
+                var lineNumber = i + 1;
+                var line = _codeBufferContent.SourceCode[i];
+                var supposedLine = _codeBuffer.GetLineAt(lineNumber);
+
+                var isTheLineCorrect = line == supposedLine;
+
+                Assert.True(isTheLineCorrect,
+                    $"The gotten line (lineNumber={lineNumber}) isn't correct! ({line} != {supposedLine})");
+            }
         }
     }
 
@@ -93,6 +169,6 @@ namespace Tests.Core.CodeBuffers
 
         public int CursorPositionFromTop => 0;
 
-        public int CursorPositionFromLeft => 0;
+        public int CursorPositionFromLeft => 5;
     }
 }

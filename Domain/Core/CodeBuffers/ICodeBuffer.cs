@@ -27,7 +27,6 @@ namespace Domain.Core.CodeBuffers
         string CodeWithLineNumbers { get; }
         string Code { get; }
         string CurrentLine { get; }
-        string CurrentLinePrefix { get; }
         string[] Lines { get; }
         int Size { get; }
         int CursorPositionFromLeft { get; }
