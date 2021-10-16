@@ -1,11 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
-using System.Linq;
 using Domain.Core.CodeBuffers;
 using Domain.Core.OutBuffers;
 using Domain.Core.Scenes;
-using Spectre.Console;
 
 namespace DynamicEditor.Core
 {

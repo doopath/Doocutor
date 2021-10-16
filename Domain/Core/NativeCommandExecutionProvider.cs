@@ -85,7 +85,7 @@ namespace Domain.Core
         private static void ExecuteViewCommand(NativeCommand command)
         {
             Console.Clear();
-            Console.WriteLine(SourceCode.CodeWithLineNumbers);
+            Console.WriteLine(SourceCode.CodeWithLineNumbers + "\n");
         }
 
         private static void ExecuteWriteAfterCommand(NativeCommand command)

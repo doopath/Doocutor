@@ -24,7 +24,8 @@ namespace Domain.Core
                "Try :help command for help list, :info for a description of the Doocutor or :quit for quitting.";
 
         public static string Description
-            => $"Doocutor v{Version}. Build: {BuildInfo}\n (last update: {Updated})" +
+            => $"Doocutor v{Version}. Build: {BuildInfo}.\n"+
+               $"Last update: {Updated}.\n" +
                "It's a terminal text editor written in C# and F# by Doopath.";
 
         public static void ShowDoocutorInfo() => Console.WriteLine(DoocutorInfo);
