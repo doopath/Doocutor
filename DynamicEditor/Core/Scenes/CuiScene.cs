@@ -20,6 +20,7 @@ namespace DynamicEditor.Core.Scenes
                 buffer.Add(output[i]);
 
             CurrentScene = buffer;
+            OnSceneUpdated?.Invoke(CurrentScene);
         }
 
         private List<string> PrepareOutput(string code, int width, int height, int topOffset)

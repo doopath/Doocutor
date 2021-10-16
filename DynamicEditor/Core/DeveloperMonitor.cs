@@ -13,8 +13,6 @@ namespace DynamicEditor.Core
         private ulong _renderedFrames;
         private int _avgRenderTime;
         private const int Padding = 1;
-        private readonly ConsoleColor _foreground = ConsoleColor.White;
-        private readonly ConsoleColor _background = ConsoleColor.Magenta;
 
         public DeveloperMonitor(int topOffset, int positionFromTop, int positionFromLeft)
         {
@@ -29,8 +27,6 @@ namespace DynamicEditor.Core
         public void Show()
         {
             Console.CursorTop = Padding;
-            Console.ForegroundColor = _foreground;
-            Console.BackgroundColor = _background;
 
             var monitor = GetMonitor();
             var output = monitor;
@@ -39,11 +35,9 @@ namespace DynamicEditor.Core
             {
                 Console.CursorLeft = Console.WindowWidth - l.Length - 2;
 
-                Console.Write(l);
+                Console.Write($"\u001b[45;1m{l}\u001b[0m");
                 Console.SetCursorPosition(Console.WindowWidth - Padding, Console.CursorTop + Padding);
             }
-
-            Console.ResetColor();
         }
 
         public void Update(int topOffset, int positionFromTop, int positionFromLeft, ulong renderTime)

@@ -26,5 +26,8 @@ namespace Domain.Core.OutBuffers
 
         public void WriteLine(string line)
             => Console.WriteLine(line);
+
+        public string FormatToMarkup(string line)
+            => line.Replace("[", "[[").Replace("]", "]]");
     }
 }

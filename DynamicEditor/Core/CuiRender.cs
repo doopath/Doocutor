@@ -53,6 +53,7 @@ namespace DynamicEditor.Core
 
         public List<string> GetScene()
         {
+            _codeBuffer.AdaptCodeForBufferSize(RightEdge);
             _scene.Compose(_codeBuffer.CodeWithLineNumbers, WindowWidth, WindowHeight, TopOffset);
 
             return _scene.CurrentScene;
@@ -62,8 +63,6 @@ namespace DynamicEditor.Core
         {
             StartWatching(); // Disable this if DeveloperMonitor is disabled;
             DisableCursor();
-
-            _codeBuffer.AdaptCodeForBufferSize(RightEdge);
 
             _outBuffer.SetCursorPosition(0, 0);
             _outBuffer.Fill(scene);
