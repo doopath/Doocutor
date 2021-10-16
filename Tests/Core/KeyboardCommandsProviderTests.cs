@@ -7,7 +7,7 @@ using NUnit.Framework;
 namespace Tests.Core
 {
     [TestFixture]
-    public class KeyboardCommandsProviderTests
+    internal class KeyboardCommandsProviderTests
     {
         private KeyboardCommandsProvider _provider;
         private List<string> _code;

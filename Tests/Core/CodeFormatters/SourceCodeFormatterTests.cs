@@ -6,7 +6,7 @@ using NUnit.Framework;
 namespace Tests.Core.CodeFormatters
 {
     [TestFixture]
-    public class SourceCodeFormatterTests
+    internal class SourceCodeFormatterTests
     {
         private List<string> _code;
         private ICodeFormatter _formatter;
@@ -19,13 +19,6 @@ namespace Tests.Core.CodeFormatters
             FillCode();
 
             _formatter = new SourceCodeFormatter(_code);
-        }
-
-        [TearDown]
-        public void Teardown()
-        {
-            _code = null;
-            _formatter = null;
         }
 
         [Test]

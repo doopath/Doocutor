@@ -5,7 +5,7 @@ using NUnit.Framework;
 namespace Tests.Core
 {
     [TestFixture]
-    public class NativeCommandExecutionProviderTests
+    internal class NativeCommandExecutionProviderTests
     {
         [SetUp]
         public void SetUp()

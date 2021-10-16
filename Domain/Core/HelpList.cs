@@ -77,6 +77,6 @@ namespace Domain.Core
             => ($"[mediumpurple bold]{ColorizeArguments(commandDescriptionPair[0])}[/]", ColorizeArguments(commandDescriptionPair[1]));
 
         private static string ColorizeMatchAsAnArgumentIn(string command, object match)
-            => command.Replace(match.ToString(), $"[royalblue1 italic]{match}[/]");
+            => command.Replace(match?.ToString(), $"[royalblue1 italic]{match}[/]");
     }
 }

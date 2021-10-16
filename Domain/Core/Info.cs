@@ -6,17 +6,15 @@ namespace Domain.Core
     {
         /// <summary>
         /// Build version variants:
-        /// U - unstable
-        /// S - stable
-        /// F - full
-        /// C - changes
-        /// B - build
+        /// U / S - unstable / stable,
+        /// F / C - full / changes,
+        /// B - build,
         /// DDMMYY - DayMonthYear datetime
         /// </summary>
         public const string BuildInfo = "UCB-161021";
         public const string Updated = "16th of October 2021";
         public const string Company = "Doopath";
-        public const string Version = "0.4.20.2";
+        public const string Version = "0.4.21.3";
         public const string ProductName = "Doocutor";
         public const string BuildType = "Debug";
 
@@ -26,9 +24,8 @@ namespace Domain.Core
                "Try :help command for help list, :info for a description of the Doocutor or :quit for quitting.";
 
         public static string Description
-            => $"Doocutor v{Version}. Build: {BuildInfo}\n" +
-               "Doocutor is doopath's project with GPL V3 license.\n" +
-               "It's C# code executor (doo & executor) working in a terminal.";
+            => $"Doocutor v{Version}. Build: {BuildInfo}\n (last update: {Updated})" +
+               "It's a terminal text editor written in C# and F# by Doopath.";
 
         public static void ShowDoocutorInfo() => Console.WriteLine(DoocutorInfo);
     }

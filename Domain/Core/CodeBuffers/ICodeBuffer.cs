@@ -29,7 +29,7 @@ namespace Domain.Core.CodeBuffers
         string CurrentLine { get; }
         string CurrentLinePrefix { get; }
         string[] Lines { get; }
-        int BufferSize { get; }
+        int Size { get; }
         int CursorPositionFromLeft { get; }
         int CursorPositionFromTop { get; }
     }

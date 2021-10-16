@@ -9,6 +9,7 @@
         <SatelliteResourceLanguages>en</SatelliteResourceLanguages>
         <StartupObject>Doocutor.Program</StartupObject>
         <SignAssembly>False</SignAssembly>
+        <Nullable>enable</Nullable>
     </PropertyGroup>
 
     <ItemGroup>

@@ -145,7 +145,7 @@ namespace DynamicEditor.Core
         {
             if (_codeBuffer.CursorPositionFromLeft > RightEdge)
             {
-                if (_codeBuffer.CursorPositionFromTop >= _codeBuffer.BufferSize)
+                if (_codeBuffer.CursorPositionFromTop >= _codeBuffer.Size)
                     _codeBuffer.IncreaseBufferSize();
 
                 var targetPositionFromLeft = _codeBuffer.GetPrefixLength() + 1;

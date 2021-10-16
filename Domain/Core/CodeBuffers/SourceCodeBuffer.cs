@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text.RegularExpressions;
+using Domain.Core.CodeBufferContents;
 using Domain.Core.CodeBuffers.CodePointers;
 using Domain.Core.CodeFormatters;
 using Domain.Core.Cursors;
@@ -18,13 +19,14 @@ namespace Domain.Core.CodeBuffers
 
         public SourceCodeBuffer()
         {
-            _sourceCode = InitialSourceCode.GetInitialSourceCode();
+            var initialContentOfTheBuffer = new InitialSourceCodeBufferContent();
+            _sourceCode = initialContentOfTheBuffer.SourceCode;
             _codeFormatter = new SourceCodeFormatter(_sourceCode);
             _cursor = new CodeBufferCursor(
                 _sourceCode,
                 _codeFormatter,
-                InitialSourceCode.InitialCursorPositionFromTop,
-                InitialSourceCode.InitialCursorPositionFromLeft);
+                initialContentOfTheBuffer.CursorPositionFromTop,
+                initialContentOfTheBuffer.CursorPositionFromLeft);
             _keyboardCommandsProvider = new(_sourceCode, _codeFormatter, _cursor);
         }
 
@@ -40,7 +42,19 @@ namespace Domain.Core.CodeBuffers
             _keyboardCommandsProvider = new(_sourceCode, _codeFormatter, _cursor);
         }
 
-        public int BufferSize => _sourceCode.Count;
+        public SourceCodeBuffer(ICodeBufferContent initialContentOfTheBuffer)
+        {
+            _sourceCode = initialContentOfTheBuffer.SourceCode;
+            _codeFormatter = new SourceCodeFormatter(_sourceCode);
+            _cursor = new CodeBufferCursor(
+                _sourceCode,
+                _codeFormatter,
+                initialContentOfTheBuffer.CursorPositionFromTop,
+                initialContentOfTheBuffer.CursorPositionFromLeft);
+            _keyboardCommandsProvider = new(_sourceCode, _codeFormatter, _cursor);
+        }
+
+        public int Size => _sourceCode.Count;
 
         public int CursorPositionFromTop => _cursor.CursorPositionFromTop;
 
@@ -173,6 +187,7 @@ namespace Domain.Core.CodeBuffers
         public void Backspace()
             => _keyboardCommandsProvider.Backspace();
 
+        #region Private Methods
         private void CheckIfLineExistsAt(int lineNumber)
         {
             if (_sourceCode.Count < lineNumber || lineNumber < 1)
@@ -203,23 +218,6 @@ namespace Domain.Core.CodeBuffers
 
         private string GetCurrentLine()
             => _sourceCode.Count > 0 ? _sourceCode[CursorPositionFromTop] : "";
-    }
-
-    internal static class InitialSourceCode
-    {
-        public static List<string> GetInitialSourceCode() => new(new[] {
-            "namespace Doocutor",
-            "{",
-            "    public class Program",
-            "    {",
-            "        public static void Main(string[] args)",
-            "        {",
-            "        }",
-            "    }",
-            "}",
-        });
-
-        public const int InitialCursorPositionFromTop = 6;
-        public const int InitialCursorPositionFromLeft = 14;
+        #endregion
     }
 }
