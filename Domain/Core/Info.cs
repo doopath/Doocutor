@@ -11,10 +11,10 @@ namespace Domain.Core
         /// B - build,
         /// DDMMYY - DayMonthYear datetime
         /// </summary>
-        public const string BuildInfo = "UCB-161021";
-        public const string Updated = "16th of October 2021";
+        public const string BuildInfo = "UCB-171021";
+        public const string Updated = "17th of October 2021";
         public const string Company = "Doopath";
-        public const string Version = "0.4.21.3";
+        public const string Version = "0.4.22.1";
         public const string ProductName = "Doocutor";
         public const string BuildType = "Debug";
 

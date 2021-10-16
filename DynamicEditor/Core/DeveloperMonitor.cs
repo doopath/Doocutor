@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using Spectre.Console;
 
 namespace DynamicEditor.Core
 {
@@ -34,8 +35,10 @@ namespace DynamicEditor.Core
             foreach (var l in output)
             {
                 Console.CursorLeft = Console.WindowWidth - l.Length - 2;
-
-                Console.Write($"\u001b[45;1m{l}\u001b[0m");
+                
+                var line = l.Replace("[", "[[").Replace("]", "]]");
+                AnsiConsole.Markup($"[bold italic white on royalblue1]{line}[/]");
+                
                 Console.SetCursorPosition(Console.WindowWidth - Padding, Console.CursorTop + Padding);
             }
         }
