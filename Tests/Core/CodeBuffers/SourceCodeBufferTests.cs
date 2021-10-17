@@ -1,6 +1,8 @@
 ﻿using Domain.Core.CodeBufferContents;
 using Domain.Core.CodeBuffers;
+using Domain.Core.CodeBuffers.CodePointers;
 using NUnit.Framework;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -22,85 +24,80 @@ namespace Tests.Core.CodeBuffers
         [Test]
         public void SizeTest()
         {
+            void test(int bufferSize)
+            {
+                var isSizeOfTheBufferCorrect = _codeBuffer.Size == bufferSize;
+
+                Assert.True(isSizeOfTheBufferCorrect,
+                    $"Size of the code buffer isn't correct! ({_codeBuffer} != {bufferSize})");
+            }
+
             var initialBufferSize = _codeBufferContent.SourceCode.Count;
-            var extendedBufferSize = initialBufferSize + 1;
 
-            var isSizeOfTheBufferCorrect = _codeBuffer.Size == initialBufferSize;
-
-            Assert.True(isSizeOfTheBufferCorrect,
-                $"Size of the code buffer isn't correct! ({_codeBuffer} != {initialBufferSize})");
+            test(initialBufferSize);
 
             _codeBuffer.Write(string.Empty);
 
-            isSizeOfTheBufferCorrect = _codeBuffer.Size == extendedBufferSize;
-
-            Assert.True(isSizeOfTheBufferCorrect,
-                $"Size of the code buffer isn't correct! ({_codeBuffer} != {initialBufferSize})");
+            test(initialBufferSize + 1);
         }
 
         [Test]
         public void CursorPositionFromTopTest()
         {
-            var initialCursorPositionFromTop = _codeBufferContent.CursorPositionFromTop;
-            var increasedCursorPositionFromTop = initialCursorPositionFromTop + 1;
+            void test(int cursorPositionFromTop)
+            {
+                var isCursorPositionFromTopCorrect = _codeBuffer.CursorPositionFromTop == cursorPositionFromTop;
 
-            var isCursorPositionFromTopCorrect = _codeBuffer.CursorPositionFromTop == initialCursorPositionFromTop;
+                Assert.True(isCursorPositionFromTopCorrect,
+                    "Cursor position from top isn't correct! " +
+                    $"({_codeBuffer.CursorPositionFromTop}) != {cursorPositionFromTop}");
+            }
 
-            Assert.True(isCursorPositionFromTopCorrect,
-                "Cursor position from top isn't correct! " +
-                $"({_codeBuffer.CursorPositionFromTop}) != {initialCursorPositionFromTop}");
-            
+            test(0);
+
             _codeBuffer.IncCursorPositionFromTop();
-            
-            isCursorPositionFromTopCorrect = _codeBuffer.CursorPositionFromTop == increasedCursorPositionFromTop;
-            
-            Assert.True(isCursorPositionFromTopCorrect,
-                "Cursor position from top isn't correct! " +
-                $"({_codeBuffer.CursorPositionFromTop}) != {increasedCursorPositionFromTop}");
+
+            test(1);
         }
 
         [Test]
         public void CursorPositionFromLeftTest()
         {
-            var initialCursorPositionFromLeft = _codeBufferContent.CursorPositionFromLeft;
-            var increasedCursorPositionFromLeft = initialCursorPositionFromLeft + 1;
-            
-            var isCursorPositionFromLeftCorrect = _codeBuffer.CursorPositionFromLeft == initialCursorPositionFromLeft;
+            void test(int cursorPositionFromLeft)
+            {
+                var isCursorPositionFromLeftCorrect = _codeBuffer.CursorPositionFromLeft == cursorPositionFromLeft;
 
-            Assert.True(isCursorPositionFromLeftCorrect,
-                "Cursor position from left isn't correct! " +
-                $"({_codeBuffer.CursorPositionFromLeft}) != {initialCursorPositionFromLeft}");
-            
+                Assert.True(isCursorPositionFromLeftCorrect,
+                    "Cursor position from left isn't correct! " +
+                    $"({_codeBuffer.CursorPositionFromLeft}) != {cursorPositionFromLeft}");
+            }
+
+            test(5);
+
             _codeBuffer.IncCursorPositionFromLeft();
-            
-            isCursorPositionFromLeftCorrect = _codeBuffer.CursorPositionFromLeft == increasedCursorPositionFromLeft;
-            
-            Assert.True(isCursorPositionFromLeftCorrect,
-                "Cursor position from left isn't correct! " +
-                $"({_codeBuffer.CursorPositionFromLeft}) != {increasedCursorPositionFromLeft}");
+
+            test(6);
         }
 
         [Test]
         public void CurrentLineTest()
         {
-            var initialPositionFromTop = 0;
-            var supposedLine = _codeBufferContent.SourceCode[initialPositionFromTop];
-            var line = _codeBuffer.CurrentLine;
+            void test(int cursorPositionFromTop)
+            {
+                var supposedLine = _codeBufferContent.SourceCode[cursorPositionFromTop];
+                var line = _codeBuffer.CurrentLine;
 
-            var isTheLineCorrect = line == supposedLine;
+                var isTheLineCorrect = line == supposedLine;
 
-            Assert.True(isTheLineCorrect,
-                $"The current line isn't correct! ({line} != {supposedLine})");
-            
+                Assert.True(isTheLineCorrect,
+                    $"The current line isn't correct! ({line} != {supposedLine})");
+            }
+
+            test(0);
+
             _codeBuffer.IncCursorPositionFromTop();
 
-            supposedLine = _codeBufferContent.SourceCode[initialPositionFromTop + 1];
-            line = _codeBuffer.CurrentLine;
-
-            isTheLineCorrect = line == supposedLine;
-            
-            Assert.True(isTheLineCorrect,
-                $"The current line isn't correct! ({line} != {supposedLine})");
+            test(1);
         }
 
         [Test]
@@ -154,6 +151,54 @@ namespace Tests.Core.CodeBuffers
                 Assert.True(isTheLineCorrect,
                     $"The gotten line (lineNumber={lineNumber}) isn't correct! ({line} != {supposedLine})");
             }
+        }
+
+        [Test]
+        public void GetCodeBlockTest()
+        {
+            void test(ICodeBlockPointer pointer)
+            {
+                var supposedCodeBlock = string.Join("", _codeBufferContent
+                    .SourceCode
+                    .Skip(pointer.StartLineNumber - 1)
+                    .Take(pointer.EndLineNumber - pointer.StartLineNumber));
+                var codeBlock = string.Join("", _codeBuffer.GetCodeBlock(pointer));
+
+                var isCodeBlockCorrect = codeBlock == supposedCodeBlock;
+
+                Assert.True(isCodeBlockCorrect,
+                    $"The gotten code block isn't correct! \n{codeBlock}\n!=\n{supposedCodeBlock}");
+            }
+
+            test(new CodeBlockPointer(1, 1));
+            test(new CodeBlockPointer(1, 4));
+            test(new CodeBlockPointer(1, 5));
+        }
+
+        [Test]
+        public void RemoveCodeBlockTest()
+        {
+            void test(ICodeBlockPointer pointer)
+            {
+                var start = pointer.StartLineNumber;
+                var end = pointer.EndLineNumber;
+                var codeContent = _codeBufferContent.SourceCode.ToArray();
+                var supposedCode = string.Join("\n",
+                    codeContent[..(pointer.StartLineNumber - 1)].Concat(codeContent[(pointer.EndLineNumber - 1)..]));
+
+                _codeBuffer.RemoveCodeBlock(pointer);
+
+                var isCodeCorrect = _codeBuffer.Code == supposedCode;
+
+                Assert.True(isCodeCorrect,
+                    $"The gotten code after removing line since {start} to {end} isn't correct! \n{_codeBuffer.Code}\n!=\n{supposedCode}");
+            }
+
+            test(new CodeBlockPointer(1, 2));
+            Setup();
+            test(new CodeBlockPointer(1, 3));
+            Setup();
+            test(new CodeBlockPointer(1, 5));
         }
     }
 

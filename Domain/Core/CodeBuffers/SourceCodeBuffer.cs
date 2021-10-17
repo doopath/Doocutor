@@ -87,7 +87,7 @@ namespace Domain.Core.CodeBuffers
 
         public void RemoveCodeBlock(ICodeBlockPointer pointer)
         {
-            CheckIfLineExistsAt(_codeFormatter.LineNumberToIndex(pointer.EndLineNumber - 1));
+            CheckIfLineExistsAt(_codeFormatter.LineNumberToIndex(pointer.EndLineNumber));
 
             for (var i = 0; i < pointer.EndLineNumber - pointer.StartLineNumber; i++)
             {
@@ -101,6 +101,10 @@ namespace Domain.Core.CodeBuffers
         public void RemoveLineAt(int lineNumber)
         {
             CheckIfLineExistsAt(lineNumber);
+
+            if (lineNumber == 1 && _sourceCode.Count == 1)
+                throw new OutOfCodeBufferSizeException($"Cannot remove the first line when the buffer's size is 1!");
+
             _sourceCode.RemoveAt(_codeFormatter.LineNumberToIndex(lineNumber));
             SetPointerAtLastLineIfNecessary();
         }
