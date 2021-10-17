@@ -1,10 +1,11 @@
-﻿using Domain.Core.CodeBufferContents;
-using Domain.Core.CodeBuffers;
-using Domain.Core.CodeBuffers.CodePointers;
-using NUnit.Framework;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using Domain.Core.CodeBufferContents;
+using Domain.Core.CodeBuffers;
+using Domain.Core.CodeBuffers.CodePointers;
+using Domain.Core.Exceptions;
+using NUnit.Framework;
 
 namespace Tests.Core.CodeBuffers
 {
@@ -19,6 +20,7 @@ namespace Tests.Core.CodeBuffers
         {
             _codeBufferContent = new MockSourceCodeBufferContent();
             _codeBuffer = new SourceCodeBuffer(_codeBufferContent);
+            Checkbox.TurnOff();
         }
 
         [Test]
@@ -108,7 +110,7 @@ namespace Tests.Core.CodeBuffers
                 _codeBufferContent.SourceCode.Select((l, i) => $"  {i + 1} |{l}"));
 
             var isTheCodeCorrect = code == supposedCode;
-            
+
             Assert.True(isTheCodeCorrect,
                 $"The gotten code with line numbers isn't correct! \n{code}!=\n{supposedCode}");
         }
@@ -118,9 +120,9 @@ namespace Tests.Core.CodeBuffers
         {
             var code = _codeBuffer.Code;
             var supposedCode = string.Join("\n", _codeBufferContent.SourceCode);
-            
+
             var isTheCodeCorrect = code == supposedCode;
-            
+
             Assert.True(isTheCodeCorrect,
                 $"The gotten code isn't correct! \n{code}!=\n{supposedCode}");
         }
@@ -188,9 +190,9 @@ namespace Tests.Core.CodeBuffers
 
                 _codeBuffer.RemoveCodeBlock(pointer);
 
-                var isCodeCorrect = _codeBuffer.Code == supposedCode;
+                var isTheCodeCorrect = _codeBuffer.Code == supposedCode;
 
-                Assert.True(isCodeCorrect,
+                Assert.True(isTheCodeCorrect,
                     $"The gotten code after removing line since {start} to {end} isn't correct! \n{_codeBuffer.Code}\n!=\n{supposedCode}");
             }
 
@@ -200,11 +202,64 @@ namespace Tests.Core.CodeBuffers
             Setup();
             test(new CodeBlockPointer(1, 5));
         }
+
+        [Test]
+        public void RemoveLineAtTest()
+        {
+            void test(int lineNumber)
+            {
+                var supposedCodeLines = _codeBufferContent.SourceCode;
+                var targetIndex = lineNumber - 1;
+
+                // This line should be higher than the one below, because of in the incorrectArgumentTest
+                // the RemoveLineAt method must throw an error, but if you place a call of this one lower,
+                // then the RemoveAt method will throw the ArgumentOutOfRangeException.
+                _codeBuffer.RemoveLineAt(lineNumber);
+                supposedCodeLines.RemoveAt(targetIndex);
+
+                var code = _codeBuffer.Code;
+                var supposedCode = string.Join("\n", supposedCodeLines);
+
+                var isTheCodeCorrect = code == supposedCode;
+
+                Assert.True(isTheCodeCorrect,
+                    $"The gotten code isn't correct! \n{code}\n!=\n{supposedCode}");
+            }
+
+            void incorrectArgumentTest(int lineNumber)
+            {
+                try
+                {
+                    test(lineNumber);
+                }
+                catch (OutOfCodeBufferSizeException)
+                {
+                    Checkbox.TurnOn();
+                }
+                finally
+                {
+                    Assert.True(Checkbox.State,
+                        "The method RemoveLineAt should throw the " +
+                        $"OutOfCodeBufferSizeException if an incorrect argument passed ({lineNumber})!");
+                }
+            }
+
+            test(4);
+            Setup();
+            test(1);
+            Setup();
+            test(2);
+            Setup();
+
+            incorrectArgumentTest(5);
+            Setup();
+            incorrectArgumentTest(0);
+        }
     }
 
     internal class MockSourceCodeBufferContent : ICodeBufferContent
     {
-        public List<string> SourceCode => new(new []
+        public List<string> SourceCode => new(new[]
         {
             "--------------------",
             "----------",

@@ -35,10 +35,10 @@ namespace DynamicEditor.Core
             foreach (var l in output)
             {
                 Console.CursorLeft = Console.WindowWidth - l.Length - 2;
-                
+
                 var line = l.Replace("[", "[[").Replace("]", "]]");
                 AnsiConsole.Markup($"[bold italic white on royalblue1]{line}[/]");
-                
+
                 Console.SetCursorPosition(Console.WindowWidth - Padding, Console.CursorTop + Padding);
             }
         }
