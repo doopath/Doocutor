@@ -226,11 +226,22 @@ namespace Tests.Core.CodeBuffers
                     $"The gotten code isn't correct! \n{code}\n!=\n{supposedCode}");
             }
 
-            void incorrectArgumentTest(int lineNumber)
+            test(4);
+            Setup();
+            test(1);
+            Setup();
+            test(2);
+            Setup();
+        }
+
+        [Test]
+        public void RemoveLineAtIncorrectLineNumberTest()
+        {
+            void test(int lineNumber)
             {
                 try
                 {
-                    test(lineNumber);
+                    _codeBuffer.RemoveLineAt(lineNumber);
                 }
                 catch (OutOfCodeBufferSizeException)
                 {
@@ -244,20 +255,13 @@ namespace Tests.Core.CodeBuffers
                 }
             }
 
-            test(4);
+            test(5);
             Setup();
-            test(1);
-            Setup();
-            test(2);
-            Setup();
-
-            incorrectArgumentTest(5);
-            Setup();
-            incorrectArgumentTest(0);
+            test(0);
         }
     }
 
-    internal class MockSourceCodeBufferContent : ICodeBufferContent
+    internal sealed record MockSourceCodeBufferContent : ICodeBufferContent
     {
         public List<string> SourceCode => new(new[]
         {
