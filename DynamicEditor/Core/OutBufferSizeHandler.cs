@@ -2,6 +2,7 @@ using System;
 using System.Threading;
 using System.Threading.Tasks;
 using Domain.Core.OutBuffers;
+using Libraries.Core;
 
 namespace DynamicEditor.Core
 {
@@ -46,6 +47,10 @@ namespace DynamicEditor.Core
                         _render.Render();
                 }
                 catch (ArgumentOutOfRangeException) { }
+                catch (Exception exc)
+                {
+                    ErrorHandling.fileLogger.Error(exc);
+                }
             }
         }
     }

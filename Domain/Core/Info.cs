@@ -14,7 +14,7 @@ namespace Domain.Core
         public const string BuildInfo = "UCB-171021";
         public const string Updated = "17th of October 2021";
         public const string Company = "Doopath";
-        public const string Version = "0.4.22.1";
+        public const string Version = "0.4.23.2";
         public const string ProductName = "Doocutor";
         public const string BuildType = "Debug";
 
@@ -24,7 +24,7 @@ namespace Domain.Core
                "Try :help command for help list, :info for a description of the Doocutor or :quit for quitting.";
 
         public static string Description
-            => $"Doocutor v{Version}. Build: {BuildInfo}.\n"+
+            => $"Doocutor v{Version}. Build: {BuildInfo}.\n" +
                $"Last update: {Updated}.\n" +
                "It's a terminal text editor written in C# and F# by Doopath.";
 
