@@ -82,7 +82,10 @@ namespace Domain.Core.CodeBuffers
         public string GetLineAt(int lineNumber) => _codeFormatter.GetLineAt(lineNumber);
 
         public string[] GetCodeBlock(ICodeBlockPointer pointer)
-            => Lines[_codeFormatter.LineNumberToIndex(pointer.StartLineNumber).._codeFormatter.LineNumberToIndex(pointer.EndLineNumber)];
+            => Lines
+                .Skip(pointer.StartLineNumber - 1)
+                .Take(pointer.EndLineNumber - pointer.StartLineNumber)
+                .ToArray();
 
         public void RemoveCodeBlock(ICodeBlockPointer pointer)
         {

@@ -259,6 +259,53 @@ namespace Tests.Core.CodeBuffers
             Setup();
             test(0);
         }
+
+        [Test]
+        public void IncreaseBufferSizeTest()
+        {
+            var initialBufferSize = _codeBufferContent.SourceCode.Count;
+            var supposedIncreasedBufferSize = initialBufferSize + 1;
+            var initialContent = string.Join("", _codeBufferContent.SourceCode);
+
+            _codeBuffer.IncreaseBufferSize();
+
+            var content = string.Join("", _codeBuffer.Lines);
+
+            var isTheContentCorrect = content == initialContent;
+            var isTheBufferSizeCorrect = _codeBuffer.Size == supposedIncreasedBufferSize;
+
+            Assert.True(isTheContentCorrect,
+                $"The gotten content isn't correct! '{content}' != '{initialContent}'");
+            Assert.True(isTheBufferSizeCorrect,
+                $"Size of the buffer isn't correct! ({_codeBuffer.Size} != {supposedIncreasedBufferSize})");
+        }
+
+        [Test]
+        public void GetPrefixLengthTest()
+        {
+            void test(int linesCount)
+            {
+                // The prefix for line at line number < 10 is '  x |', so its
+                // length equals 5. If we want to get max length of the prefix,
+                // we should replace the 'x' (a number) by the max line number.
+                // If the count of lines is 100: '  x |' => '  100 |'.
+                var supposedPrefixLength = 5 + linesCount.ToString().Length - 1;
+
+                while (_codeBuffer.Size < linesCount)
+                    _codeBuffer.IncreaseBufferSize();
+
+                var prefixLength = _codeBuffer.GetPrefixLength();
+                var isThePrefixLengthCorrect = prefixLength == supposedPrefixLength;
+
+                Assert.True(isThePrefixLengthCorrect,
+                    $"Length of the prefix isn't correct! Buffer's size is {linesCount}. ({prefixLength} != {supposedPrefixLength})");
+            }
+
+            test(0);
+            test(10);
+            test(100);
+            test(1000);
+        }
     }
 
     internal sealed record MockSourceCodeBufferContent : ICodeBufferContent
