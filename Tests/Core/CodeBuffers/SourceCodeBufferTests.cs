@@ -306,6 +306,61 @@ namespace Tests.Core.CodeBuffers
             test(100);
             test(1000);
         }
+
+        [Test]
+        public void ReplaceLineAtTest()
+        {
+            void test(int lineNumber, string newLine)
+            {
+                var index = lineNumber - 1;
+                var supposedLines = _codeBufferContent.SourceCode;
+
+                supposedLines[index] = newLine;
+                _codeBuffer.ReplaceLineAt(lineNumber, newLine);
+
+                var supposedCode = string.Join("\n", supposedLines);
+                var code = _codeBuffer.Code;
+
+                var isTheCodeCorrect = code == supposedCode;
+
+                Assert.True(isTheCodeCorrect,
+                    $"The gotten code isn't correct! \n{code}\n!=\n{supposedCode}");
+            }
+
+            test(1, "");
+            Setup();
+            test(2, "");
+            Setup();
+            test(1, "new line");
+            Setup();
+            test(2, "new line");
+        }
+
+        [Test]
+        public void WriteTest()
+        {
+            void test(string line)
+            {
+                var supposedLines = _codeBufferContent.SourceCode;
+
+                supposedLines.Insert(_codeBufferContent.CursorPositionFromTop, line);
+                _codeBuffer.Write(line);
+
+                var supposedCode = string.Join("\n", supposedLines);
+                var code = _codeBuffer.Code;
+
+                var isTheCodeCorrect = code == supposedCode;
+
+                Assert.True(isTheCodeCorrect,
+                    $"The gotten code isn't correct! \n{code}\n!=\n{supposedCode}");
+            }
+
+            test("");
+            Setup();
+            test("\\");
+            Setup();
+            test("new line");
+        }
     }
 
     internal sealed record MockSourceCodeBufferContent : ICodeBufferContent
