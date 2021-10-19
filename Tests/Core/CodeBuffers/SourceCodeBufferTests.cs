@@ -424,6 +424,7 @@ namespace Tests.Core.CodeBuffers
             void test(int top, int left, string newPart, string supposedLine)
             {
                 var lineNumber = top + 1;
+                newPart = Regex.IsMatch(newPart, "[A-Z]") ? $"Shift+{newPart}" : newPart;
 
                 _codeBuffer.SetCursorPositionFromTopAt(top);
                 _codeBuffer.SetCursorPositionFromLeftAt(left);
@@ -458,8 +459,7 @@ namespace Tests.Core.CodeBuffers
             foreach (var symbol in symbols)
             {
                 var newPart = symbol.ToString();
-                var symbolToAdd = Regex.IsMatch(newPart, "[A-Z]") ? $"Shift+{newPart}" : newPart;
-                test(0, middleOfTheFirstLine, symbolToAdd, $"----------{newPart}----------");
+                test(0, middleOfTheFirstLine, newPart, $"----------{newPart}----------");
             }
         }
     }
