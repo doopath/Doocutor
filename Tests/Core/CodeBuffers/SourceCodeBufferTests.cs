@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
+using System.Text.RegularExpressions;
 using Domain.Core.CodeBufferContents;
 using Domain.Core.CodeBuffers;
 using Domain.Core.CodeBuffers.CodePointers;
@@ -194,12 +196,12 @@ namespace Tests.Core.CodeBuffers
 
                 Assert.True(isTheCodeCorrect,
                     $"The gotten code after removing line since {start} to {end} isn't correct! \n{_codeBuffer.Code}\n!=\n{supposedCode}");
+
+                Setup();
             }
 
             test(new CodeBlockPointer(1, 2));
-            Setup();
             test(new CodeBlockPointer(1, 3));
-            Setup();
             test(new CodeBlockPointer(1, 5));
         }
 
@@ -224,14 +226,13 @@ namespace Tests.Core.CodeBuffers
 
                 Assert.True(isTheCodeCorrect,
                     $"The gotten code isn't correct! \n{code}\n!=\n{supposedCode}");
+
+                Setup();
             }
 
             test(4);
-            Setup();
             test(1);
-            Setup();
             test(2);
-            Setup();
         }
 
         [Test]
@@ -252,11 +253,12 @@ namespace Tests.Core.CodeBuffers
                     Assert.True(Checkbox.State,
                         "The method RemoveLineAt should throw the " +
                         $"OutOfCodeBufferSizeException if an incorrect argument passed ({lineNumber})!");
+
+                    Setup();
                 }
             }
 
             test(5);
-            Setup();
             test(0);
         }
 
@@ -325,14 +327,13 @@ namespace Tests.Core.CodeBuffers
 
                 Assert.True(isTheCodeCorrect,
                     $"The gotten code isn't correct! \n{code}\n!=\n{supposedCode}");
+
+                Setup();
             }
 
             test(1, "");
-            Setup();
             test(2, "");
-            Setup();
             test(1, "new line");
-            Setup();
             test(2, "new line");
         }
 
@@ -353,13 +354,113 @@ namespace Tests.Core.CodeBuffers
 
                 Assert.True(isTheCodeCorrect,
                     $"The gotten code isn't correct! \n{code}\n!=\n{supposedCode}");
+
+                Setup();
             }
 
             test("");
-            Setup();
             test("\\");
-            Setup();
             test("new line");
+        }
+
+        [Test]
+        public void WriteAfterTest()
+        {
+            void test(int lineNumber, string line)
+            {
+                var supposedLines = _codeBufferContent.SourceCode;
+
+                supposedLines.Insert(lineNumber, line);
+                _codeBuffer.WriteAfter(lineNumber, line);
+
+                var supposedCode = string.Join("\n", supposedLines);
+                var code = _codeBuffer.Code;
+
+                var isTheCodeCorrect = code == supposedCode;
+
+                Assert.True(isTheCodeCorrect,
+                    $"The gotten code isn't correct! \n{code}\n!=\n{supposedCode}");
+
+                Setup();
+            }
+
+            test(1, "");
+            test(1, "new line");
+            test(4, "");
+            test(4, "new line");
+        }
+
+        [Test]
+        public void WriteBeforeTest()
+        {
+            void test(int lineNumber, string line)
+            {
+                var supposedLines = _codeBufferContent.SourceCode;
+
+                supposedLines.Insert(lineNumber - 1, line);
+                _codeBuffer.WriteBefore(lineNumber, line);
+
+                var supposedCode = string.Join("\n", supposedLines);
+                var code = _codeBuffer.Code;
+
+                var isTheCodeCorrect = code == supposedCode;
+
+                Assert.True(isTheCodeCorrect,
+                    $"The gotten code isn't correct! \n{code}\n!=\n{supposedCode}");
+
+                Setup();
+
+            }
+
+            test(1, "");
+            test(1, "new line");
+            test(4, "");
+            test(4, "new line");
+        }
+
+        [Test]
+        public void AppendLineTest()
+        {
+            void test(int top, int left, string newPart, string supposedLine)
+            {
+                var lineNumber = top + 1;
+
+                _codeBuffer.SetCursorPositionFromTopAt(top);
+                _codeBuffer.SetCursorPositionFromLeftAt(left);
+                _codeBuffer.AppendLine(newPart);
+
+                var line = _codeBuffer.GetLineAt(lineNumber);
+
+                var isTheLineCorrect = line == supposedLine;
+
+                Assert.True(isTheLineCorrect,
+                    $"The gotten line isn't correct! ({line} != {supposedLine})");
+
+                Setup();
+            }
+
+            var prefixLength = _codeBufferContent.CursorPositionFromLeft;
+            var endOfTheFirstLine = _codeBufferContent.SourceCode[0].Length + prefixLength;
+            var middleOfTheFirstLine = _codeBufferContent.SourceCode[0].Length / 2 + prefixLength;
+            var symbols =
+                ("abcdefghijklmnopqrstuvwxyz1234567890-=" +
+                 "ABCDEFGHIJKLMNOPQRSTUVWXYZ!@#$%^&*()_+" +
+                 "[]{}\\|;':\",./<>?").ToArray();
+
+            test(0, prefixLength, "%", "%--------------------");
+            test(0, prefixLength, "\\", "\\--------------------");
+            test(0, endOfTheFirstLine, "%", "--------------------%");
+            test(0, endOfTheFirstLine, "\\", "--------------------\\");
+            test(0, middleOfTheFirstLine, "%", "----------%----------");
+            test(0, middleOfTheFirstLine, "\\", "----------\\----------");
+            test(3, prefixLength, "%", "%");
+
+            foreach (var symbol in symbols)
+            {
+                var newPart = symbol.ToString();
+                var symbolToAdd = Regex.IsMatch(newPart, "[A-Z]") ? $"Shift+{newPart}" : newPart;
+                test(0, middleOfTheFirstLine, symbolToAdd, $"----------{newPart}----------");
+            }
         }
     }
 

@@ -177,11 +177,10 @@ namespace Domain.Core.CodeBuffers
             else if (IsLowerCaseSymbol(newPart))
                 newPart = newPart.ToLower();
 
-            var lineNumber = _codeFormatter.IndexToLineNumber(CursorPositionFromTop);
             var newLine = _codeFormatter.SeparateLineFromLineNumber(
                 _codeFormatter.GroupNewLineOfACurrentOne(newPart, CursorPositionFromTop, CursorPositionFromLeft));
 
-            _sourceCode[_codeFormatter.LineNumberToIndex(lineNumber)] = newLine;
+            _sourceCode[CursorPositionFromTop] = newLine;
             SetCursorPositionFromLeftAt(CursorPositionFromLeft + newPart.Length);
         }
 
