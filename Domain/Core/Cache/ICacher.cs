@@ -1,4 +1,4 @@
-﻿namespace Domain.Core.Caches
+﻿namespace Domain.Core.Cache
 {
     public interface ICache<T>
     {

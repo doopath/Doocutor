@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using Domain.Core.Caches;
+using Domain.Core.Cache;
 using Domain.Core.CodeBuffers;
 using Domain.Core.CodeBuffers.CodePointers;
 using Domain.Core.CodeCompilers;
