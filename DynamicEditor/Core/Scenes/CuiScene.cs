@@ -5,7 +5,7 @@ using System.Linq;
 
 namespace DynamicEditor.Core.Scenes
 {
-    internal class CuiScene : IScene
+    public class CuiScene : IScene
     {
         public List<string> CurrentScene { get; private set; }
         public event Action<List<string>> OnSceneUpdated;

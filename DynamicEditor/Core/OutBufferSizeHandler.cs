@@ -6,27 +6,27 @@ using Libraries.Core;
 
 namespace DynamicEditor.Core
 {
-    internal class OutBufferSizeHandler
+    public class OutBufferSizeHandler
     {
+        public int UpdateRate { get; set; }
         private readonly IOutBuffer _outBuffer;
         private readonly CuiRender _render;
-        private readonly int _updateRate;
         private bool _isActive;
 
         public OutBufferSizeHandler(IOutBuffer outBuffer, CuiRender render, int updateRate)
         {
+            UpdateRate = updateRate;
             _outBuffer = outBuffer;
             _render = render;
-            _updateRate = updateRate;
             _isActive = true;
         }
 
-        public void Start()
+        public Task Start()
         {
             if (!_isActive)
                 _isActive = true;
 
-            Task.Run(AdaptOutBufferSize);
+            return Task.Run(AdaptOutBufferSize);
         }
 
         public void Stop()
@@ -39,7 +39,7 @@ namespace DynamicEditor.Core
                 var width = _outBuffer.Width;
                 var height = _outBuffer.Height;
 
-                Thread.Sleep(_updateRate);
+                Thread.Sleep(UpdateRate);
 
                 try
                 {

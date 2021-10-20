@@ -1,12 +1,12 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text.RegularExpressions;
-using Domain.Core.CodeBufferContents;
+﻿using Domain.Core.CodeBufferContents;
 using Domain.Core.CodeBuffers.CodePointers;
 using Domain.Core.CodeFormatters;
 using Domain.Core.Cursors;
 using Domain.Core.Exceptions;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text.RegularExpressions;
 
 namespace Domain.Core.CodeBuffers
 {
@@ -167,7 +167,7 @@ namespace Domain.Core.CodeBuffers
                 _sourceCode.Insert(_codeFormatter.LineNumberToIndex(lineNumber), _codeFormatter.ModifyLine(line, 1));
             else
                 throw new OutOfCodeBufferSizeException(
-           $"You cannot write line before the line with line number = {lineNumber}!");
+                    $"You cannot write line before the line with line number = {lineNumber}!");
         }
 
         public void AppendLine(string newPart)

@@ -7,7 +7,7 @@ using Domain.Core.Scenes;
 
 namespace DynamicEditor.Core
 {
-    internal sealed class CuiRender
+    public sealed class CuiRender
     {
         private readonly ICodeBuffer _codeBuffer;
         private readonly DeveloperMonitor _developerMonitor;
