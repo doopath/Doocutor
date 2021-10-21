@@ -48,6 +48,7 @@ namespace DynamicEditor.Core
         {
             lock (this)
             {
+                CleanPaddingArea();
                 ShowFrame(scene);
                 UpdateDeveloperMonitor();
             }
@@ -61,21 +62,6 @@ namespace DynamicEditor.Core
             _scene.Compose(_codeBuffer.CodeWithLineNumbers, WindowWidth, WindowHeight, TopOffset);
 
             return _scene.CurrentScene;
-        }
-
-        private void ShowFrame(List<string> scene)
-        {
-            StartWatching(); // Disable this if DeveloperMonitor is disabled;
-            DisableCursor();
-
-            _outBuffer.SetCursorPosition(0, 0);
-            _outBuffer.Fill(scene);
-            
-            FixCursorPosition();
-            UpdateCursorPosition();
-
-            StopWatching(); // Disable this if DeveloperMonitor is disabled;
-            EnableCursor();
         }
 
         public void Clear()
@@ -92,6 +78,56 @@ namespace DynamicEditor.Core
 
         public void MoveCursorRight()
             => DoCursorMovement(_codeBuffer.IncCursorPositionFromLeft);
+
+        private void ShowFrame(List<string> scene)
+        {
+            StartWatching(); // Disable this if DeveloperMonitor is disabled;
+            DisableCursor();
+
+            _outBuffer.SetCursorPosition(0, 0);
+            _outBuffer.Fill(scene);
+
+            FixCursorPosition();
+            UpdateCursorPosition();
+
+            StopWatching(); // Disable this if DeveloperMonitor is disabled;
+            EnableCursor();
+        }
+
+        private void CleanPaddingArea()
+        {
+            _outBuffer.CursorVisible = false;
+            var initialCursorPosition = (_outBuffer.CursorTop, _outBuffer.CursorLeft);
+
+            CleanBottomPaddingArea();
+            CleanRightPaddingArea();
+
+            (_outBuffer.CursorTop, _outBuffer.CursorLeft) = initialCursorPosition;
+            _outBuffer.CursorVisible = true;
+        }
+
+        private void CleanBottomPaddingArea()
+        {
+            for (var i = BottomEdge + 1; i < _outBuffer.Height; i++)
+            {
+                var emptyLine = new string(' ', _outBuffer.Width);
+                _outBuffer.SetCursorPosition(0, i);
+                _outBuffer.Write(emptyLine);
+            }
+        }
+
+        private void CleanRightPaddingArea()
+        {
+            for (var l = RightEdge + 1; l < _outBuffer.Width; l++)
+            {
+                for (var t = 0; t <= BottomEdge; t++)
+                {
+                    var emptyLine = new string(' ', _outBuffer.Width - RightEdge);
+                    _outBuffer.SetCursorPosition(l, t);
+                    _outBuffer.Write(emptyLine);
+                }
+            }
+        }
 
         private void StartWatching()
             => _watch.Start();

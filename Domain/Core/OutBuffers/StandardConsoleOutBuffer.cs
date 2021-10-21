@@ -9,6 +9,8 @@ namespace Domain.Core.OutBuffers
         public int Width { get => Console.WindowWidth; set => Console.WindowWidth = value; }
         public int Height { get => Console.WindowHeight; set => Console.WindowHeight = value; }
         public bool CursorVisible { get => Console.CursorVisible; set => Console.CursorVisible = value; }
+        public int CursorTop { get => Console.CursorTop; set => Console.CursorTop = value; }
+        public int CursorLeft { get => Console.CursorLeft; set => Console.CursorLeft = value; }
 
         public void Clear()
             => Console.Clear();

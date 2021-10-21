@@ -12,7 +12,7 @@ namespace DynamicEditor.Core
     {
         public string MonitorForeground { get; set; }
         public string MonitorBackground {  get; set; }
-        private IScene _scene;
+        private readonly IScene _scene;
         private int _topOffset;
         private int _positionFromTop;
         private int _positionFromLeft;

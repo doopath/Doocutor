@@ -5,7 +5,6 @@ using DynamicEditor.Core;
 using DynamicEditor.Core.Scenes;
 using NUnit.Framework;
 using System.Collections.Generic;
-using System.Threading;
 
 namespace Tests.Core
 {
@@ -13,7 +12,6 @@ namespace Tests.Core
     internal class OutputNodeTests
     {
         private const int UpdateRate = 300;
-        private OutBufferSizeHandler _outBufferSizeHandler;
         private ICodeBuffer _codeBuffer;
         private IOutBuffer _outBuffer;
         private CuiRender _render;
@@ -26,46 +24,10 @@ namespace Tests.Core
             _codeBuffer = new SourceCodeBuffer();
             _scene = new CuiScene();
             _render = new CuiRender(_codeBuffer, _outBuffer, _scene);
-            _outBufferSizeHandler = new OutBufferSizeHandler(_outBuffer, _render, UpdateRate);
             Checkbox.TurnOff();
             MockConsoleBuffer.ResetBuffer();
         }
 
-        [Test]
-        public void AdaptOutBufferSizeTest()
-        {
-            void test(int rate, int width, int height)
-            {
-                // This test my be depended by power of your machine.
-                // Just keep it in mind and if the test is failed, try to increase
-                // the value of the delay variable or the passed 'rate' value.
-                var delay = rate * 2;
-
-                _outBufferSizeHandler.UpdateRate = rate;
-                _scene.OnSceneUpdated += _scene => Checkbox.TurnOn();
-
-                _outBufferSizeHandler.Start();
-
-                Thread.Sleep(rate);
-                _outBuffer.Width = width;
-                _outBuffer.Height = height;
-                Thread.Sleep(delay);
-
-                _outBufferSizeHandler.Stop();
-
-                var isTheOutBufferRefreshed = Checkbox.State;
-
-                Assert.True(isTheOutBufferRefreshed,
-                    $"The out buffer isn't refreshed after the delay! (rate={rate})");
-
-                Setup();
-            }
-
-            test(100, 30, 20);
-            test(90, 30, 20);
-            test(80, 30, 20);
-            test(70, 30, 20);
-        }
     }
 
     internal sealed record MockConsole : IOutBuffer
@@ -73,6 +35,8 @@ namespace Tests.Core
         public int Width { get => MockConsoleBuffer.Width; set => MockConsoleBuffer.Width = value; }
         public int Height { get => MockConsoleBuffer.Height; set => MockConsoleBuffer.Height = value; }
         public bool CursorVisible { get => MockConsoleBuffer.CursorVisible; set => MockConsoleBuffer.CursorVisible = value; }
+        public int CursorTop { get => MockConsoleBuffer.CursorTop; set => MockConsoleBuffer.CursorTop = value; }
+        public int CursorLeft { get => MockConsoleBuffer.CursorLeft; set => MockConsoleBuffer.CursorLeft = value; }
 
         public void Clear()
             => MockConsoleBuffer.Content.Clear();

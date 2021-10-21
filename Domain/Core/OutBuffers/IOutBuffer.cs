@@ -7,6 +7,8 @@ namespace Domain.Core.OutBuffers
         int Width { get; set; }
         int Height { get; set; }
         bool CursorVisible { get; set; }
+        int CursorTop { get; set; }
+        int CursorLeft { get; set; }
         void WriteLine(string line);
         void Write(string line);
         void Fill(IEnumerable<string> scene);
