@@ -34,23 +34,29 @@ namespace DynamicEditor.Core
             _developerMonitor = new DeveloperMonitor(
                 TopOffset,
                 _codeBuffer.CursorPositionFromTop,
-                _codeBuffer.CursorPositionFromLeft);
+                _codeBuffer.CursorPositionFromLeft,
+                _scene);
+
+            _developerMonitor.TurnOn(); // dev-only feature
+            UpdateDeveloperMonitor(); // dev-only feature
         }
 
         public void Render()
-        {
-            lock (this)
-                ShowFrame(GetScene());
-        }
+            => Render(GetScene());
 
         public void Render(List<string> scene)
         {
             lock (this)
+            {
                 ShowFrame(scene);
+                UpdateDeveloperMonitor();
+            }
         }
 
         public List<string> GetScene()
         {
+            UpdateDeveloperMonitor();
+
             _codeBuffer.AdaptCodeForBufferSize(RightEdge);
             _scene.Compose(_codeBuffer.CodeWithLineNumbers, WindowWidth, WindowHeight, TopOffset);
 
@@ -69,7 +75,6 @@ namespace DynamicEditor.Core
             UpdateCursorPosition();
 
             StopWatching(); // Disable this if DeveloperMonitor is disabled;
-            ShowDeveloperMonitor(); // Dev-only feature
             EnableCursor();
         }
 
@@ -159,22 +164,11 @@ namespace DynamicEditor.Core
                 _codeBuffer.CursorPositionFromLeft,
                 _codeBuffer.CursorPositionFromTop - TopOffset);
 
-        private void ShowDeveloperMonitor()
-        {
-            DisableCursor();
-
-            UpdateDeveloperMonitor();
-            _developerMonitor.Show();
-
-            UpdateCursorPosition();
-            EnableCursor();
-        }
-
         private void UpdateDeveloperMonitor()
             => _developerMonitor.Update(
-               TopOffset,
-               _codeBuffer.CursorPositionFromTop,
-               _codeBuffer.CursorPositionFromLeft,
-               (ulong)_lastFrameRenderTime);
+                   TopOffset,
+                   _codeBuffer.CursorPositionFromTop,
+                   _codeBuffer.CursorPositionFromLeft,
+                   (ulong)_lastFrameRenderTime);
     }
 }

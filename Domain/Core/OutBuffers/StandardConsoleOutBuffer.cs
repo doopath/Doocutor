@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using Spectre.Console;
 
 namespace Domain.Core.OutBuffers
 {
@@ -26,8 +27,5 @@ namespace Domain.Core.OutBuffers
 
         public void WriteLine(string line)
             => Console.WriteLine(line);
-
-        public string FormatToMarkup(string line)
-            => line.Replace("[", "[[").Replace("]", "]]");
     }
 }

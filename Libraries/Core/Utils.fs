@@ -1,6 +1,5 @@
 ﻿module Libraries.Core.Utils
 
-
 let getFirst (l: 'a list) = l.[0]
 
 let getSame i = i

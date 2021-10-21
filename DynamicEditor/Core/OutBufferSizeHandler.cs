@@ -3,22 +3,30 @@ using System.Threading;
 using System.Threading.Tasks;
 using Domain.Core.OutBuffers;
 using Libraries.Core;
+using System.ComponentModel.DataAnnotations;
 
 namespace DynamicEditor.Core
 {
     public class OutBufferSizeHandler
     {
+        /// <summary>
+        /// Update rate in milliseconds.
+        /// Value cannot be negative and should be in a range [0; 1000].
+        /// It's not recommended to set a value less than 100,
+        /// because the behavior becomes unstable.
+        /// </summary>
+        [Range(0, 1000)]
         public int UpdateRate { get; set; }
+
         private readonly IOutBuffer _outBuffer;
         private readonly CuiRender _render;
-        private bool _isActive;
+        private bool _isActive = true;
 
         public OutBufferSizeHandler(IOutBuffer outBuffer, CuiRender render, int updateRate)
         {
             UpdateRate = updateRate;
             _outBuffer = outBuffer;
             _render = render;
-            _isActive = true;
         }
 
         public Task Start()

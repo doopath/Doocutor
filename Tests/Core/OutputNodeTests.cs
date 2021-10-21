@@ -38,7 +38,7 @@ namespace Tests.Core
             {
                 // This test my be depended by power of your machine.
                 // Just keep it in mind and if the test is failed, try to increase
-                // the value of the dealy variable or the passed 'rate' value.
+                // the value of the delay variable or the passed 'rate' value.
                 var delay = rate * 2;
 
                 _outBufferSizeHandler.UpdateRate = rate;
