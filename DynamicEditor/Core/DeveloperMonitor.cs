@@ -1,10 +1,8 @@
-using System;
 using System.Collections.Generic;
 using System.Linq;
 using Spectre.Console;
 using Pastel;
 using Domain.Core.Scenes;
-using Libraries.Core;
 
 namespace DynamicEditor.Core
 {
@@ -55,8 +53,6 @@ namespace DynamicEditor.Core
             _avgRenderTime += ((int)renderTime - _avgRenderTime) / (int)_renderedFrames;
         }
 
-
-
         private void AddMonitor(List<string> sceneContent)
         {
             var monitor = GetMonitor();
@@ -67,7 +63,7 @@ namespace DynamicEditor.Core
 
                 var colorPreifxLength = GetColorPrefixLength();
                 var monitorLine = monitor[i - Padding];
-                var right = sceneLine.Length + colorPreifxLength - monitorLine.Length - Padding;
+                var right = sceneLine.Length - monitorLine.Length - Padding + colorPreifxLength;
 
                 sceneContent[i] = sceneLine[..right] + monitorLine;
             }
@@ -82,7 +78,9 @@ namespace DynamicEditor.Core
                 $" Render [ avg: {_avgRenderTime}ms; last: {_renderTime}ms ] "
             };
 
-            var longestLine = monitor.OrderByDescending(l => l.Length).ToArray()[0];
+            var longestLine = monitor
+                .OrderByDescending(l => l.Length)
+                .ToArray()[0];
 
             return ColorizeMonitor(monitor.Select(l => l + new string(' ', longestLine.Length - l.Length + 1) + "\n")).ToList();
         }

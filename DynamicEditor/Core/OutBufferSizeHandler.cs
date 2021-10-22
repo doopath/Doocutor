@@ -54,7 +54,9 @@ namespace DynamicEditor.Core
                     if (width != _outBuffer.Width || height != _outBuffer.Height)
                         _render.Render();
                 }
-                catch (ArgumentOutOfRangeException) { }
+                catch (ArgumentOutOfRangeException) {
+                    _render.Render();
+                }
                 catch (Exception exc)
                 {
                     ErrorHandling.fileLogger.Error(exc);

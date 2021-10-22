@@ -2,6 +2,7 @@
 using System.Linq;
 using System.Text.RegularExpressions;
 using Domain.Core.Exceptions;
+using System;
 
 namespace Domain.Core.CodeFormatters
 {
@@ -53,7 +54,7 @@ namespace Domain.Core.CodeFormatters
 
         // TODO: remove this method when the Doocutor gets new major version;
         // This feature will be still available, but will be contained in a plugin for the C#;
-        // The Doocutor will have an empty buffer by deafult (instead of the namespace, class, etc)
+        // The Doocutor will have an empty buffer by default (instead of the namespace, class, etc)
         // instead of the current one.
         public string GetTabulationForLineAt(int lineNumber, string line)
         {
@@ -75,12 +76,12 @@ namespace Domain.Core.CodeFormatters
         }
 
         public string GetSourceCodeWithLineNumbers()
-            => string.Join("", SourceCode.Select((_, i) => GroupOutputLineAt(IndexToLineNumber(i))).ToArray())[..^1];
+            => string.Join("", SourceCode.Select((_, i) => GroupOutputLineAt(IndexToLineNumber(i))))[..^1];
 
         public string GetLineAt(int lineNumber)
         {
             CheckIfLineExistsAt(lineNumber);
-            return SourceCode.ToArray()[LineNumberToIndex(lineNumber)];
+            return SourceCode[LineNumberToIndex(lineNumber)];
         }
 
         public string GetSourceCode()
@@ -95,12 +96,12 @@ namespace Domain.Core.CodeFormatters
             CheckIfLineExistsAt(currentLineNumber);
 
             var lastLineNumber = SourceCode.Count;
-            var lastLine = GroupOutputLineAt(lastLineNumber)[..^1];
-            var lastLineContent = SeparateLineFromLineNumber(lastLine);
-            var currentLine = GroupOutputLineAt(currentLineNumber);
-            var currentLineContent = SeparateLineFromLineNumber(currentLine);
+            var lastLineContent = SourceCode[LineNumberToIndex(lastLineNumber)];
+            var lastLineContentLength = lastLineContent.Length;
+            var lineNumberLength = (int) Math.Log10(lastLineNumber) + 1; // +1 because of log10(n) where n < 10 is a number < 1.
+            var lastLineLength = 4 + lastLineContentLength + lineNumberLength;
 
-            return lastLine.Length - lastLineContent.Length + (currentLineContent == "" ? 1 : 0);
+            return lastLineLength - lastLineContentLength;
         }
 
         // TODO: This method will be removed as well as the group of methods

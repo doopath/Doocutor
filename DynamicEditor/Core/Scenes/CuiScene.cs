@@ -12,14 +12,14 @@ namespace DynamicEditor.Core.Scenes
 
         public void Compose(string code, int width, int height, int topOffset)
         {
-            var buffer = new List<string>();
-            var output = PrepareOutput(code, width, height, topOffset);
             var bottomEdge = height - 1;
+            var buffer = new string[bottomEdge];
+            var output = PrepareOutput(code, width, height, topOffset);
 
             for (var i = 0; i < bottomEdge; i++)
-                buffer.Add(output[i]);
+                buffer[i] = output[i];
 
-            CurrentScene = buffer;
+            CurrentScene = buffer.ToList();
             OnSceneUpdated?.Invoke(CurrentScene);
         }
 
@@ -41,7 +41,6 @@ namespace DynamicEditor.Core.Scenes
         private List<string> GetOutput(int width, string code, int topOffset)
             => code
                 .Split("\n")[topOffset..]
-                .AsParallel()
                 .Select(l => l + (l.Length < width ? new string(' ', width - l.Length) : string.Empty))
                 .ToList();
     }

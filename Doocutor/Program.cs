@@ -1,4 +1,5 @@
 ﻿using System;
+using System.IO;
 using CommandLine;
 using Domain.Core;
 using Domain.Core.Exceptions;
