@@ -10,6 +10,7 @@ namespace DynamicEditor.Core
     {
         public string MonitorForeground { get; set; }
         public string MonitorBackground {  get; set; }
+        private IEnumerable<string> _monitor;
         private readonly IScene _scene;
         private int _topOffset;
         private int _positionFromTop;
@@ -18,11 +19,14 @@ namespace DynamicEditor.Core
         private ulong _renderedFrames;
         private int _avgRenderTime;
         private const int Padding = 1;
+        private const string StartPointer = "$->";
+        private const string EndPointer = "<-$";
 
         public DeveloperMonitor(int topOffset, int positionFromTop, int positionFromLeft, IScene scene)
         {
             MonitorForeground = "#d8dee9";
             MonitorBackground = "#5e81ac";
+            _monitor = new List<string>();
             _scene = scene;
             _topOffset = topOffset;
             _positionFromTop = positionFromTop;
@@ -33,10 +37,16 @@ namespace DynamicEditor.Core
         }
 
         public void TurnOn()
-            => _scene.OnSceneUpdated += AddMonitor;
+        {
+            _scene.OnSceneUpdated += AddMonitor;
+            _scene.OnSceneUpdated += ColorizeMonitor;
+        }
 
         public void TurnOff()
-            => _scene.OnSceneUpdated -= AddMonitor;
+        {
+            _scene.OnSceneUpdated -= AddMonitor;
+            _scene.OnSceneUpdated -= ColorizeMonitor;
+        }
 
         public void Update(int topOffset, int positionFromTop, int positionFromLeft, ulong renderTime)
         {
@@ -55,38 +65,59 @@ namespace DynamicEditor.Core
 
         private void AddMonitor(List<string> sceneContent)
         {
-            var monitor = GetMonitor();
+            SetMonitor();
+            var index = Padding;
 
-            for (var i = Padding; i < monitor.Count + Padding; i++)
+            foreach (var monitorLine in _monitor)
             {
-                var sceneLine = sceneContent[i];
-
+                var sceneLine = sceneContent[index];
                 var colorPreifxLength = GetColorPrefixLength();
-                var monitorLine = monitor[i - Padding];
-                var right = sceneLine.Length - monitorLine.Length - Padding + colorPreifxLength;
+                var right = sceneLine.Length - monitorLine.Length - Padding + StartPointer.Length + EndPointer.Length;
 
-                sceneContent[i] = sceneLine[..right] + monitorLine;
+                sceneContent[index] = sceneLine[..right] + monitorLine;
+                index++;
             }
         }
 
-        private List<string> GetMonitor()
+        private void SetMonitor()
         {
             var monitor = new List<string>
             {
                 $" Top: [ offset: {_topOffset}; pos: {_positionFromTop} ]",
                 $" Left: [ pos: {_positionFromLeft} ]",
-                $" Render [ avg: {_avgRenderTime}ms; last: {_renderTime}ms ] "
+                $" Render [ avg: {_avgRenderTime}ms; last: {_renderTime}ms ]"
             };
 
             var longestLine = monitor
                 .OrderByDescending(l => l.Length)
                 .ToArray()[0];
 
-            return ColorizeMonitor(monitor.Select(l => l + new string(' ', longestLine.Length - l.Length + 1) + "\n")).ToList();
+            string getSpacesForShorterLine(string longestLine, string line)
+                => new(' ', longestLine.Length - line.Length + 1);
+
+            string groupLine(string line)
+                => StartPointer + line + getSpacesForShorterLine(longestLine, line) + EndPointer + "\n";
+
+            _monitor = monitor.Select(l => groupLine(l));
         }
 
-        private IEnumerable<string> ColorizeMonitor(IEnumerable<string> monitor)
-            => monitor.Select(l => l.Pastel(MonitorForeground).PastelBg(MonitorBackground));
+        private void ColorizeMonitor(List<string> sceneContent)
+        {
+            var start = Padding;
+            var end = _monitor.Count() + start;
+
+            for (var i = start; i < end; i++)
+            {
+                var startPointer = "$->";
+                var endPointer = "<-$";
+                var line = sceneContent[i];
+                var parts = line.Split(startPointer);
+                var result = parts[0] + string.Join("", parts[1..]
+                    .Select(l => l.Replace(endPointer, string.Empty).Pastel(MonitorForeground).PastelBg(MonitorBackground)));
+
+                sceneContent[i] = result;
+            }
+        }
 
         private int GetColorPrefixLength()
             => "".Pastel(MonitorForeground).PastelBg(MonitorBackground).Length;

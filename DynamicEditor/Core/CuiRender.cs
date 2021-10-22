@@ -4,6 +4,7 @@ using System.Diagnostics;
 using Domain.Core.CodeBuffers;
 using Domain.Core.OutBuffers;
 using Domain.Core.Scenes;
+using Pastel;
 
 namespace DynamicEditor.Core
 {
@@ -15,11 +16,11 @@ namespace DynamicEditor.Core
         private readonly IScene _scene;
         private int WindowWidth => _outBuffer.Width;
         private int WindowHeight => _outBuffer.Height;
-        private int RightEdge => _outBuffer.Width - 3;
-        private int BottomEdge => _outBuffer.Height - 2;
+        private int RightEdge => _outBuffer.Width - 2;
+        private int BottomEdge => _outBuffer.Height - 1;
         private Stopwatch _watch;
         private long _lastFrameRenderTime;
-        private const int TopEdge = 1;
+        private const int TopEdge = 0;
         public int TopOffset { get; set; }
 
         public CuiRender(ICodeBuffer codeBuffer, IOutBuffer outBuffer, IScene scene)
@@ -37,8 +38,16 @@ namespace DynamicEditor.Core
                 _codeBuffer.CursorPositionFromLeft,
                 _scene);
 
+            _scene.OnSceneUpdated += scene =>
+            {
+                for (var i = 0; i < scene.Count; i++)
+                {
+                    var line = scene[i];
+                    line = line.Replace("a", "a".Pastel("#b48ead"));
+                    scene[i] = line;
+                }
+            };
             _developerMonitor.TurnOn(); // dev-only feature
-            UpdateDeveloperMonitor(); // dev-only feature
         }
 
         public void Render()
@@ -108,7 +117,7 @@ namespace DynamicEditor.Core
 
         private void CleanBottomPaddingArea()
         {
-            for (var i = BottomEdge + 1; i < _outBuffer.Height; i++)
+            for (var i = BottomEdge + 1; i < _outBuffer.Height - 1; i++)
             {
                 var emptyLine = new string(' ', _outBuffer.Width);
                 _outBuffer.SetCursorPosition(0, i);
@@ -120,7 +129,7 @@ namespace DynamicEditor.Core
         {
             for (var l = RightEdge + 1; l < _outBuffer.Width; l++)
             {
-                for (var t = 0; t <= BottomEdge; t++)
+                for (var t = 0; t <= _outBuffer.Height - 2; t++)
                 {
                     var emptyLine = new string(' ', _outBuffer.Width - RightEdge);
                     _outBuffer.SetCursorPosition(l, t);
