@@ -76,7 +76,7 @@ namespace DynamicEditor.Core
             foreach (var monitorLine in _monitor)
             {
                 var sceneLine = sceneContent[index];
-                var right = sceneLine.Length - monitorLine.Length - Padding + StartPointer.Length + EndPointer.Length;
+                var right = sceneLine.Length - monitorLine.Length + 2;
 
                 sceneContent[index] = sceneLine[..right] + monitorLine;
                 index++;
@@ -96,13 +96,13 @@ namespace DynamicEditor.Core
                 .OrderByDescending(l => l.Length)
                 .ToArray()[0];
 
-            string getSpacesForShorterLine(string longestLine, string line)
+            string GetSpacesForShorterLine(string longestLine, string line)
                 => new(' ', longestLine.Length - line.Length + 1);
 
-            string groupLine(string line)
-                => StartPointer + line + getSpacesForShorterLine(longestLine, line) + EndPointer + "\n";
+            string GroupLine(string line)
+                => StartPointer + line + GetSpacesForShorterLine(longestLine, line) + EndPointer;
 
-            _monitor = monitor.Select(l => groupLine(l));
+            _monitor = monitor.Select(GroupLine);
         }
 
         private void ColorizeMonitor(List<string> sceneContent)

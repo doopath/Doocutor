@@ -14,7 +14,7 @@ namespace Domain.Core
         public const string BuildInfo = "UCB-231021";
         public const string Updated = "23rd of October 2021";
         public const string Company = "Doopath";
-        public const string Version = "0.4.29.2";
+        public const string Version = "0.4.30.3";
         public const string ProductName = "Doocutor";
         public const string BuildType = "Debug";
 

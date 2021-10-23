@@ -16,6 +16,12 @@ namespace DynamicEditor.Core.Scenes
             OnSceneUpdated?.Invoke(CurrentScene);
         }
 
+        public void ComposeOf(List<string> sceneContent)
+        {
+            CurrentScene = new List<string>(sceneContent);
+            OnSceneUpdated?.Invoke(CurrentScene);
+        }
+
         public List<string> GetNewScene(string code, int width, int height, int topOffset)
             => ComposeNewScene(code, width, height, topOffset);
         

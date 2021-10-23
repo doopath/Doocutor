@@ -1,5 +1,10 @@
 ﻿using Domain.Core;
+using Domain.Core.CodeBuffers;
+using Domain.Core.CommandHandlers;
+using Domain.Core.FlowHandlers;
+using Domain.Core.Iterators;
 using Domain.Core.OutBuffers;
+using Domain.Core.Scenes;
 using DynamicEditor.Core;
 using DynamicEditor.Core.CommandHandlers;
 using DynamicEditor.Core.FlowHandlers;
@@ -10,25 +15,37 @@ namespace DynamicEditor
 {
     public class DynamicEditorSetup : IEditorSetup
     {
+        public int BufferSizeUpdateRate { get; set; }
+        public ICodeBuffer SourceCodeBuffer { get; set; }
+        public IInputFlowIterator Iterator { get; set; }
+        public ICommandHandler CommandHandler { get; set; }
+        public IOutBuffer OutBuffer { get; set; }
+        public IScene CuiScene { get; set; }
+        public CuiRender Render { get; set; }
+        public OutBufferSizeHandler OutBufferSizeHandler { get; set; }
+        public IInputFlowHandler InputFlowHandler { get; set; }
+
+        public DynamicEditorSetup()
+        {
+            BufferSizeUpdateRate = 300;
+            Iterator = new DynamicConsoleInputFlowIterator();
+            CommandHandler = new DynamicCommandHandler();
+            OutBuffer = new StandardConsoleOutBuffer();
+            CuiScene = new CuiScene();
+            Render = new CuiRender(NativeCommandExecutionProvider.SourceCodeBuffer, OutBuffer, CuiScene);
+            OutBufferSizeHandler = new OutBufferSizeHandler(OutBuffer, Render, BufferSizeUpdateRate);
+            InputFlowHandler = new DynamicKeyFlowHandler(Iterator, CommandHandler, KeyCombinationsMap.Map, KeyMap.Map, Render);
+        }
+
         public void Run(string[] args)
         {
             // Set update rate in milliseconds. I do not recommend to set the value less than 300,
             // because of the OutBufferSizeHandler behaves unstable.
-            var bufferSizeUpdateRate = 300;
-
-            var iterator = new DynamicConsoleInputFlowIterator();
-            var commandHandler = new DynamicCommandHandler();
-            var standardOutBuffer = new StandardConsoleOutBuffer();
-            var cuiScene = new CuiScene();
-            var cuiRender = new CuiRender(NativeCommandExecutionProvider.SourceCode, standardOutBuffer, cuiScene);
-            var outBufferSizeHandler = new OutBufferSizeHandler(standardOutBuffer, cuiRender, bufferSizeUpdateRate);
-            var handler = new DynamicKeyFlowHandler(iterator, commandHandler, KeyCombinationsMap.Map, KeyMap.Map, cuiRender);
-
-            cuiRender.EnableDeveloperMonitor(); // dev-only feature
-            cuiRender.Render();
-            outBufferSizeHandler.Start();
-            handler.StartHandling();
-            outBufferSizeHandler.Stop();
+            Render.EnableDeveloperMonitor(); // dev-only feature
+            Render.Render();
+            OutBufferSizeHandler.Start();
+            InputFlowHandler.StartHandling();
+            OutBufferSizeHandler.Stop();
         }
     }
 }

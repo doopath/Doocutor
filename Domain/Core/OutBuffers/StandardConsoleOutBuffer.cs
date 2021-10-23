@@ -26,7 +26,7 @@ namespace Domain.Core.OutBuffers
             => Console.SetCursorPosition(left, top);
 
         public void Write(string line)
-            => Console.Write(line);
+            => Console.WriteLine(line);
 
         public void Fill(IEnumerable<string> scene)
         {

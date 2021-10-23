@@ -8,6 +8,7 @@ namespace Domain.Core.Scenes
         event Action<List<string>> OnSceneUpdated;
         List<string> CurrentScene { get; }
         List<string> GetNewScene(string code, int width, int height, int topOffset);
+        void ComposeOf(List<string> sceneContent);
         void Compose(string code, int width, int height, int topOffset);
     }
 }

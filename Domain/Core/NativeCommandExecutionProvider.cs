@@ -16,9 +16,9 @@ namespace Domain.Core
 
     public class NativeCommandExecutionProvider
     {
-        public static readonly ICodeBuffer SourceCode = new SourceCodeBuffer();
+        public static readonly ICodeBuffer SourceCodeBuffer = new SourceCodeBuffer();
         private static readonly ICache<byte[]> Cache = new CompiledCodeCache();
-        private static readonly ICodeCompiler Compiler = new SourceCodeCompiler(SourceCode);
+        private static readonly ICodeCompiler Compiler = new SourceCodeCompiler(SourceCodeBuffer);
         private static readonly CompiledCodeExecutor Executor = new();
 
         /// <summary>
@@ -85,19 +85,19 @@ namespace Domain.Core
         private static void ExecuteViewCommand(NativeCommand command)
         {
             Console.Clear();
-            Console.WriteLine(SourceCode.CodeWithLineNumbers + "\n");
+            Console.WriteLine(SourceCodeBuffer.CodeWithLineNumbers + "\n");
         }
 
         private static void ExecuteWriteAfterCommand(NativeCommand command)
-            => SourceCode.WriteAfter(command.GetFirstArgumentAsAnInteger(), command.GetArgumentsSinceSecondAsALine());
+            => SourceCodeBuffer.WriteAfter(command.GetFirstArgumentAsAnInteger(), command.GetArgumentsSinceSecondAsALine());
 
         private static void ExecuteCompileCommand(NativeCommand command)
-            => Cache.Cache(SourceCode.Code, Compiler.Compile());
+            => Cache.Cache(SourceCodeBuffer.Code, Compiler.Compile());
 
         private static void ExecuteRunCommand(NativeCommand command)
         {
-            Executor.Execute(Cache.HasKey(SourceCode.Code)
-                ? Cache.GetValue(SourceCode.Code)
+            Executor.Execute(Cache.HasKey(SourceCodeBuffer.Code)
+                ? Cache.GetValue(SourceCodeBuffer.Code)
                 : Compiler.Compile(), command.GetArguments());
         }
 
@@ -106,20 +106,20 @@ namespace Domain.Core
 
         private static void ExecuteUsingCommand(NativeCommand command)
         {
-            if (SourceCode.Code.Trim().StartsWith("namespace"))
-                SourceCode.WriteBefore(1, "");
+            if (SourceCodeBuffer.Code.Trim().StartsWith("namespace"))
+                SourceCodeBuffer.WriteBefore(1, "");
 
-            SourceCode.WriteBefore(1, $"using {command.GetArguments()[0]};");
+            SourceCodeBuffer.WriteBefore(1, $"using {command.GetArguments()[0]};");
         }
 
         private static void ExecuteCopyCommand(NativeCommand command)
-            => CopyText(SourceCode.GetLineAt(command.GetFirstArgumentAsAnInteger()));
+            => CopyText(SourceCodeBuffer.GetLineAt(command.GetFirstArgumentAsAnInteger()));
 
         private static void ExecuteCopyAllCommand(NativeCommand command)
-            => CopyText(SourceCode.Code);
+            => CopyText(SourceCodeBuffer.Code);
 
         private static void ExecuteCopyBlockCommand(NativeCommand command)
-            => CopyText(string.Join("\n", SourceCode.GetCodeBlock(
+            => CopyText(string.Join("\n", SourceCodeBuffer.GetCodeBlock(
                 new CodeBlockPointer(int.Parse(command.GetArguments()[0]), int.Parse(command.GetArguments()[1])))));
 
         private static void CopyText(string text)
@@ -127,48 +127,48 @@ namespace Domain.Core
 
         private static void ExecuteRemoveCommand(NativeCommand command)
         {
-            CopyText(SourceCode.GetLineAt(command.GetFirstArgumentAsAnInteger()));
-            SourceCode.RemoveLineAt(command.GetFirstArgumentAsAnInteger());
+            CopyText(SourceCodeBuffer.GetLineAt(command.GetFirstArgumentAsAnInteger()));
+            SourceCodeBuffer.RemoveLineAt(command.GetFirstArgumentAsAnInteger());
         }
 
         private static void ExecuteRemoveBlockCommand(NativeCommand command)
         {
             var arguments = command.GetArguments();
             var pointer = new CodeBlockPointer(int.Parse(arguments[0]), int.Parse(arguments[1]));
-            SourceCode.RemoveCodeBlock(pointer);
+            SourceCodeBuffer.RemoveCodeBlock(pointer);
         }
 
         private static void ExecuteReplaceCommand(NativeCommand command)
         {
             var arguments = command.GetArguments();
-            SourceCode.ReplaceLineAt(int.Parse(arguments[0]), command.GetArgumentsSinceSecondAsALine());
+            SourceCodeBuffer.ReplaceLineAt(int.Parse(arguments[0]), command.GetArgumentsSinceSecondAsALine());
         }
 
         private static void ExecuteWriteCommand(NativeCommand command)
-            => SourceCode.Write(command.GetArgumentsAsALine());
+            => SourceCodeBuffer.Write(command.GetArgumentsAsALine());
 
         private static void ExecuteSetCommand(NativeCommand command)
-            => SourceCode.SetCursorPositionFromTopAt(int.Parse(command.GetArguments()[0]));
+            => SourceCodeBuffer.SetCursorPositionFromTopAt(int.Parse(command.GetArguments()[0]));
 
         private static void ExecuteShowPosCommand(NativeCommand command)
         {
             Console.Write("Current cursor position: ");
             OutputColorizing.colorizeForeground(ConsoleColor.Cyan,
-                () => Console.Write(SourceCode.CursorPositionFromTop + "\n"));
+                () => Console.Write(SourceCodeBuffer.CursorPositionFromTop + "\n"));
         }
 
         private static void ExecuteAddRefCommand(NativeCommand command)
             => Compiler.AddReference(FileSystem.getGlobalPath(command.GetArguments()[0]));
 
         private static void ExecuteSaveCodeCommand(NativeCommand command)
-            => SourceCodeSaving.saveCode(command.GetArgumentsAsALine(), SourceCode.Lines);
+            => SourceCodeSaving.saveCode(command.GetArgumentsAsALine(), SourceCodeBuffer.Lines);
 
         private static void ExecuteSaveAsmCommand(NativeCommand command)
         {
-            if (!Cache.HasKey(SourceCode.Code))
-                Cache.Cache(SourceCode.Code, Compiler.Compile());
+            if (!Cache.HasKey(SourceCodeBuffer.Code))
+                Cache.Cache(SourceCodeBuffer.Code, Compiler.Compile());
 
-            AssemblySaving.saveAssembly(command.GetArgumentsAsALine(), Cache.GetValue(SourceCode.Code));
+            AssemblySaving.saveAssembly(command.GetArgumentsAsALine(), Cache.GetValue(SourceCodeBuffer.Code));
         }
 
         private static void ExecuteHelpCommand(NativeCommand command)
@@ -178,13 +178,13 @@ namespace Domain.Core
             => Console.WriteLine(Info.Description);
 
         private static void ExecuteAppendLineCommand(NativeCommand command)
-            => SourceCode.AppendLine(string.Join(" ", command.Content.Split(" ")[1..]));
+            => SourceCodeBuffer.AppendLine(string.Join(" ", command.Content.Split(" ")[1..]));
 
         private static void ExecuteEnterCommand(NativeCommand command)
-            => SourceCode.Enter();
+            => SourceCodeBuffer.Enter();
 
         private static void ExecuteBackspaceCommand(NativeCommand command)
-            => SourceCode.Backspace();
+            => SourceCodeBuffer.Backspace();
 
         private static void ExecuteDoNothingCommand(NativeCommand command) { }
     }

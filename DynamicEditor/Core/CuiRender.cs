@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Diagnostics.CodeAnalysis;
 using Domain.Core.CodeBuffers;
 using Domain.Core.OutBuffers;
 using Domain.Core.Scenes;
@@ -16,6 +17,7 @@ namespace DynamicEditor.Core
         private readonly DeveloperMonitor _developerMonitor;
         private readonly IOutBuffer _outBuffer;
         private readonly IScene _scene;
+        private List<string> PureScene;
         private int WindowWidth => _outBuffer.Width;
         private int WindowHeight => _outBuffer.Height;
         private int RightEdge => _outBuffer.Width - 2;
@@ -55,7 +57,10 @@ namespace DynamicEditor.Core
         }
 
         public void Render()
-            => Render(GetScene());
+        {
+            SetScene();
+            Render(_scene.CurrentScene);
+        }
 
         public void Render(List<string> scene)
         {
@@ -64,13 +69,12 @@ namespace DynamicEditor.Core
                 if (IsDeveloperMonitorShown)
                     StartWatching();
 
-                CleanPaddingArea();
                 ShowFrame(scene);
                 RenderCursor();
 
                 if (!IsDeveloperMonitorShown) return;
                 
-                StopWatching(); // Disable this if DeveloperMonitor is disabled;
+                StopWatching();
                 UpdateDeveloperMonitor();
             }
         }
@@ -80,9 +84,7 @@ namespace DynamicEditor.Core
             var top = _codeBuffer.CursorPositionFromTop - TopOffset;
             var left = _codeBuffer.CursorPositionFromLeft;
             var initialCursorPosition = (_outBuffer.CursorLeft, _outBuffer.CursorTop);
-            var newScene = _scene.GetNewScene(
-                _codeBuffer.CodeWithLineNumbers, _outBuffer.Width, _outBuffer.Height, TopOffset);
-            var symbol = newScene[top][left];
+            var symbol = PureScene[top][left];
             
             _outBuffer.SetCursorPosition(left, top);
             _outBuffer.Write(symbol.ToString().Pastel(CursorForeground).PastelBg(CursorBackground));
@@ -90,14 +92,17 @@ namespace DynamicEditor.Core
             (_outBuffer.CursorLeft, _outBuffer.CursorTop) = initialCursorPosition;
         }
 
-        public List<string> GetScene()
+        public void SetScene()
         {
-            UpdateDeveloperMonitor(); // dev-only feature; 
+            if (IsDeveloperMonitorShown)
+                UpdateDeveloperMonitor();
 
             _codeBuffer.AdaptCodeForBufferSize(RightEdge);
-            _scene.Compose(_codeBuffer.CodeWithLineNumbers, WindowWidth, WindowHeight, TopOffset);
 
-            return _scene.CurrentScene;
+            var scene = _scene.GetNewScene(_codeBuffer.CodeWithLineNumbers, WindowWidth, WindowHeight, TopOffset);
+
+            _scene.ComposeOf(scene);
+            PureScene = scene;
         }
 
         public void Clear()
@@ -121,39 +126,6 @@ namespace DynamicEditor.Core
             _outBuffer.Fill(scene);
 
             FixCursorPosition();
-        }
-        
-        private void CleanPaddingArea()
-        {
-            var initialCursorPosition = (_outBuffer.CursorTop, _outBuffer.CursorLeft);
-
-            CleanBottomPaddingArea();
-            CleanRightPaddingArea();
-
-            (_outBuffer.CursorTop, _outBuffer.CursorLeft) = initialCursorPosition;
-        }
-
-        private void CleanBottomPaddingArea()
-        {
-            for (var i = BottomEdge + 1; i < _outBuffer.Height - 1; i++)
-            {
-                var emptyLine = new string(' ', _outBuffer.Width);
-                _outBuffer.SetCursorPosition(0, i);
-                _outBuffer.Write(emptyLine);
-            }
-        }
-
-        private void CleanRightPaddingArea()
-        {
-            for (var l = RightEdge; l < _outBuffer.Width; l++)
-            {
-                for (var t = 0; t <= _outBuffer.Height - 2; t++)
-                {
-                    var emptyLine = new string(' ', _outBuffer.Width - RightEdge);
-                    _outBuffer.SetCursorPosition(l, t);
-                    _outBuffer.Write(emptyLine);
-                }
-            }
         }
 
         private void StartWatching()
