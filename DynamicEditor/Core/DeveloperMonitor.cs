@@ -1,6 +1,5 @@
 using System.Collections.Generic;
 using System.Linq;
-using Spectre.Console;
 using Pastel;
 using Domain.Core.Scenes;
 
@@ -17,8 +16,10 @@ namespace DynamicEditor.Core
         private int _positionFromLeft;
         private ulong _renderTime;
         private ulong _renderedFrames;
+        private ulong _renderTimeAcc;
         private int _avgRenderTime;
         private const int Padding = 1;
+        private const int AvgFramesCount = 5;
         private const string StartPointer = "$->";
         private const string EndPointer = "<-$";
 
@@ -34,6 +35,7 @@ namespace DynamicEditor.Core
             _renderTime = 0;
             _avgRenderTime = 0;
             _renderedFrames = 0;
+            _renderTimeAcc = 0;
         }
 
         public void TurnOn()
@@ -53,14 +55,17 @@ namespace DynamicEditor.Core
             _topOffset = topOffset;
             _positionFromTop = positionFromTop;
             _positionFromLeft = positionFromLeft;
+            
             _renderTime = renderTime;
+            _renderTimeAcc += renderTime;
             _renderedFrames++;
-
-            // avg(seq(n)) = (x(n) - avg(seq(n-1))) / n
-            // where x is an element of the sequence, avg - a function of
-            // an average number and n is a number (index) of an element of the
-            // sequence.
-            _avgRenderTime += ((int)renderTime - _avgRenderTime) / (int)_renderedFrames;
+            
+            if (_renderedFrames == AvgFramesCount)
+            {
+                _avgRenderTime = (int) _renderTimeAcc / AvgFramesCount;
+                _renderTimeAcc = 0;
+                _renderedFrames = 0;
+            }
         }
 
         private void AddMonitor(List<string> sceneContent)
@@ -71,7 +76,6 @@ namespace DynamicEditor.Core
             foreach (var monitorLine in _monitor)
             {
                 var sceneLine = sceneContent[index];
-                var colorPreifxLength = GetColorPrefixLength();
                 var right = sceneLine.Length - monitorLine.Length - Padding + StartPointer.Length + EndPointer.Length;
 
                 sceneContent[index] = sceneLine[..right] + monitorLine;
@@ -113,13 +117,10 @@ namespace DynamicEditor.Core
                 var line = sceneContent[i];
                 var parts = line.Split(startPointer);
                 var result = parts[0] + string.Join("", parts[1..]
-                    .Select(l => l.Replace(endPointer, string.Empty).Pastel(MonitorForeground).PastelBg(MonitorBackground)));
+                    .Select(l => l.Replace(endPointer, string.Empty).PastelBg(MonitorBackground)));
 
                 sceneContent[i] = result;
             }
         }
-
-        private int GetColorPrefixLength()
-            => "".Pastel(MonitorForeground).PastelBg(MonitorBackground).Length;
     }
 }

@@ -12,6 +12,13 @@ namespace Domain.Core.OutBuffers
         public int CursorTop { get => Console.CursorTop; set => Console.CursorTop = value; }
         public int CursorLeft { get => Console.CursorLeft; set => Console.CursorLeft = value; }
 
+        public StandardConsoleOutBuffer()
+        {
+            CursorVisible = false;
+            CursorTop = 0;
+            CursorLeft = 0;
+        }
+
         public void Clear()
             => Console.Clear();
 

@@ -12,6 +12,15 @@ namespace DynamicEditor.Core.Scenes
 
         public void Compose(string code, int width, int height, int topOffset)
         {
+            CurrentScene = ComposeNewScene(code, width, height, topOffset);
+            OnSceneUpdated?.Invoke(CurrentScene);
+        }
+
+        public List<string> GetNewScene(string code, int width, int height, int topOffset)
+            => ComposeNewScene(code, width, height, topOffset);
+        
+        private List<string> ComposeNewScene(string code, int width, int height, int topOffset)
+        {
             var bottomEdge = height - 1;
             var buffer = new string[bottomEdge];
             var output = PrepareOutput(code, width, height, topOffset);
@@ -19,8 +28,7 @@ namespace DynamicEditor.Core.Scenes
             for (var i = 0; i < bottomEdge; i++)
                 buffer[i] = output[i];
 
-            CurrentScene = buffer.ToList();
-            OnSceneUpdated?.Invoke(CurrentScene);
+            return buffer.ToList();
         }
 
         private List<string> PrepareOutput(string code, int width, int height, int topOffset)

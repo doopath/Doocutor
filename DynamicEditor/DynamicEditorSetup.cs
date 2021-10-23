@@ -24,6 +24,7 @@ namespace DynamicEditor
             var outBufferSizeHandler = new OutBufferSizeHandler(standardOutBuffer, cuiRender, bufferSizeUpdateRate);
             var handler = new DynamicKeyFlowHandler(iterator, commandHandler, KeyCombinationsMap.Map, KeyMap.Map, cuiRender);
 
+            cuiRender.EnableDeveloperMonitor(); // dev-only feature
             cuiRender.Render();
             outBufferSizeHandler.Start();
             handler.StartHandling();

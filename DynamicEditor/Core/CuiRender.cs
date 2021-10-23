@@ -10,6 +10,8 @@ namespace DynamicEditor.Core
 {
     public sealed class CuiRender
     {
+        private const string CursorForeground = "#000000";
+        private const string CursorBackground = "#ffffff";
         private readonly ICodeBuffer _codeBuffer;
         private readonly DeveloperMonitor _developerMonitor;
         private readonly IOutBuffer _outBuffer;
@@ -22,6 +24,7 @@ namespace DynamicEditor.Core
         private long _lastFrameRenderTime;
         private const int TopEdge = 0;
         public int TopOffset { get; set; }
+        public bool IsDeveloperMonitorShown { get; set; }
 
         public CuiRender(ICodeBuffer codeBuffer, IOutBuffer outBuffer, IScene scene)
         {
@@ -37,17 +40,18 @@ namespace DynamicEditor.Core
                 _codeBuffer.CursorPositionFromTop,
                 _codeBuffer.CursorPositionFromLeft,
                 _scene);
+        }
 
-            _scene.OnSceneUpdated += scene =>
-            {
-                for (var i = 0; i < scene.Count; i++)
-                {
-                    var line = scene[i];
-                    line = line.Replace("a", "a".Pastel("#b48ead"));
-                    scene[i] = line;
-                }
-            };
-            _developerMonitor.TurnOn(); // dev-only feature
+        public void EnableDeveloperMonitor()
+        {
+            IsDeveloperMonitorShown = true;
+            _developerMonitor.TurnOn();
+        }
+
+        public void DisableDeveloperMonitor()
+        {
+            IsDeveloperMonitorShown = false;
+            _developerMonitor.TurnOff();
         }
 
         public void Render()
@@ -57,15 +61,38 @@ namespace DynamicEditor.Core
         {
             lock (this)
             {
+                if (IsDeveloperMonitorShown)
+                    StartWatching();
+
                 CleanPaddingArea();
                 ShowFrame(scene);
+                RenderCursor();
+
+                if (!IsDeveloperMonitorShown) return;
+                
+                StopWatching(); // Disable this if DeveloperMonitor is disabled;
                 UpdateDeveloperMonitor();
             }
+        }
+        
+        private void RenderCursor()
+        {
+            var top = _codeBuffer.CursorPositionFromTop - TopOffset;
+            var left = _codeBuffer.CursorPositionFromLeft;
+            var initialCursorPosition = (_outBuffer.CursorLeft, _outBuffer.CursorTop);
+            var newScene = _scene.GetNewScene(
+                _codeBuffer.CodeWithLineNumbers, _outBuffer.Width, _outBuffer.Height, TopOffset);
+            var symbol = newScene[top][left];
+            
+            _outBuffer.SetCursorPosition(left, top);
+            _outBuffer.Write(symbol.ToString().Pastel(CursorForeground).PastelBg(CursorBackground));
+            
+            (_outBuffer.CursorLeft, _outBuffer.CursorTop) = initialCursorPosition;
         }
 
         public List<string> GetScene()
         {
-            UpdateDeveloperMonitor();
+            UpdateDeveloperMonitor(); // dev-only feature; 
 
             _codeBuffer.AdaptCodeForBufferSize(RightEdge);
             _scene.Compose(_codeBuffer.CodeWithLineNumbers, WindowWidth, WindowHeight, TopOffset);
@@ -90,29 +117,20 @@ namespace DynamicEditor.Core
 
         private void ShowFrame(List<string> scene)
         {
-            StartWatching(); // Disable this if DeveloperMonitor is disabled;
-            DisableCursor();
-
             _outBuffer.SetCursorPosition(0, 0);
             _outBuffer.Fill(scene);
 
             FixCursorPosition();
-            UpdateCursorPosition();
-
-            StopWatching(); // Disable this if DeveloperMonitor is disabled;
-            EnableCursor();
         }
-
+        
         private void CleanPaddingArea()
         {
-            _outBuffer.CursorVisible = false;
             var initialCursorPosition = (_outBuffer.CursorTop, _outBuffer.CursorLeft);
 
             CleanBottomPaddingArea();
             CleanRightPaddingArea();
 
             (_outBuffer.CursorTop, _outBuffer.CursorLeft) = initialCursorPosition;
-            _outBuffer.CursorVisible = true;
         }
 
         private void CleanBottomPaddingArea()
@@ -127,7 +145,7 @@ namespace DynamicEditor.Core
 
         private void CleanRightPaddingArea()
         {
-            for (var l = RightEdge + 1; l < _outBuffer.Width; l++)
+            for (var l = RightEdge; l < _outBuffer.Width; l++)
             {
                 for (var t = 0; t <= _outBuffer.Height - 2; t++)
                 {
@@ -159,12 +177,6 @@ namespace DynamicEditor.Core
                 Render();
             }
         }
-
-        private void EnableCursor()
-            => _outBuffer.CursorVisible = true;
-
-        private void DisableCursor()
-            => _outBuffer.CursorVisible = false;
 
         private void FixCursorPosition()
         {
@@ -203,11 +215,7 @@ namespace DynamicEditor.Core
                 Render();
             }
         }
-
-        private void UpdateCursorPosition()
-            => _outBuffer.SetCursorPosition(
-                _codeBuffer.CursorPositionFromLeft,
-                _codeBuffer.CursorPositionFromTop - TopOffset);
+        
 
         private void UpdateDeveloperMonitor()
             => _developerMonitor.Update(
