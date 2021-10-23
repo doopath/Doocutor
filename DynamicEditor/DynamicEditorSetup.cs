@@ -1,6 +1,7 @@
 ﻿using Domain.Core;
 using Domain.Core.CodeBuffers;
 using Domain.Core.CommandHandlers;
+using Domain.Core.Exceptions;
 using Domain.Core.FlowHandlers;
 using Domain.Core.Iterators;
 using Domain.Core.OutBuffers;
@@ -41,11 +42,21 @@ namespace DynamicEditor
         {
             // Set update rate in milliseconds. I do not recommend to set the value less than 300,
             // because of the OutBufferSizeHandler behaves unstable.
+            OutBuffer.CursorVisible = false;
             Render.EnableDeveloperMonitor(); // dev-only feature
             Render.Render();
             OutBufferSizeHandler.Start();
-            InputFlowHandler.StartHandling();
-            OutBufferSizeHandler.Stop();
+
+            try
+            {
+                InputFlowHandler.StartHandling();
+
+            }
+            catch (InterruptedExecutionException)
+            {
+                OutBufferSizeHandler.Stop();
+                OutBuffer.CursorVisible = true;
+            }
         }
     }
 }

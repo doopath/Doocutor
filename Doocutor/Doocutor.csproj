@@ -10,6 +10,7 @@
         <StartupObject>Doocutor.Program</StartupObject>
         <SignAssembly>False</SignAssembly>
         <Nullable>enable</Nullable>
+        <IncludeAllContentForSelfExtract>true</IncludeAllContentForSelfExtract>
     </PropertyGroup>
 
     <ItemGroup>
@@ -23,7 +24,7 @@
     </ItemGroup>
 
     <ItemGroup>
-        <None Update="NLog.config" CopyToOutputDirectory="Always" />
+        <None Update="nlog.config" CopyToOutputDirectory="Always" />
     </ItemGroup>
 
     <ItemGroup>

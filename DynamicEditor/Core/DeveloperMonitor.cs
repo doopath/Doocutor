@@ -76,7 +76,7 @@ namespace DynamicEditor.Core
             foreach (var monitorLine in _monitor)
             {
                 var sceneLine = sceneContent[index];
-                var right = sceneLine.Length - monitorLine.Length + 2;
+                var right = sceneLine.Length - monitorLine.Length + StartPointer.Length + EndPointer.Length;
 
                 sceneContent[index] = sceneLine[..right] + monitorLine;
                 index++;
