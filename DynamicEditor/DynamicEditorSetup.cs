@@ -1,4 +1,5 @@
-﻿using Domain.Core;
+﻿using System.Security.Cryptography;
+using Domain.Core;
 using Domain.Core.CodeBuffers;
 using Domain.Core.CommandHandlers;
 using Domain.Core.Exceptions;
@@ -52,10 +53,12 @@ namespace DynamicEditor
                 InputFlowHandler.StartHandling();
 
             }
-            catch (InterruptedExecutionException)
+            catch (InterruptedExecutionException exc)
             {
                 OutBufferSizeHandler.Stop();
                 OutBuffer.CursorVisible = true;
+
+                throw exc;
             }
         }
     }

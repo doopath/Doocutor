@@ -11,6 +11,7 @@ namespace DynamicEditor.Core
 {
     public sealed class CuiRender
     {
+        private static object RenderLocker = new();
         private const string CursorForeground = "#000000";
         private const string CursorBackground = "#ffffff";
         private readonly ICodeBuffer _codeBuffer;
@@ -58,13 +59,16 @@ namespace DynamicEditor.Core
 
         public void Render()
         {
-            SetScene();
-            Render(_scene.CurrentScene);
+            lock (RenderLocker)
+            {
+                SetScene(); 
+                Render(_scene.CurrentScene);
+            }                  
         }
 
         public void Render(List<string> scene)
         {
-            lock (this)
+            lock (RenderLocker)
             {
                 if (IsDeveloperMonitorShown)
                     StartWatching();
@@ -78,7 +82,7 @@ namespace DynamicEditor.Core
                 UpdateDeveloperMonitor();
             }
         }
-        
+
         private void RenderCursor()
         {
             var top = _codeBuffer.CursorPositionFromTop - TopOffset;
@@ -99,7 +103,8 @@ namespace DynamicEditor.Core
 
             _codeBuffer.AdaptCodeForBufferSize(RightEdge);
 
-            var scene = _scene.GetNewScene(_codeBuffer.CodeWithLineNumbers, WindowWidth, WindowHeight, TopOffset);
+            var scene = _scene.GetNewScene(
+                _codeBuffer.CodeWithLineNumbers, WindowWidth, WindowHeight, TopOffset);
 
             _scene.ComposeOf(scene);
             PureScene = scene;

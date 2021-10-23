@@ -52,7 +52,10 @@ namespace DynamicEditor.Core
                 try
                 {
                     if (width != _outBuffer.Width || height != _outBuffer.Height)
+                    {
+                        _render.Clear();
                         _render.Render();
+                    }
                 }
                 catch (ArgumentOutOfRangeException) {
                     _render.Render();
