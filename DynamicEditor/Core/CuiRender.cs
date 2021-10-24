@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using Domain.Core.CodeBuffers;
+using Domain.Core.ColorSchemes;
 using Domain.Core.OutBuffers;
 using Domain.Core.Scenes;
 using Pastel;
@@ -10,14 +11,25 @@ namespace DynamicEditor.Core
 {
     public sealed class CuiRender
     {
+        public int TopOffset { get; set; }
+        public bool IsDeveloperMonitorShown { get; set; }
+        public IColorScheme ColorScheme
+        {
+            get => _colorScheme;
+            set
+            {
+                _colorScheme = value;
+                _developerMonitor.ColorScheme = value;
+            }
+        }
+
         private static readonly object RenderLocker = new();
-        private const string CursorForeground = "#000000";
-        private const string CursorBackground = "#ffffff";
         private readonly ICodeBuffer _codeBuffer;
         private readonly DeveloperMonitor _developerMonitor;
         private readonly IOutBuffer _outBuffer;
         private readonly IScene _scene;
-        private List<string> PureScene;
+        private IColorScheme _colorScheme;
+        private List<string> _pureScene;
         private int WindowWidth => _outBuffer.Width;
         private int WindowHeight => _outBuffer.Height;
         private int RightEdge => _outBuffer.Width - 2;
@@ -25,10 +37,8 @@ namespace DynamicEditor.Core
         private Stopwatch _watch;
         private long _lastFrameRenderTime;
         private const int TopEdge = 0;
-        public int TopOffset { get; set; }
-        public bool IsDeveloperMonitorShown { get; set; }
-
-        public CuiRender(ICodeBuffer codeBuffer, IOutBuffer outBuffer, IScene scene)
+        
+        public CuiRender(ICodeBuffer codeBuffer, IOutBuffer outBuffer, IScene scene, IColorScheme colorScheme)
         {
             _watch = new Stopwatch();
             _codeBuffer = codeBuffer;
@@ -36,12 +46,14 @@ namespace DynamicEditor.Core
             _scene = scene;
 
             TopOffset = 0;
+            _colorScheme = colorScheme;
 
             _developerMonitor = new DeveloperMonitor(
                 TopOffset,
                 _codeBuffer.CursorPositionFromTop,
                 _codeBuffer.CursorPositionFromLeft,
-                _scene);
+                _scene,
+                ColorScheme);
         }
 
         public void EnableDeveloperMonitor()
@@ -87,10 +99,13 @@ namespace DynamicEditor.Core
             var top = _codeBuffer.CursorPositionFromTop - TopOffset;
             var left = _codeBuffer.CursorPositionFromLeft;
             var initialCursorPosition = (_outBuffer.CursorLeft, _outBuffer.CursorTop);
-            var symbol = PureScene[top][left];
+            var symbol = _pureScene[top][left];
             
             _outBuffer.SetCursorPosition(left, top);
-            _outBuffer.Write(symbol.ToString().Pastel(CursorForeground).PastelBg(CursorBackground));
+            _outBuffer.Write(symbol
+                .ToString()
+                .Pastel(ColorScheme.CursorForeground)
+                .PastelBg(ColorScheme.CursorBackground));
             
             (_outBuffer.CursorLeft, _outBuffer.CursorTop) = initialCursorPosition;
         }
@@ -106,7 +121,7 @@ namespace DynamicEditor.Core
                 _codeBuffer.CodeWithLineNumbers, WindowWidth, WindowHeight, TopOffset);
 
             _scene.ComposeOf(scene);
-            PureScene = scene;
+            _pureScene = scene;
         }
 
         public void Clear()

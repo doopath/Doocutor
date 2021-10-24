@@ -1,9 +1,8 @@
 ﻿using System;
-using System.IO;
 using CommandLine;
 using Domain.Core;
 using Domain.Core.Exceptions;
-using Doocutor.Options;
+using Domain.Options;
 using DynamicEditor;
 using Libraries.Core;
 using NLog;
@@ -19,12 +18,12 @@ namespace Doocutor
         {
             try
             {
-                var ops = ParseCommandLineArguments(args);
-                var editor = SelectEditor(ops.EditorMode);
+                var options = ParseCommandLineArguments(args);
+                var editor = SelectEditor(options.EditorMode);
 
                 Start();
 
-                editor.Run(args);
+                editor.Run(options);
             }
             catch (InterruptedExecutionException error)
             {

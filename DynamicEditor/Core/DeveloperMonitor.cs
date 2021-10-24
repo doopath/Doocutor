@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using System.Linq;
+using Domain.Core.ColorSchemes;
 using Pastel;
 using Domain.Core.Scenes;
 
@@ -7,8 +8,7 @@ namespace DynamicEditor.Core
 {
     public sealed class DeveloperMonitor
     {
-        public string MonitorForeground { get; set; }
-        public string MonitorBackground {  get; set; }
+        public IColorScheme ColorScheme { get; set; }
         private IEnumerable<string> _monitor;
         private readonly IScene _scene;
         private int _topOffset;
@@ -23,10 +23,10 @@ namespace DynamicEditor.Core
         private const string StartPointer = "$->";
         private const string EndPointer = "<-$";
 
-        public DeveloperMonitor(int topOffset, int positionFromTop, int positionFromLeft, IScene scene)
+        public DeveloperMonitor(int topOffset, int positionFromTop,
+            int positionFromLeft, IScene scene, IColorScheme colorScheme)
         {
-            MonitorForeground = "#d8dee9";
-            MonitorBackground = "#5e81ac";
+            ColorScheme = colorScheme;
             _monitor = new List<string>();
             _scene = scene;
             _topOffset = topOffset;
@@ -117,7 +117,10 @@ namespace DynamicEditor.Core
                 var line = sceneContent[i];
                 var parts = line.Split(startPointer);
                 var result = parts[0] + string.Join("", parts[1..]
-                    .Select(l => l.Replace(endPointer, string.Empty).PastelBg(MonitorBackground)));
+                    .Select(l => l
+                        .Replace(endPointer, string.Empty)
+                        .Pastel(ColorScheme.DeveloperMonitorForeground)
+                        .PastelBg(ColorScheme.DeveloperMonitorBackground)));
 
                 sceneContent[i] = result;
             }

@@ -1,12 +1,14 @@
 ﻿using System;
 using Domain.Core;
 using Domain.Core.CodeBuffers;
+using Domain.Core.ColorSchemes;
 using Domain.Core.CommandHandlers;
 using Domain.Core.Exceptions;
 using Domain.Core.FlowHandlers;
 using Domain.Core.Iterators;
 using Domain.Core.OutBuffers;
 using Domain.Core.Scenes;
+using Domain.Options;
 using DynamicEditor.Core;
 using DynamicEditor.Core.CommandHandlers;
 using DynamicEditor.Core.FlowHandlers;
@@ -26,24 +28,35 @@ namespace DynamicEditor
         public CuiRender Render { get; set; }
         public OutBufferSizeHandler OutBufferSizeHandler { get; set; }
         public IInputFlowHandler InputFlowHandler { get; set; }
+        public IColorScheme ColorScheme { get; set; }
+
+        public ColorSchemesRepository ColorSchemesRepository { get; set; }
 
         public DynamicEditorSetup()
         {
+            var defaultLightColorScheme = new DefaultLightColorScheme();
+            ColorSchemesRepository = new();
+            ColorSchemesRepository.Add(defaultLightColorScheme);
+            ColorSchemesRepository.Add(new DefaultDarkColorScheme());
+            
+            SourceCodeBuffer = NativeCommandExecutionProvider.SourceCodeBuffer;
             BufferSizeUpdateRate = 300;
             Iterator = new DynamicConsoleInputFlowIterator();
             CommandHandler = new DynamicCommandHandler();
             OutBuffer = new StandardConsoleOutBuffer();
             CuiScene = new CuiScene();
-            Render = new CuiRender(NativeCommandExecutionProvider.SourceCodeBuffer, OutBuffer, CuiScene);
+            Render = new CuiRender(SourceCodeBuffer, OutBuffer, CuiScene, defaultLightColorScheme);
             OutBufferSizeHandler = new OutBufferSizeHandler(OutBuffer, Render, BufferSizeUpdateRate);
             InputFlowHandler = new DynamicKeyFlowHandler(Iterator, CommandHandler, KeyCombinationsMap.Map, Render);
         }
 
-        public void Run(string[] args)
+        public void Run(ProgramOptions options)
         {
             // Set update rate in milliseconds. I do not recommend to set the value less than 300,
             // because of the OutBufferSizeHandler behaves unstable.
+            ColorScheme = ColorSchemesRepository.Get(options.ColorScheme ?? "DoocutorDark");
             OutBuffer.CursorVisible = false;
+            Render.ColorScheme = ColorScheme;
             Render.EnableDeveloperMonitor(); // dev-only feature
             Render.Render();
             

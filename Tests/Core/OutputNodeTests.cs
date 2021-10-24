@@ -5,6 +5,7 @@ using DynamicEditor.Core;
 using DynamicEditor.Core.Scenes;
 using NUnit.Framework;
 using System.Collections.Generic;
+using Domain.Core.ColorSchemes;
 
 namespace Tests.Core
 {
@@ -20,10 +21,11 @@ namespace Tests.Core
         [SetUp]
         public void Setup()
         {
+            var colorScheme = new DefaultLightColorScheme();
             _outBuffer = new MockConsole();
             _codeBuffer = new SourceCodeBuffer();
             _scene = new CuiScene();
-            _render = new CuiRender(_codeBuffer, _outBuffer, _scene);
+            _render = new CuiRender(_codeBuffer, _outBuffer, _scene, colorScheme);
             Checkbox.TurnOff();
             MockConsoleBuffer.ResetBuffer();
         }
