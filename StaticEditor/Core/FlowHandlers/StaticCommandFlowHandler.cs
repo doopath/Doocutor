@@ -20,7 +20,7 @@ namespace StaticEditor.Core.FlowHandlers
         public void StartHandling()
         {
             while (_inputFlowIterator.HasNext())
-                _commandHandler.Handle(_inputFlowIterator.Next());
+                _commandHandler.Handle(_inputFlowIterator.NextLine());
 
             IsClosed = true;
         }

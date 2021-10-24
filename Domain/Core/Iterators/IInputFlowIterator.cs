@@ -1,4 +1,6 @@
-﻿namespace Domain.Core.Iterators
+﻿using System;
+
+namespace Domain.Core.Iterators
 {
     /// <summary>
     /// A descriptor for InputFlowHandler. It takes if
@@ -8,6 +10,7 @@
     public interface IInputFlowIterator
     {
         bool HasNext();
-        string Next();
+        ConsoleKeyInfo Next();
+        string NextLine();
     }
 }

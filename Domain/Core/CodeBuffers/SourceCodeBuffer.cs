@@ -6,6 +6,7 @@ using Domain.Core.Exceptions;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.Versioning;
 using System.Text.RegularExpressions;
 
 namespace Domain.Core.CodeBuffers
@@ -172,11 +173,6 @@ namespace Domain.Core.CodeBuffers
 
         public void AppendLine(string newPart)
         {
-            if (IsUpperCaseSymbol(newPart))
-                newPart = KeyToUpperCaseSymbol(newPart);
-            else if (IsLowerCaseSymbol(newPart))
-                newPart = newPart.ToLower();
-
             var newLine = _codeFormatter.SeparateLineFromLineNumber(
                 _codeFormatter.GroupNewLineOfACurrentOne(newPart, CursorPositionFromTop, CursorPositionFromLeft));
 
@@ -200,12 +196,20 @@ namespace Domain.Core.CodeBuffers
             }
         }
 
-        private bool IsUpperCaseSymbol(string key)
+        [SupportedOSPlatform("windows")]
+        private bool IsUpperCaseSymbolOnWindows(string key)
             => Regex.IsMatch(key, @"Shift\+[\w]", RegexOptions.IgnoreCase) || Console.CapsLock;
 
-        private bool IsLowerCaseSymbol(string key)
+        [SupportedOSPlatform("windows")]
+        private bool IsLowerCaseSymbolOnWindows(string key)
             => Regex.IsMatch(key, "[A-Z]", RegexOptions.IgnoreCase) && !Console.CapsLock;
+        
+        private bool IsUpperCaseSymbol(string key)
+            => Regex.IsMatch(key, @"Shift\+[\w]", RegexOptions.IgnoreCase);
 
+        private bool IsLowerCaseSymbol(string key)
+            => Regex.IsMatch(key, "[A-Z]", RegexOptions.IgnoreCase);
+        
         private string KeyToUpperCaseSymbol(string key)
             => key.Replace("Shift+", "").ToUpper();
 

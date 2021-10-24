@@ -10,7 +10,7 @@ namespace DynamicEditor.Core
 {
     public sealed class CuiRender
     {
-        private static object RenderLocker = new();
+        private static readonly object RenderLocker = new();
         private const string CursorForeground = "#000000";
         private const string CursorBackground = "#ffffff";
         private readonly ICodeBuffer _codeBuffer;
