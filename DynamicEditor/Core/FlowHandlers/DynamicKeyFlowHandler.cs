@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Text.RegularExpressions;
 using Domain.Core.CommandHandlers;
 using Domain.Core.Exceptions;
@@ -12,7 +13,6 @@ namespace DynamicEditor.Core.FlowHandlers
         private readonly IInputFlowIterator _inputFlowIterator;
         private readonly ICommandHandler _commandHandler;
         private readonly KeyCombinationTranslating _keyCombinationTranslating;
-        private readonly KeyToSymbolTranslating _keyToSymbolTranslating;
         private readonly CuiRender _cuiRender;
 
         public bool IsClosed { get; private set; }
@@ -21,13 +21,11 @@ namespace DynamicEditor.Core.FlowHandlers
             IInputFlowIterator iterator,
             ICommandHandler commandHandler,
             Dictionary<string, string> keyCombinationsMap,
-            Dictionary<string, string> keyMap,
             CuiRender cuiRender)
         {
             _inputFlowIterator = iterator;
             _commandHandler = commandHandler;
             _keyCombinationTranslating = new KeyCombinationTranslating(keyCombinationsMap);
-            _keyToSymbolTranslating = new KeyToSymbolTranslating(keyMap);
             _cuiRender = cuiRender;
             IsClosed = false;
         }
@@ -36,19 +34,22 @@ namespace DynamicEditor.Core.FlowHandlers
         {
             while (_inputFlowIterator.HasNext())
             {
-                var input = _inputFlowIterator.Next();
-                var command = _keyCombinationTranslating.GetCommandFor(input);
-                command = command is "" ? input : command;
-                command = IsMatchedWithAPattern(input) ? GetCommand(input) : command;
+                ConsoleKeyInfo input = _inputFlowIterator.Next();
+                string keyCombination = input.ToKeyCombination();
+                string keySymbol = input.KeyChar.ToString();
+                
+                string command = _keyCombinationTranslating.GetCommandFor(keyCombination);
+                command = command is "" ? keySymbol : command;
+                command = IsMatchedWithAPattern(keyCombination) ? GetCommand(keyCombination) : command;
 
                 if (IsTheAppendLineCommand(command))
-                    command += ConvertToASymbol(input);
+                    command += keySymbol;
 
-                if (MovementKeysMap.Map.ContainsKey(input))
+                if (MovementKeysMap.Map.ContainsKey(keyCombination))
                 {
                     try
                     {
-                        MovementKeysMap.Map[input](_cuiRender);
+                        MovementKeysMap.Map[keyCombination](_cuiRender);
                     }
                     catch (OutOfCodeBufferSizeException) { }
                 }
@@ -58,7 +59,6 @@ namespace DynamicEditor.Core.FlowHandlers
                     _cuiRender.Render();
                 }
             }
-
 
             IsClosed = true;
         }
@@ -87,12 +87,5 @@ namespace DynamicEditor.Core.FlowHandlers
 
         private bool IsTheAppendLineCommand(string command)
             => command == ":appendLine ";
-
-        private string ConvertToASymbol(string input)
-        {
-            var symbol = _keyToSymbolTranslating.GetSymbolFor(input);
-
-            return symbol is "" ? input : symbol;
-        }
     }
 }

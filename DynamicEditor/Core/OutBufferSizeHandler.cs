@@ -2,8 +2,10 @@ using System;
 using System.Threading;
 using System.Threading.Tasks;
 using Domain.Core.OutBuffers;
+using Domain.Core.Exceptions;
 using Libraries.Core;
 using System.ComponentModel.DataAnnotations;
+using System.Runtime.Versioning;
 
 namespace DynamicEditor.Core
 {
@@ -29,8 +31,13 @@ namespace DynamicEditor.Core
             _render = render;
         }
 
+        [SupportedOSPlatform("windows")]
         public Task Start()
         {
+            if (!OperatingSystem.IsWindows())
+                throw new UnsupportedOSPlatformException(
+                    $"Cannot run {nameof(OutBufferSizeHandler)} on {Environment.OSVersion}");
+            
             if (!_isActive)
                 _isActive = true;
 

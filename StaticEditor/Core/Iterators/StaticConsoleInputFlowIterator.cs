@@ -8,12 +8,15 @@ namespace StaticEditor.Core.Iterators
     {
         public bool HasNext() => true;
 
-        public string Next()
+        public string NextLine()
         {
             ShowArrows();
 
             return Console.ReadLine();
         }
+        
+        public ConsoleKeyInfo Next()
+            => Console.ReadKey();
 
         private static void ShowArrows()
             => OutputColorizing.colorizeForeground(ConsoleColor.Cyan, () => Console.Write(">>> "));

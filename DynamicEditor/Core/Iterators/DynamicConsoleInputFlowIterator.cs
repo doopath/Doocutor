@@ -8,11 +8,14 @@ namespace DynamicEditor.Core.Iterators
         public bool HasNext()
             => true;
 
-        public string Next()
+        public ConsoleKeyInfo Next()
         {
             var pressedKeys = Console.ReadKey(true);
 
-            return pressedKeys.ToKeyCombination();
+            return pressedKeys;
         }
+
+        public string NextLine()
+            => Console.ReadLine();
     }
 }

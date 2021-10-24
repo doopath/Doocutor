@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
-using System.Diagnostics.CodeAnalysis;
 using Domain.Core.CodeBuffers;
 using Domain.Core.OutBuffers;
 using Domain.Core.Scenes;
@@ -11,7 +10,7 @@ namespace DynamicEditor.Core
 {
     public sealed class CuiRender
     {
-        private static object RenderLocker = new();
+        private static readonly object RenderLocker = new();
         private const string CursorForeground = "#000000";
         private const string CursorBackground = "#ffffff";
         private readonly ICodeBuffer _codeBuffer;

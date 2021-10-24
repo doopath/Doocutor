@@ -70,6 +70,7 @@ namespace Domain.Core
                     new(":saveAsm", ExecuteSaveAsmCommand),
                     new(":help", ExecuteHelpCommand),
                     new(":info", ExecuteInfoCommand),
+                    new(":tab", ExecuteTabCommand),
                     new(":doNothing", ExecuteDoNothingCommand)
                 }.ToList()
             );
@@ -185,6 +186,9 @@ namespace Domain.Core
 
         private static void ExecuteBackspaceCommand(NativeCommand command)
             => SourceCodeBuffer.Backspace();
+
+        private static void ExecuteTabCommand(NativeCommand command)
+            => SourceCodeBuffer.AppendLine("    ");
 
         private static void ExecuteDoNothingCommand(NativeCommand command) { }
     }

@@ -1,4 +1,4 @@
-﻿using System.Security.Cryptography;
+﻿using System;
 using Domain.Core;
 using Domain.Core.CodeBuffers;
 using Domain.Core.CommandHandlers;
@@ -36,7 +36,7 @@ namespace DynamicEditor
             CuiScene = new CuiScene();
             Render = new CuiRender(NativeCommandExecutionProvider.SourceCodeBuffer, OutBuffer, CuiScene);
             OutBufferSizeHandler = new OutBufferSizeHandler(OutBuffer, Render, BufferSizeUpdateRate);
-            InputFlowHandler = new DynamicKeyFlowHandler(Iterator, CommandHandler, KeyCombinationsMap.Map, KeyMap.Map, Render);
+            InputFlowHandler = new DynamicKeyFlowHandler(Iterator, CommandHandler, KeyCombinationsMap.Map, Render);
         }
 
         public void Run(string[] args)
@@ -46,12 +46,13 @@ namespace DynamicEditor
             OutBuffer.CursorVisible = false;
             Render.EnableDeveloperMonitor(); // dev-only feature
             Render.Render();
-            OutBufferSizeHandler.Start();
+            
+            if (OperatingSystem.IsWindows())
+                OutBufferSizeHandler.Start();
 
             try
             {
                 InputFlowHandler.StartHandling();
-
             }
             catch (InterruptedExecutionException exc)
             {
