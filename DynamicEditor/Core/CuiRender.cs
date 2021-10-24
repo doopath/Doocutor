@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
-using System.Diagnostics.CodeAnalysis;
 using Domain.Core.CodeBuffers;
 using Domain.Core.OutBuffers;
 using Domain.Core.Scenes;
