@@ -13,12 +13,12 @@
         public DefaultDarkColorScheme()
         {
             Name = "DoocutorDark";
-            TextForeground = "#eeeeee";
-            TextBackground = "#555555";
-            CursorForeground = "#555555";
-            CursorBackground = "#eeeeee";
-            DeveloperMonitorForeground = "#eeeeee";
-            DeveloperMonitorBackground = "#ae8abe";
+            TextForeground = "#A9B7C6";
+            TextBackground = "#2B2B2B";
+            CursorForeground = "#2B2B2B";
+            CursorBackground = "#A9B7C6";
+            DeveloperMonitorForeground = "#EEEEEE";
+            DeveloperMonitorBackground = "#9876AA";
         }
     }
 }

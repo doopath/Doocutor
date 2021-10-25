@@ -18,10 +18,9 @@ namespace DynamicEditor.Core
         private ulong _renderedFrames;
         private ulong _renderTimeAcc;
         private int _avgRenderTime;
+        private string _longestMonitorLine;
         private const int Padding = 1;
         private const int AvgFramesCount = 5;
-        private const string StartPointer = "$->";
-        private const string EndPointer = "<-$";
 
         public DeveloperMonitor(int topOffset, int positionFromTop,
             int positionFromLeft, IScene scene, IColorScheme colorScheme)
@@ -76,7 +75,7 @@ namespace DynamicEditor.Core
             foreach (var monitorLine in _monitor)
             {
                 var sceneLine = sceneContent[index];
-                var right = sceneLine.Length - monitorLine.Length + StartPointer.Length + EndPointer.Length;
+                var right = sceneLine.Length - monitorLine.Length;
 
                 sceneContent[index] = sceneLine[..right] + monitorLine;
                 index++;
@@ -92,7 +91,7 @@ namespace DynamicEditor.Core
                 $" Render [ avg: {_avgRenderTime}ms; last: {_renderTime}ms ]"
             };
 
-            var longestLine = monitor
+             _longestMonitorLine = monitor
                 .OrderByDescending(l => l.Length)
                 .ToArray()[0];
 
@@ -100,7 +99,7 @@ namespace DynamicEditor.Core
                 => new(' ', longestLine.Length - line.Length + 1);
 
             string GroupLine(string line)
-                => StartPointer + line + GetSpacesForShorterLine(longestLine, line) + EndPointer;
+                => line + GetSpacesForShorterLine(_longestMonitorLine, line);
 
             _monitor = monitor.Select(GroupLine);
         }
@@ -112,15 +111,12 @@ namespace DynamicEditor.Core
 
             for (var i = start; i < end; i++)
             {
-                var startPointer = "$->";
-                var endPointer = "<-$";
                 var line = sceneContent[i];
-                var parts = line.Split(startPointer);
-                var result = parts[0] + string.Join("", parts[1..]
-                    .Select(l => l
-                        .Replace(endPointer, string.Empty)
-                        .Pastel(ColorScheme.DeveloperMonitorForeground)
-                        .PastelBg(ColorScheme.DeveloperMonitorBackground)));
+                var right = (_longestMonitorLine.Length + 1);
+                var monitorLine = line[^right..];
+                var result = line[..^right] + monitorLine
+                    .Pastel(ColorScheme.DeveloperMonitorForeground)
+                    .PastelBg(ColorScheme.DeveloperMonitorBackground);
 
                 sceneContent[i] = result;
             }
