@@ -44,6 +44,7 @@ namespace DynamicEditor.Core
             _codeBuffer = codeBuffer;
             _outBuffer = outBuffer;
             _scene = scene;
+            _pureScene = new();
 
             TopOffset = 0;
             _colorScheme = colorScheme;
@@ -84,7 +85,7 @@ namespace DynamicEditor.Core
                 if (IsDeveloperMonitorShown)
                     StartWatching();
 
-                ShowFrame(scene);
+                ShowScene(scene);
                 RenderCursor();
 
                 if (!IsDeveloperMonitorShown) return;
@@ -92,36 +93,6 @@ namespace DynamicEditor.Core
                 StopWatching();
                 UpdateDeveloperMonitor();
             }
-        }
-
-        private void RenderCursor()
-        {
-            var top = _codeBuffer.CursorPositionFromTop - TopOffset;
-            var left = _codeBuffer.CursorPositionFromLeft;
-            var initialCursorPosition = (_outBuffer.CursorLeft, _outBuffer.CursorTop);
-            var symbol = _pureScene[top][left];
-            
-            _outBuffer.SetCursorPosition(left, top);
-            _outBuffer.Write(symbol
-                .ToString()
-                .Pastel(ColorScheme.CursorForeground)
-                .PastelBg(ColorScheme.CursorBackground));
-            
-            (_outBuffer.CursorLeft, _outBuffer.CursorTop) = initialCursorPosition;
-        }
-
-        public void SetScene()
-        {
-            if (IsDeveloperMonitorShown)
-                UpdateDeveloperMonitor();
-
-            _codeBuffer.AdaptCodeForBufferSize(RightEdge);
-
-            var scene = _scene.GetNewScene(
-                _codeBuffer.CodeWithLineNumbers, WindowWidth, WindowHeight, TopOffset);
-
-            _scene.ComposeOf(scene);
-            _pureScene = scene;
         }
 
         public void Clear()
@@ -138,8 +109,37 @@ namespace DynamicEditor.Core
 
         public void MoveCursorRight()
             => DoCursorMovement(_codeBuffer.IncCursorPositionFromLeft);
+        
+        private void RenderCursor()
+        {
+            var top = _codeBuffer.CursorPositionFromTop - TopOffset;
+            var left = _codeBuffer.CursorPositionFromLeft;
+            var initialCursorPosition = (_outBuffer.CursorLeft, _outBuffer.CursorTop);
+            var symbol = _pureScene[top][left];
+            
+            _outBuffer.SetCursorPosition(left, top);
+            _outBuffer.Write(symbol
+                .ToString()
+                .Pastel(ColorScheme.CursorForeground)
+                .PastelBg(ColorScheme.CursorBackground));
+            
+            (_outBuffer.CursorLeft, _outBuffer.CursorTop) = initialCursorPosition;
+        }
 
-        private void ShowFrame(List<string> scene)
+        private void SetScene()
+        {
+            if (IsDeveloperMonitorShown)
+                UpdateDeveloperMonitor();
+
+            _codeBuffer.AdaptCodeForBufferSize(RightEdge);
+
+            _pureScene = _scene.GetNewScene(
+                _codeBuffer.CodeWithLineNumbers, WindowWidth, WindowHeight, TopOffset);
+
+            _scene.ComposeOf(_pureScene);
+        }
+
+        private void ShowScene(List<string> scene)
         {
             _outBuffer.SetCursorPosition(0, 0);
             _outBuffer.Fill(scene);

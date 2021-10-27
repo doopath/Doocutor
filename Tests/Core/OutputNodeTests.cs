@@ -5,7 +5,10 @@ using DynamicEditor.Core;
 using DynamicEditor.Core.Scenes;
 using NUnit.Framework;
 using System.Collections.Generic;
+using System.Linq;
+using Domain.Core.CodeBufferContents;
 using Domain.Core.ColorSchemes;
+using Pastel;
 
 namespace Tests.Core
 {
@@ -13,6 +16,7 @@ namespace Tests.Core
     internal class OutputNodeTests
     {
         private const int UpdateRate = 300;
+        private IColorScheme _colorScheme;
         private ICodeBuffer _codeBuffer;
         private IOutBuffer _outBuffer;
         private CuiRender _render;
@@ -21,15 +25,40 @@ namespace Tests.Core
         [SetUp]
         public void Setup()
         {
-            var colorScheme = new DefaultLightColorScheme();
+            _colorScheme = new DefaultDarkColorScheme();
             _outBuffer = new MockConsole();
-            _codeBuffer = new SourceCodeBuffer();
+            _codeBuffer = new SourceCodeBuffer(new MockCodeBufferContent());
             _scene = new CuiScene();
-            _render = new CuiRender(_codeBuffer, _outBuffer, _scene, colorScheme);
+            _render = new CuiRender(_codeBuffer, _outBuffer, _scene, _colorScheme);
+            _render.DisableDeveloperMonitor();
             Checkbox.TurnOff();
             MockConsoleBuffer.ResetBuffer();
         }
 
+        [Test]
+        public void RenderTest()
+        {
+            int top = _codeBuffer.CursorPositionFromTop;
+            int left = _codeBuffer.CursorPositionFromLeft;
+            string supposedCode = _codeBuffer.CodeWithLineNumbers.Trim();
+            List<string> supposedLines = supposedCode.Split("\n").ToList();
+            string line = supposedLines[top];
+
+            supposedLines[top] = line[..left] + supposedLines[left]
+                .Pastel(_colorScheme.CursorForeground)
+                .PastelBg(_colorScheme.CursorBackground) + line[(left + 1)..];
+            supposedCode = string.Join("\n", supposedLines);
+
+            _render.Render();
+
+            List<string> lines = MockConsoleBuffer.Content;
+            string code = string.Join("\n", lines).Trim();
+
+            bool isRenderedCodeCorrect = code == supposedCode;
+
+            Assert.True(isRenderedCodeCorrect,
+                $"The rendered code isn't correct! \n{code}\n!=\n{supposedCode}");
+        }
     }
 
     internal sealed record MockConsole : IOutBuffer
@@ -86,7 +115,21 @@ namespace Tests.Core
             CursorVisible = true;
             CursorTop = 0;
             CursorLeft = 0;
-            Content = new List<string>();
+            Content = new MockCodeBufferContent().SourceCode;
         }
+    }
+
+    internal sealed record MockCodeBufferContent : ICodeBufferContent
+    {
+        public List<string> SourceCode => new(new[]
+        {
+            "First Line",
+            "Second Line",
+            "\\",
+            ""
+        });
+
+        public int CursorPositionFromTop => 0;
+        public int CursorPositionFromLeft => 0;
     }
 }

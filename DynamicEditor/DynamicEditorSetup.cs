@@ -29,7 +29,6 @@ namespace DynamicEditor
         public OutBufferSizeHandler OutBufferSizeHandler { get; set; }
         public IInputFlowHandler InputFlowHandler { get; set; }
         public IColorScheme ColorScheme { get; set; }
-
         public ColorSchemesRepository ColorSchemesRepository { get; set; }
 
         public DynamicEditorSetup()
