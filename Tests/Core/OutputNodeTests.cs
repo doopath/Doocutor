@@ -42,10 +42,7 @@ namespace Tests.Core
             int left = _codeBuffer.CursorPositionFromLeft;
             int width = _outBuffer.Width;
             string supposedCode = _codeBuffer.CodeWithLineNumbers;
-            
-            List<string> supposedLines = supposedCode
-                .Split("\n").ToList();
-            
+            List<string> supposedLines = supposedCode.Split("\n").ToList();
             string lastLine = supposedLines[^1];
             
             supposedLines = supposedLines
@@ -63,7 +60,6 @@ namespace Tests.Core
 
             List<string> lines = MockConsoleBuffer.Content;
             string code = string.Join("\n", lines).Trim();
-
             bool isRenderedCodeCorrect = code == supposedCode;
 
             Assert.True(isRenderedCodeCorrect,
@@ -73,11 +69,16 @@ namespace Tests.Core
 
     internal sealed record MockConsole : IOutBuffer
     {
-        public int Width { get => MockConsoleBuffer.Width; set => MockConsoleBuffer.Width = value; }
-        public int Height { get => MockConsoleBuffer.Height; set => MockConsoleBuffer.Height = value; }
-        public bool CursorVisible { get => MockConsoleBuffer.CursorVisible; set => MockConsoleBuffer.CursorVisible = value; }
-        public int CursorTop { get => MockConsoleBuffer.CursorTop; set => MockConsoleBuffer.CursorTop = value; }
-        public int CursorLeft { get => MockConsoleBuffer.CursorLeft; set => MockConsoleBuffer.CursorLeft = value; }
+        public int Width { get => MockConsoleBuffer.Width;
+            set => MockConsoleBuffer.Width = value; }
+        public int Height { get => MockConsoleBuffer.Height;
+            set => MockConsoleBuffer.Height = value; }
+        public bool CursorVisible { get => MockConsoleBuffer.CursorVisible;
+            set => MockConsoleBuffer.CursorVisible = value; }
+        public int CursorTop { get => MockConsoleBuffer.CursorTop;
+            set => MockConsoleBuffer.CursorTop = value; }
+        public int CursorLeft { get => MockConsoleBuffer.CursorLeft;
+            set => MockConsoleBuffer.CursorLeft = value; }
 
         public void Clear()
             => MockConsoleBuffer.Content.Clear();

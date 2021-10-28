@@ -38,7 +38,18 @@ namespace DynamicEditor.Core
         private long _lastFrameRenderTime;
         private const int TopEdge = 0;
 
-        public CuiRender(ICodeBuffer codeBuffer, IOutBuffer outBuffer, IScene scene, IColorScheme colorScheme)
+        /// <summary>
+        /// Create an instance of the CuiRender.
+        /// Arguments:
+        ///     ICodeBuffer codeBuffer: a code buffer (for example:
+        ///         Domain.Core.CodeBuffers.SourceCodeBuffer).
+        ///     IOutBuffer outBuffer: an out buffer which should be used to render a scene. For example:
+        ///         Domain.Core.OutBuffers.StandardConsoleOutBuffer.
+        ///     IScene scene: the scene which will be composed and rendered in the outbuffer.
+        ///     IColorScheme colorScheme: a color scheme which's used to colorize output.
+        /// </summary>
+        public CuiRender(ICodeBuffer codeBuffer, IOutBuffer outBuffer,
+                IScene scene, IColorScheme colorScheme)
         {
             _watch = new Stopwatch();
             _codeBuffer = codeBuffer;

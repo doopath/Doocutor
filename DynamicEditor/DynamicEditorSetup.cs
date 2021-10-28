@@ -56,7 +56,11 @@ namespace DynamicEditor
             ColorScheme = ColorSchemesRepository.Get(options.ColorScheme ?? "DoocutorDark");
             OutBuffer.CursorVisible = false;
             Render.ColorScheme = ColorScheme;
-            Render.EnableDeveloperMonitor(); // dev-only feature
+
+            #if DEBUG
+                Render.EnableDeveloperMonitor();
+            #endif
+
             Render.Render();
             
             if (OperatingSystem.IsWindows())
