@@ -1,13 +1,13 @@
-﻿using Domain.Core.CodeBuffers;
+﻿using System.Collections.Generic;
+using System.Linq;
+using Domain.Core.CodeBufferContents;
+using Domain.Core.CodeBuffers;
+using Domain.Core.ColorSchemes;
 using Domain.Core.OutBuffers;
 using Domain.Core.Scenes;
 using DynamicEditor.Core;
 using DynamicEditor.Core.Scenes;
 using NUnit.Framework;
-using System.Collections.Generic;
-using System.Linq;
-using Domain.Core.CodeBufferContents;
-using Domain.Core.ColorSchemes;
 using Pastel;
 
 namespace Tests.Core
@@ -40,13 +40,23 @@ namespace Tests.Core
         {
             int top = _codeBuffer.CursorPositionFromTop;
             int left = _codeBuffer.CursorPositionFromLeft;
-            string supposedCode = _codeBuffer.CodeWithLineNumbers.Trim();
-            List<string> supposedLines = supposedCode.Split("\n").ToList();
-            string line = supposedLines[top];
-
-            supposedLines[top] = line[..left] + supposedLines[left]
+            int width = _outBuffer.Width;
+            string supposedCode = _codeBuffer.CodeWithLineNumbers;
+            
+            List<string> supposedLines = supposedCode
+                .Split("\n").ToList();
+            
+            string lastLine = supposedLines[^1];
+            
+            supposedLines = supposedLines
+                .Select(l => l + (l.Length < width ? new string(' ', width - l.Length) : string.Empty))
+                .SkipLast(1)
+                .ToList();
+            supposedLines.Add(lastLine);
+            supposedLines[top] = supposedLines[top][..left] + supposedLines[top][left]
+                .ToString()
                 .Pastel(_colorScheme.CursorForeground)
-                .PastelBg(_colorScheme.CursorBackground) + line[(left + 1)..];
+                .PastelBg(_colorScheme.CursorBackground) + supposedLines[top][left..];
             supposedCode = string.Join("\n", supposedLines);
 
             _render.Render();
@@ -115,7 +125,7 @@ namespace Tests.Core
             CursorVisible = true;
             CursorTop = 0;
             CursorLeft = 0;
-            Content = new MockCodeBufferContent().SourceCode;
+            Content = new();
         }
     }
 

@@ -1,6 +1,8 @@
 using System;
 using System.Collections.Generic;
-using Spectre.Console;
+using System.Diagnostics;
+using System.IO;
+using System.Text;
 
 namespace Domain.Core.OutBuffers
 {
@@ -26,15 +28,16 @@ namespace Domain.Core.OutBuffers
             => Console.SetCursorPosition(left, top);
 
         public void Write(string line)
-            => Console.WriteLine(line);
+            => Console.Write(line);
 
         public void Fill(IEnumerable<string> scene)
         {
             foreach (var line in scene)
-                Write(line);
+                WriteLine(line);
         }
 
         public void WriteLine(string line)
             => Console.WriteLine(line);
     }
+
 }

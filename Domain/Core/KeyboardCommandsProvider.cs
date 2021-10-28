@@ -45,11 +45,11 @@ namespace Domain.Core
             var isThisAFirstSymbol = line.Length - lineContent.Length == CursorPositionFromLeft;
             var isThisAFirstLine = CursorPositionFromTop == 0;
             var isLineEmpty = lineContent == "";
-            var isThisALastLine = CursorPositionFromTop == _code.Count - 1;
 
             if (isThisAFirstSymbol && !isThisAFirstLine)
             {
                 _cursor.DecCursorPositionFromTop();
+                
                 _code[CursorPositionFromTop] += lineContent;
                 _code.RemoveAt(_formatter.IndexToLineNumber(CursorPositionFromTop));
 
@@ -57,7 +57,7 @@ namespace Domain.Core
 
                 _cursor.SetCursorPositionFromLeftAt(currentLine.Length - lineContent.Length);
             }
-            else if ((!isLineEmpty && !isThisAFirstLine) || (isThisAFirstLine && !isThisAFirstSymbol))
+            else if (!(isLineEmpty || isThisAFirstLine) || (isThisAFirstLine && !isThisAFirstSymbol))
             {
                 _cursor.DecCursorPositionFromLeft();
                 _code[CursorPositionFromTop] = _formatter.SeparateLineFromLineNumber(

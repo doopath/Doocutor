@@ -37,7 +37,7 @@ namespace DynamicEditor.Core
         private Stopwatch _watch;
         private long _lastFrameRenderTime;
         private const int TopEdge = 0;
-        
+
         public CuiRender(ICodeBuffer codeBuffer, IOutBuffer outBuffer, IScene scene, IColorScheme colorScheme)
         {
             _watch = new Stopwatch();

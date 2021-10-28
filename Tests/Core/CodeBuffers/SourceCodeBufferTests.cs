@@ -422,7 +422,6 @@ namespace Tests.Core.CodeBuffers
             void test(int top, int left, string newPart, string supposedLine)
             {
                 var lineNumber = top + 1;
-                newPart = Regex.IsMatch(newPart, "[A-Z]") ? $"Shift+{newPart}" : newPart;
 
                 _codeBuffer.SetCursorPositionFromTopAt(top);
                 _codeBuffer.SetCursorPositionFromLeftAt(left);
