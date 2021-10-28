@@ -46,7 +46,8 @@ namespace DynamicEditor
             CuiScene = new CuiScene();
             Render = new CuiRender(SourceCodeBuffer, OutBuffer, CuiScene, defaultLightColorScheme);
             OutBufferSizeHandler = new OutBufferSizeHandler(OutBuffer, Render, BufferSizeUpdateRate);
-            InputFlowHandler = new DynamicKeyFlowHandler(Iterator, CommandHandler, KeyCombinationsMap.Map, Render);
+            InputFlowHandler = new DynamicKeyFlowHandler(
+                    Iterator, CommandHandler, KeyCombinationsMap.Map, Render);
         }
 
         public void Run(ProgramOptions options)
