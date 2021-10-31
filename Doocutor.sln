@@ -13,8 +13,6 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DynamicEditor", "DynamicEdi
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Domain", "Domain\Domain.csproj", "{47D84A3F-25DF-4AC2-AC3E-DB8F182CAA69}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "StaticEditor", "StaticEditor\StaticEditor.csproj", "{7CD899F4-6EEC-492F-82EB-439FDB53343E}"
-EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -41,10 +39,6 @@ Global
 		{47D84A3F-25DF-4AC2-AC3E-DB8F182CAA69}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{47D84A3F-25DF-4AC2-AC3E-DB8F182CAA69}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{47D84A3F-25DF-4AC2-AC3E-DB8F182CAA69}.Release|Any CPU.Build.0 = Release|Any CPU
-		{7CD899F4-6EEC-492F-82EB-439FDB53343E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{7CD899F4-6EEC-492F-82EB-439FDB53343E}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{7CD899F4-6EEC-492F-82EB-439FDB53343E}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{7CD899F4-6EEC-492F-82EB-439FDB53343E}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

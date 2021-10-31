@@ -6,7 +6,6 @@ using Domain.Options;
 using DynamicEditor;
 using Libraries.Core;
 using NLog;
-using StaticEditor;
 
 namespace Doocutor
 {
@@ -18,12 +17,9 @@ namespace Doocutor
         {
             try
             {
-                var options = ParseCommandLineArguments(args);
-                var editor = SelectEditor(options.EditorMode);
-
                 Start();
 
-                editor.Run(options);
+                new DynamicEditorSetup().Run(ParseCommandLineArguments(args));
             }
             catch (InterruptedExecutionException error)
             {
@@ -38,15 +34,6 @@ namespace Doocutor
                 End();
             }
         }
-
-        private static IEditorSetup SelectEditor(string? mode) => mode?.ToLower() switch
-        {
-            "dynamic" => new DynamicEditorSetup(),
-            "static" => new StaticEditorSetup(),
-            null => new StaticEditorSetup(),
-            _ => throw new ArgumentException($"Cannot run editor in mode={mode}")
-        };
-
 
         private static void Start()
             => OutputColorizing.colorizeForeground(ConsoleColor.Cyan, () =>
