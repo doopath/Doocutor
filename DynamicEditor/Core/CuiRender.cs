@@ -82,11 +82,8 @@ namespace DynamicEditor.Core
 
         public void Render()
         {
-            lock (RenderLocker)
-            {
-                SetScene();
-                Render(_scene.CurrentScene);
-            }
+            SetScene();
+            Render(_scene.CurrentScene);
         }
 
         public void Render(List<string> scene)
@@ -153,7 +150,7 @@ namespace DynamicEditor.Core
         private void ShowScene(List<string> scene)
         {
             _outBuffer.SetCursorPosition(0, 0);
-            _outBuffer.Fill(scene);
+            _outBuffer.WriteLine(string.Join("", scene));
 
             FixCursorPosition();
         }

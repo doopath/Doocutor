@@ -29,7 +29,6 @@
 
     <ItemGroup>
         <ProjectReference Include="../DynamicEditor/DynamicEditor.csproj" />
-        <ProjectReference Include="../StaticEditor/StaticEditor.csproj" />
         <Reference Include="../Libraries/bin/Debug/net5.0/Libraries.dll">
             <HintPath>../Libraries/bin/Debug/net5.0/Libraries.dll</HintPath>
         </Reference>

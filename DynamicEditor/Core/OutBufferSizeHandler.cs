@@ -2,8 +2,8 @@ using System;
 using System.Threading;
 using System.Threading.Tasks;
 using Domain.Core.OutBuffers;
-using Libraries.Core;
 using System.ComponentModel.DataAnnotations;
+using Libraries.Core;
 
 namespace DynamicEditor.Core
 {
@@ -54,10 +54,10 @@ namespace DynamicEditor.Core
                     if (width != _outBuffer.Width || height != _outBuffer.Height)
                     {
                         _render.Render();
-                        Console.WriteLine("Windows size was changed!");
                     }
                 }
-                catch (ArgumentOutOfRangeException) {
+                catch (ArgumentOutOfRangeException)
+                {
                     _render.Render();
                 }
                 catch (Exception exc)
