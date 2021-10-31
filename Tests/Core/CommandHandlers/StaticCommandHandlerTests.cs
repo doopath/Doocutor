@@ -39,6 +39,7 @@ namespace Tests.Core.CommandHandlers
         public void HandleWithAnEditorCommandTest()
         {
             _commandHandler.Handle("editor");
+
             Assert.True(Checkbox.State,
                 "Launching the StaticCommandHandler with the \"editor\" argument should turn the checkbox on!");
         }

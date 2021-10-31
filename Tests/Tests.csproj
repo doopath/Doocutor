@@ -14,9 +14,10 @@
     </ItemGroup>
 
     <ItemGroup>
-      <ProjectReference Include="..\Domain\Domain.csproj" />
-      <ProjectReference Include="..\DynamicEditor\DynamicEditor.csproj" />
-      <ProjectReference Include="..\StaticEditor\StaticEditor.csproj" />
+      <ProjectReference Include="../Domain/Domain.csproj" />
+      <ProjectReference Include="../DynamicEditor/DynamicEditor.csproj" />
+      <ProjectReference Include="../StaticEditor/StaticEditor.csproj" />
+      <Reference Include="../Libraries/bin/Debug/net5.0/Libraries.dll" />
     </ItemGroup>
 
 </Project>

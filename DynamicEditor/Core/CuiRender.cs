@@ -84,9 +84,9 @@ namespace DynamicEditor.Core
         {
             lock (RenderLocker)
             {
-                SetScene(); 
+                SetScene();
                 Render(_scene.CurrentScene);
-            }                  
+            }
         }
 
         public void Render(List<string> scene)
@@ -100,7 +100,7 @@ namespace DynamicEditor.Core
                 RenderCursor();
 
                 if (!IsDeveloperMonitorShown) return;
-                
+
                 StopWatching();
                 UpdateDeveloperMonitor();
             }
@@ -120,20 +120,20 @@ namespace DynamicEditor.Core
 
         public void MoveCursorRight()
             => DoCursorMovement(_codeBuffer.IncCursorPositionFromLeft);
-        
+
         private void RenderCursor()
         {
             var top = _codeBuffer.CursorPositionFromTop - TopOffset;
             var left = _codeBuffer.CursorPositionFromLeft;
             var initialCursorPosition = (_outBuffer.CursorLeft, _outBuffer.CursorTop);
             var symbol = _pureScene[top][left];
-            
+
             _outBuffer.SetCursorPosition(left, top);
             _outBuffer.Write(symbol
                 .ToString()
                 .Pastel(ColorScheme.CursorForeground)
                 .PastelBg(ColorScheme.CursorBackground));
-            
+
             (_outBuffer.CursorLeft, _outBuffer.CursorTop) = initialCursorPosition;
         }
 
@@ -217,7 +217,7 @@ namespace DynamicEditor.Core
                 Render();
             }
         }
-        
+
 
         private void UpdateDeveloperMonitor()
             => _developerMonitor.Update(

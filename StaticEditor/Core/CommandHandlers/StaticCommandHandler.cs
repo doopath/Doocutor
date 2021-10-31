@@ -1,9 +1,9 @@
-﻿using Domain.Core.CommandRecognizers;
+﻿using Domain.Core.CommandHandlers;
+using Domain.Core.CommandRecognizers;
 using Domain.Core.Commands;
 using Domain.Core.Exceptions;
 using Domain.Core.Executors;
 using Libraries.Core;
-using Domain.Core.CommandHandlers;
 
 namespace StaticEditor.Core.CommandHandlers
 {
@@ -60,7 +60,7 @@ namespace StaticEditor.Core.CommandHandlers
             var exceptionMessage = $"Given command {command} is not supported!";
 
             if (recognizedCommand is null)
-            {                
+            {
                 ErrorHandling.showError(new CommandRecognizingException(exceptionMessage));
                 return;
             }
@@ -68,10 +68,10 @@ namespace StaticEditor.Core.CommandHandlers
             switch (recognizedCommand.Type)
             {
                 case CommandType.EDITOR_COMMAND:
-                    _editorCommandExecutor.Execute((EditorCommand) recognizedCommand);
+                    _editorCommandExecutor.Execute((EditorCommand)recognizedCommand);
                     break;
                 case CommandType.NATIVE_COMMAND:
-                    _nativeCommandExecutor.Execute((NativeCommand) recognizedCommand);
+                    _nativeCommandExecutor.Execute((NativeCommand)recognizedCommand);
                     break;
                 default:
                     throw new UnsupportedCommandException($"Given command {command} is not supported!");

@@ -16,7 +16,7 @@ namespace Tests.Core
 
         [TearDown]
         public void TearDown() => Checkbox.TurnOff();
-        
+
         [Test]
         public void GetExecutingFunctionTest()
         {
@@ -24,7 +24,7 @@ namespace Tests.Core
             var command = new NativeCommand(commandContent);
 
             NativeCommandExecutionProvider.GetExecutingFunction(command)();
-            
+
             Assert.True(Checkbox.State, "Given native command :test should turn the checkbox on!");
         }
     }
@@ -36,7 +36,7 @@ namespace Tests.Core
             SupportedCommands.Add(":test");
             AddCommand(":test", ExecuteTestCommand);
         }
-            
+
         private static void ExecuteTestCommand(NativeCommand command) => Checkbox.TurnOn();
     }
 }
