@@ -5,7 +5,9 @@ namespace Domain.Core.CodeFormatters
     public interface ICodeFormatter
     {
         List<string> SourceCode { get; }
-        string GroupNewLineOfACurrentOne(string newPart, int cursorPositionFromTop, int cursorPositionFromLeft);
+        int? MaxLineLength { get; }
+        string GroupNewLineOfACurrentOne(string newPart,
+                int cursorPositionFromTop, int cursorPositionFromLeft);
         string GroupOutputLineAt(int lineNumber);
         string GetSourceCodeWithLineNumbers();
         string SeparateLineFromLineNumber(string line);

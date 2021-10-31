@@ -1,5 +1,4 @@
-﻿using System;
-using Domain.Core;
+﻿using Domain.Core;
 using Domain.Core.CodeBuffers;
 using Domain.Core.ColorSchemes;
 using Domain.Core.CommandHandlers;
@@ -63,9 +62,7 @@ namespace DynamicEditor
             #endif
 
             Render.Render();
-            
-            if (OperatingSystem.IsWindows())
-                OutBufferSizeHandler.Start();
+            OutBufferSizeHandler.Start();
 
             try
             {

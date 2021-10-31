@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using Domain.Core.CodeFormatters;
 using Domain.Core.Cursors;
+using Libraries.Core;
 
 namespace Domain.Core
 {
@@ -11,6 +12,7 @@ namespace Domain.Core
         private readonly ICursor _cursor;
         private int CursorPositionFromTop => _cursor.CursorPositionFromTop;
         private int CursorPositionFromLeft => _cursor.CursorPositionFromLeft;
+        private int? MaxLineLength => _formatter.MaxLineLength;
 
         public KeyboardCommandsProvider(List<string> code, ICodeFormatter formatter, ICursor cursor)
         {
@@ -25,7 +27,8 @@ namespace Domain.Core
             var line = _formatter.GroupOutputLineAt(lineNumber)[..^1];
             var lineContent = _formatter.GetLineAt(lineNumber);
 
-            _code[CursorPositionFromTop] = _formatter.SeparateLineFromLineNumber(line[..CursorPositionFromLeft]);
+            _code[CursorPositionFromTop] = _formatter.SeparateLineFromLineNumber(
+                    line[..CursorPositionFromLeft]);
 
             var newLine = line[CursorPositionFromLeft..];
             var targetIndex = CursorPositionFromTop + 1;
@@ -48,6 +51,14 @@ namespace Domain.Core
 
             if (isThisAFirstSymbol && !isThisAFirstLine)
             {
+                int previousLineLength = _formatter.GroupOutputLineAt(CursorPositionFromTop)[..^1].Length;
+                
+                if (previousLineLength == MaxLineLength && !isLineEmpty)
+                {
+                    _cursor.DecCursorPositionFromLeft();
+                    return;
+                }
+
                 _cursor.DecCursorPositionFromTop();
                 
                 _code[CursorPositionFromTop] += lineContent;

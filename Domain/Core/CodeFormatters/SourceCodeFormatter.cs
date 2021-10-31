@@ -9,28 +9,31 @@ namespace Domain.Core.CodeFormatters
     public class SourceCodeFormatter : ICodeFormatter
     {
         public List<string> SourceCode { get; }
+        public int? MaxLineLength { get; private set; }
 
         public SourceCodeFormatter(List<string> sourceCode)
         {
             SourceCode = sourceCode;
         }
 
-        public void AdaptCodeForBufferSize(int maxLineLength)
+        public void AdaptCodeForBufferSize(int windowWidth)
         {
+            MaxLineLength = windowWidth;
+
             for (var i = 0; i < SourceCode.Count; i++)
             {
                 var lineNumber = i + 1;
                 var line = GetLineAt(lineNumber);
                 var prefixLength = GetPrefixLength(lineNumber);
 
-                if (line.Length + prefixLength > maxLineLength)
+                if (line.Length + prefixLength > windowWidth)
                 {
-                    SourceCode[i] = line[..(maxLineLength - prefixLength)];
+                    SourceCode[i] = line[..(windowWidth - prefixLength)];
 
                     if (SourceCode.Count - 1 < i + 1)
                         SourceCode.Insert(i + 1, "");
 
-                    SourceCode[i + 1] = line[(maxLineLength - prefixLength)..] + SourceCode[i + 1];
+                    SourceCode[i + 1] = line[(windowWidth - prefixLength)..] + SourceCode[i + 1];
                 }
             }
         }
