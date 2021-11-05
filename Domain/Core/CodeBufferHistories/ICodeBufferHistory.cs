@@ -2,14 +2,14 @@ using System.Collections.Generic;
 
 namespace Domain.Core.CodeBufferHistories
 {
-    public interface ICodeBufferHistory : IEnumerable<CodeBufferChange>
+    public interface ICodeBufferHistory : IEnumerable<ICodeBufferChange>
     {
         uint MaxLength { get; set; }
         uint Size { get; }
-        void Add(CodeBufferChange change);
+        void Add(ICodeBufferChange change);
         void Clear();
         bool IsEmpty();
-        CodeBufferChange Undo();
-        CodeBufferChange Redo();
+        ICodeBufferChange Undo();
+        ICodeBufferChange Redo();
     }
 }

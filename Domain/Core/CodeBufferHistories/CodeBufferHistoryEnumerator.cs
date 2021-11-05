@@ -2,16 +2,16 @@ using System.Collections.Generic;
 
 namespace Domain.Core.CodeBufferHistories
 {
-    internal class CodeBufferHistoryEnumerator : IEnumerator<CodeBufferChange>
+    internal class CodeBufferHistoryEnumerator : IEnumerator<ICodeBufferChange>
     {
-        CodeBufferChange IEnumerator<CodeBufferChange>.Current => (CodeBufferChange) Current;
+        ICodeBufferChange IEnumerator<ICodeBufferChange>.Current => (ICodeBufferChange) Current;
         public object Current => _history[_pointer];
         
-        private readonly CodeBufferChange[] _history;
+        private readonly ICodeBufferChange[] _history;
         private readonly uint _initialPointer;
         private uint _pointer;
 
-        public CodeBufferHistoryEnumerator(CodeBufferChange[] history, uint pointer)
+        public CodeBufferHistoryEnumerator(ICodeBufferChange[] history, uint pointer)
         {
             _history = history;
             _pointer = pointer;

@@ -9,7 +9,7 @@ namespace Domain.Core.CodeBufferHistories
     /// this, that makes it possible to 'undo' and 'redo'
     /// user's actions.
     /// </summary>
-    public struct CodeBufferChange
+    public struct CodeBufferChange : ICodeBufferChange
     {
         /// <summary>
         /// An index of a line that was changed.

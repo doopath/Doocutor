@@ -40,7 +40,7 @@ namespace Tests.Core.CodeBufferHistories
             {
                 string newLine = "+++++++++";
                 
-                _history!.Add(new()
+                _history!.Add(new CodeBufferChange()
                 {
                     Range = new(i, i+1), 
                     NewChanges = new[] { _buffer[i] },
@@ -67,29 +67,24 @@ namespace Tests.Core.CodeBufferHistories
                 List<string> bufferBackup = new(_buffer!);
                 string[] bufferBackupArray = bufferBackup.ToArray();
                 string[] oldState = bufferBackupArray[range];
-                CodeBufferChange change = new()
+                ICodeBufferChange change = new CodeBufferChange()
                 {
                     Range = range,
                     NewChanges = (string[]) lines.Clone(),
                     OldState = oldState
                 };
 
-                _buffer = (bufferBackupArray[..range.Start]
-                    .Concat(lines)
-                    .Concat(bufferBackupArray[range.End..])).ToList();
+                ModifyBuffer(range, lines);
                 _history!.Add(change);
 
-
                 change = _history.Undo();
-                string[] bufferArray = _buffer.ToArray();
-                _buffer = (bufferArray[..change.Range.Start]
-                    .Concat(change.OldState)
-                    .Concat(bufferArray[(change.Range.Start.Value +
-                         change.NewChanges.Length)..])).ToList();
+                range = new(change.Range.Start, change.Range.Start.Value
+                        + change.NewChanges.Length);
 
+                ModifyBuffer(range, change.OldState);
                 
                 string supposedCode = string.Join("\n", bufferBackup);
-                string code = string.Join("\n", _buffer);
+                string code = string.Join("\n", _buffer!);
                 bool isTheBufferCorrect = code == supposedCode;
 
                 Assert.True(isTheBufferCorrect,
@@ -100,9 +95,57 @@ namespace Tests.Core.CodeBufferHistories
                 SetUp();
             }
             
+            Test(new(0, 1), new[] { "First Line" });
             Test(new(0, 2), new[] { "First Line", "Second Line" });
             Test(new(0, 3), new[] { "", "", "" });
             Test(new(0, 4), new[] { "\\", "\n", "\r", "" });
+        }
+
+        [Test]
+        public void UndoTest()
+        {
+            string[] bufferBackup = _buffer!.ToArray();
+
+            for (int i = 0; i < _buffer.Count; i++)
+            {
+                string newLine = $"New line {i}";
+                ICodeBufferChange change = new CodeBufferChange()
+                {
+                    Range = new(i, i + 1),
+                    NewChanges = new[] { newLine },
+                    OldState = new[] { _buffer[i] }
+                };
+
+                _buffer[i] = newLine;
+                _history!.Add(change);
+            }
+
+            for (int i = bufferBackup.Length - 1; i >= 0; i--)
+                _buffer[i] = _history!.Undo().OldState[0];
+
+            string supposedCode = string.Join("\n", bufferBackup);
+            string code = string.Join("\n", _buffer);
+            bool isTheCodeCorrect = code == supposedCode;
+
+            Assert.True(isTheCodeCorrect,
+                $"The {nameof(SourceCodeBufferHistory)} saved the" +
+                $"changes incorrect! \n'{code}'\n!=\n'{supposedCode}'\n");
+        }
+
+        private void ModifyBuffer(Range range, string[] lines)
+        {
+            int end = range.End.Value;
+            int start = range.Start.Value;
+
+            if (_buffer!.Count < (end > start ? end : start))
+                throw new IndexOutOfRangeException(
+                    "Length of the buffer is less than the greates value of the range.");
+
+            string[] bufferArray = _buffer!.ToArray();
+
+            _buffer = (bufferArray[..range.Start]
+                .Concat(lines)
+                .Concat(bufferArray[range.End..])).ToList();
         }
 
         private void FillBuffer()

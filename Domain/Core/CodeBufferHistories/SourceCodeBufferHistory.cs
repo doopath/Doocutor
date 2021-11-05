@@ -1,4 +1,3 @@
-using System;
 using System.Collections;
 using System.Collections.Generic;
 using Domain.Core.Exceptions;
@@ -25,7 +24,7 @@ namespace Domain.Core.CodeBufferHistories
         public uint MaxLength { get; set; }
         public uint Size => (uint) _history.Count;
         
-        private List<CodeBufferChange> _history;
+        private List<ICodeBufferChange> _history;
         private int _pointer;
 
         /// <param name="maxLength">
@@ -58,7 +57,7 @@ namespace Domain.Core.CodeBufferHistories
         /// <param name="change">
         /// A change of the source code buffer.
         /// </param>
-        public void Add(CodeBufferChange change)
+        public void Add(ICodeBufferChange change)
         {
             _history.Add(change);
             _pointer++;
@@ -71,7 +70,7 @@ namespace Domain.Core.CodeBufferHistories
         /// <returns>
         /// The next change.
         /// </returns>
-        public CodeBufferChange Redo()
+        public ICodeBufferChange Redo()
         {
             _pointer++;
             return _history[(int)_pointer-1];
@@ -84,13 +83,13 @@ namespace Domain.Core.CodeBufferHistories
         /// <returns>
         /// The previous change.
         /// </returns>
-        public CodeBufferChange Undo()
+        public ICodeBufferChange Undo()
         {
             _pointer--;
             return _history[(int)_pointer+1];
         }
 
-        public IEnumerator<CodeBufferChange> GetEnumerator()
+        public IEnumerator<ICodeBufferChange> GetEnumerator()
         {
             if (_pointer == -1)
                 throw new ValueOutOfRangeException(
