@@ -40,3 +40,5 @@ Doocutor.PublicKey
 # Wow, what is these?
 .fake
 .ionide
+
+omnisharp.json

@@ -33,10 +33,11 @@ namespace DynamicEditor
         public DynamicEditorSetup()
         {
             var defaultLightColorScheme = new DefaultLightColorScheme();
+            
             ColorSchemesRepository = new();
             ColorSchemesRepository.Add(defaultLightColorScheme);
             ColorSchemesRepository.Add(new DefaultDarkColorScheme());
-            
+
             SourceCodeBuffer = NativeCommandExecutionProvider.SourceCodeBuffer;
             BufferSizeUpdateRate = 300;
             Iterator = new DynamicConsoleInputFlowIterator();
@@ -57,9 +58,9 @@ namespace DynamicEditor
             OutBuffer.CursorVisible = false;
             Render.ColorScheme = ColorScheme;
 
-            #if DEBUG
-                Render.EnableDeveloperMonitor();
-            #endif
+#if DEBUG
+            Render.EnableDeveloperMonitor();
+#endif
 
             Render.Render();
             OutBufferSizeHandler.Start();
@@ -68,12 +69,12 @@ namespace DynamicEditor
             {
                 InputFlowHandler.StartHandling();
             }
-            catch (InterruptedExecutionException exc)
+            catch (InterruptedExecutionException)
             {
                 OutBufferSizeHandler.Stop();
                 OutBuffer.CursorVisible = true;
 
-                throw exc;
+                throw;
             }
         }
     }

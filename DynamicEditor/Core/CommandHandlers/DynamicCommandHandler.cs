@@ -35,13 +35,15 @@ namespace DynamicEditor.Core.CommandHandlers
 
             public DynamicCommandHandler Build() => _commandHandler;
 
-            public Builder SetNativeCommandExecutor(ICommandExecutor<NativeCommand> nativeCommandExecutor)
+            public Builder SetNativeCommandExecutor(
+                    ICommandExecutor<NativeCommand> nativeCommandExecutor)
             {
                 _commandHandler._nativeCommandExecutor = nativeCommandExecutor;
                 return this;
             }
 
-            public Builder SetEditorCommandExecutor(ICommandExecutor<EditorCommand> editorCommandExecutor)
+            public Builder SetEditorCommandExecutor(
+                    ICommandExecutor<EditorCommand> editorCommandExecutor)
             {
                 _commandHandler._editorCommandExecutor = editorCommandExecutor;
                 return this;
