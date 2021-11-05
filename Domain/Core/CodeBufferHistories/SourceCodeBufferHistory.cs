@@ -1,5 +1,7 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
+using Domain.Core.Exceptions;
 
 namespace Domain.Core.CodeBufferHistories
 {
@@ -24,7 +26,7 @@ namespace Domain.Core.CodeBufferHistories
         public uint Size => (uint) _history.Count;
         
         private List<CodeBufferChange> _history;
-        private uint _pointer;
+        private int _pointer;
 
         /// <param name="maxLength">
         /// Max length of the history.
@@ -35,7 +37,7 @@ namespace Domain.Core.CodeBufferHistories
         {
             MaxLength = maxLength;
             _history = new();
-            _pointer = 0;
+            _pointer = -1;
         }
 
         public void Clear()
@@ -45,7 +47,7 @@ namespace Domain.Core.CodeBufferHistories
         }
 
         public bool IsEmpty()
-            => _history.Count == 0;
+            => _history.Count == -1;
 
         /// <summary>
         /// Add a change to the history.
@@ -89,6 +91,13 @@ namespace Domain.Core.CodeBufferHistories
         }
 
         public IEnumerator<CodeBufferChange> GetEnumerator()
-            => new CodeBufferHistoryEnumerator(_history.ToArray(), _pointer);
+        {
+            if (_pointer == -1)
+                throw new ValueOutOfRangeException(
+                    "Cannot get an enumerator of the empty history!");
+                    
+            return new CodeBufferHistoryEnumerator(_history.ToArray(), (uint) _pointer);
+        }
+            
     }
 }
