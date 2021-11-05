@@ -121,7 +121,7 @@ namespace DynamicEditor.Core
         /// </summary>
         /// 
         /// <param name="scene">
-        /// A list of lines.
+        /// A list of lines to be rendred.
         /// </param>
         public void Render(List<string> scene)
         {
