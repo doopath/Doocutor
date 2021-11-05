@@ -9,10 +9,33 @@ using Pastel;
 
 namespace DynamicEditor.Core
 {
+    /// <summary>
+    /// Render some text to the out buffer.
+    /// Usually the out buffer is the stdin.
+    /// It doesn't display real cursor of the out buffer
+    /// (for being more faster), it uses the virtual one
+    /// (a colorized symbol).
+    /// </summary>
     public sealed class CuiRender
     {
+        /// <summary>
+        /// Offset value from the top of the code buffer.
+        /// Is used to scrolling rendered content.
+        /// </summary>
         public int TopOffset { get; set; }
+        
+        /// <summary>
+        /// Enable/disable developer monitor
+        /// (a panel that's displayed at the right top corner
+        /// of the out buffer and shows render time, position, etc).
+        /// Usually disabled in 'release' version.
+        /// </summary>
         public bool IsDeveloperMonitorShown { get; set; }
+        
+        /// <summary>
+        /// Set color scheme for the rendered text and the
+        /// developer monitor.
+        /// </summary>
         public IColorScheme ColorScheme
         {
             get => _colorScheme;
@@ -38,16 +61,19 @@ namespace DynamicEditor.Core
         private long _lastFrameRenderTime;
         private const int TopEdge = 0;
 
-        /// <summary>
-        /// Create an instance of the CuiRender.
-        /// Arguments:
-        ///     ICodeBuffer codeBuffer: a code buffer (for example:
-        ///         Domain.Core.CodeBuffers.SourceCodeBuffer).
-        ///     IOutBuffer outBuffer: an out buffer which should be used to render a scene. For example:
-        ///         Domain.Core.OutBuffers.StandardConsoleOutBuffer.
-        ///     IScene scene: the scene which will be composed and rendered in the outbuffer.
-        ///     IColorScheme colorScheme: a color scheme which's used to colorize output.
-        /// </summary>
+        /// <param name="codeBuffer">
+        /// A code buffer (for example: Domain.Core.CodeBuffers.SourceCodeBuffer).
+        /// </param>
+        /// <param name="outBuffer">
+        /// The out buffer which should be used to render a scene. For example:
+        /// Domain.Core.OutBuffers.StandardConsoleOutBuffer.
+        /// </param>
+        /// <param name="scene">
+        /// The scene which will be composed and rendered in the out buffer.
+        /// </param>
+        /// <param name="colorScheme">
+        /// A color scheme which is used to colorize output.
+        /// </param>
         public CuiRender(ICodeBuffer codeBuffer, IOutBuffer outBuffer,
                 IScene scene, IColorScheme colorScheme)
         {
@@ -86,6 +112,17 @@ namespace DynamicEditor.Core
             Render(_scene.CurrentScene);
         }
 
+        /// <summary>
+        /// Render the scene.
+        /// This method uses the monitor, so you can call
+        /// it only in single-thread mode.
+        /// If the IsDeveloperMonitorShown property equals True,
+        /// than the developer monitor also will be rendered.
+        /// </summary>
+        /// 
+        /// <param name="scene">
+        /// A list of lines.
+        /// </param>
         public void Render(List<string> scene)
         {
             lock (RenderLocker)
