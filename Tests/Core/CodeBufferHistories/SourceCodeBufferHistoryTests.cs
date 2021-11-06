@@ -207,7 +207,7 @@ namespace Tests.Core.CodeBufferHistories
                 bool isHistorySizeCorrect = _history.Size == limit;
 
                 Assert.True(isHistorySizeCorrect,
-                    "Size of the history doesn't equals the set limit!" +
+                    "Size of the history isn't equals the set limit!" +
                     $" ({_history.Size} !+ {limit})");
 
                 SetUp();
