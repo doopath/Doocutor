@@ -68,7 +68,10 @@ namespace Domain.Core.CodeBufferHistories
         public void Add(ICodeBufferChange change)
         {
             if (_history.Count == Limit)
+            {
                 _history.RemoveAt(0);
+                _pointer--;
+            }
 
             _history.Add(change);
             _pointer++;

@@ -179,8 +179,48 @@ namespace Tests.Core.CodeBufferHistories
                 new[] { "First Line" },
                 new[] { "First Line", "Second Line" },
                 new[] { "First LIne", "Second Line", "Third Line" },
-                new[] { "", "", "", "" }
+                new[] { string.Empty, string.Empty, string.Empty, string.Empty }
             });
+        }   
+
+        [Test]
+        public void LimitOverflowTest()
+        {
+            void Test(uint limit, int overflowValue)
+            {
+                _history!.Limit = limit;
+
+                for (var i = 0; i < limit + overflowValue; i++)
+                    _history.Add(new CodeBufferChange() 
+                    {
+                        Range = new(0, 1),
+                        OldState = new[] { string.Empty },
+                        NewChanges = new[] { i.ToString() }
+                    });
+
+                string firstChange;
+
+                foreach (var change in _history)
+                    firstChange = change.NewChanges[0];
+
+                string supposedFirstChange = (overflowValue - 1).ToString();
+                bool isHistorySizeCorrect = _history.Size == limit;
+
+                Assert.True(isHistorySizeCorrect,
+                    "Size of the history doesn't equals the set limit!" +
+                    $" ({_history.Size} !+ {limit})");
+
+                SetUp();
+            }
+
+            Test(1, 1);
+            Test(1, 2);
+
+            Test(10, 1);
+            Test(10, 2);
+
+            Test(100, 1);
+            Test(100, 2);
         }
 
         private void ModifyBuffer(Range range, string[] lines)
