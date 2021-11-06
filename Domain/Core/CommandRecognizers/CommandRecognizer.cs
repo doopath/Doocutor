@@ -1,7 +1,5 @@
 ﻿using Domain.Core.Commands;
 using Domain.Core.Exceptions;
-using Domain.Core;
-using Domain.Core.CommandRecognizers;
 
 namespace Domain.Core.CommandRecognizers
 {
@@ -11,7 +9,7 @@ namespace Domain.Core.CommandRecognizers
         {
             if (IsValidNativeCommand(command))
                 return new NativeCommand(command);
-           
+
             return new EditorCommand(command);
         }
 

@@ -23,7 +23,7 @@ namespace DynamicEditor.Core
         /// Is used to scrolling rendered content.
         /// </summary>
         public int TopOffset { get; set; }
-        
+
         /// <summary>
         /// Enable/disable developer monitor
         /// (a panel that's displayed at the right top corner
@@ -31,7 +31,7 @@ namespace DynamicEditor.Core
         /// Usually disabled in 'release' version.
         /// </summary>
         public bool IsDeveloperMonitorShown { get; set; }
-        
+
         /// <summary>
         /// Set color scheme for the rendered text and the
         /// developer monitor.
@@ -51,8 +51,8 @@ namespace DynamicEditor.Core
         private readonly DeveloperMonitor _developerMonitor;
         private readonly IOutBuffer _outBuffer;
         private readonly IScene _scene;
-        private IColorScheme _colorScheme;
         private List<string> _pureScene;
+        private IColorScheme _colorScheme;
         private int WindowWidth => _outBuffer.Width;
         private int WindowHeight => _outBuffer.Height;
         private int RightEdge => _outBuffer.Width - 2;
@@ -144,16 +144,54 @@ namespace DynamicEditor.Core
             => _outBuffer.Clear();
 
         public void MoveCursorUp()
-            => DoCursorMovement(_codeBuffer.DecCursorPositionFromTop);
+            => DoHorizontalCursorMovement(_codeBuffer.DecCursorPositionFromTop);
 
         public void MoveCursorDown()
-            => DoCursorMovement(_codeBuffer.IncCursorPositionFromTop);
+            => DoHorizontalCursorMovement(_codeBuffer.IncCursorPositionFromTop);
 
         public void MoveCursorLeft()
-            => DoCursorMovement(_codeBuffer.DecCursorPositionFromLeft);
+            => DoHorizontalCursorMovement(_codeBuffer.DecCursorPositionFromLeft);
 
         public void MoveCursorRight()
-            => DoCursorMovement(_codeBuffer.IncCursorPositionFromLeft);
+            => DoHorizontalCursorMovement(_codeBuffer.IncCursorPositionFromLeft);
+
+        private void DoHorizontalCursorMovement(Action movement)
+        {
+            int initialLeftPosition = _codeBuffer.CursorPositionFromLeft;
+            int initialTopPosition = _codeBuffer.CursorPositionFromTop - TopOffset;
+
+            try
+            {
+                movement?.Invoke();
+            }
+            finally
+            {
+                FixCursorPosition();
+                RemoveCursor(initialLeftPosition, initialTopPosition);
+                RenderCursor();
+            }
+        }
+
+        private void DoVerticalCursorMovement(Action movement)
+        {
+            try
+            {
+                movement?.Invoke();
+            }
+            finally
+            {
+                Render();
+            }
+        }
+
+        private void RemoveCursor(int initialLeftPosition, int initialTopPosition)
+        {
+            char initialCursorSymbol = _scene
+                .CurrentScene[initialTopPosition][initialLeftPosition];
+
+            _outBuffer.SetCursorPosition(initialLeftPosition, initialTopPosition);
+            _outBuffer.Write(initialCursorSymbol.ToString());
+        }
 
         private void RenderCursor()
         {
@@ -200,18 +238,6 @@ namespace DynamicEditor.Core
             _watch.Stop();
             _lastFrameRenderTime = _watch.ElapsedMilliseconds;
             _watch = new Stopwatch();
-        }
-
-        private void DoCursorMovement(Action movement)
-        {
-            try
-            {
-                movement?.Invoke();
-            }
-            finally
-            {
-                Render();
-            }
         }
 
         private void FixCursorPosition()
