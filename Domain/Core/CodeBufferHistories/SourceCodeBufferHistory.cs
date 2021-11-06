@@ -5,6 +5,9 @@ using Domain.Core.Exceptions;
 
 namespace Domain.Core.CodeBufferHistories
 {
+    /// <summary>
+    /// History of the SourceCodeBuffer.
+    /// You can add redo and undo added changes.
     /// <summary />
     public class SourceCodeBufferHistory : ICodeBufferHistory
     {
