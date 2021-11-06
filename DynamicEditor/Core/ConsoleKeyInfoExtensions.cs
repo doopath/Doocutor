@@ -22,8 +22,8 @@ namespace DynamicEditor.Core
 
             if (modifiers.Count == 1 && modifiers.Contains("0"))
                 return new List<string>();
-            else
-                return modifiers;
+            
+            return modifiers;
         }
     }
 }

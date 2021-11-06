@@ -8,6 +8,7 @@ namespace DynamicEditor.Core
             new[] {
                 new KeyValuePair<string, string>(@"Control\+Q", ":quit"),
                 new KeyValuePair<string, string>(@"Enter", ":enter"),
+                new KeyValuePair<string, string>(@"(Divide|Add|Subtract|Multiply)", ":appendLine "),
                 new KeyValuePair<string, string>(@"Backspace", ":backspace"),
                 new KeyValuePair<string, string>(@"F[0-9]+", ":doNothing"),
                 new KeyValuePair<string, string>(@"(Page[Down|Up]|Home|End|Insert)", ":doNothing"),
