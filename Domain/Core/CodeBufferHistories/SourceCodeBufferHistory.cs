@@ -1,40 +1,48 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using Domain.Core.Exceptions;
 
 namespace Domain.Core.CodeBufferHistories
 {
-    /// <summary>
-    /// A history of the source code buffer changes.
-    /// It is used than a user wants to undo/redo changes.
-    /// When you undo/redo changes they aren't removed, keep
-    /// in mind it can takes a lot of memory (so just clear the history
-    /// after some time).
-    /// </summary>
+    /// <summary />
     public class SourceCodeBufferHistory : ICodeBufferHistory
     {
         IEnumerator IEnumerable.GetEnumerator()
             => GetEnumerator();
         
         /// <summary>
-        /// Max length of the history.
+        /// Limit of items in the history.
         /// Changes those older than MaxLength will
         /// be removed.
         /// </summary>
-        public uint MaxLength { get; set; }
+        public uint Limit
+        {
+            get => _limit;
+            set
+            {
+                if (value == 0)
+                    throw new ArgumentOutOfRangeException(
+                        "Limit cannot be equal 0!");
+
+                _limit = value;
+            }
+        }
+
         public uint Size => (uint) _history.Count;
-        
+
         private List<ICodeBufferChange> _history;
         private int _pointer;
+        private uint _limit;
 
-        /// <param name="maxLength">
+        /// <param name="limit">
         /// Max length of the history.
         /// Changes those older than MaxLength will
         /// be removed.
         /// </param>
-        public SourceCodeBufferHistory(uint maxLength)
+        public SourceCodeBufferHistory(uint limit)
         {
-            MaxLength = maxLength;
+            Limit = limit;
             _history = new();
             _pointer = -1;
         }
@@ -42,11 +50,11 @@ namespace Domain.Core.CodeBufferHistories
         public void Clear()
         {
             _history.Clear();
-            _pointer = 0;
+            _pointer = -1;
         }
 
         public bool IsEmpty()
-            => _history.Count == -1;
+            => _history.Count == 0;
 
         /// <summary>
         /// Add a change to the history.
@@ -59,6 +67,9 @@ namespace Domain.Core.CodeBufferHistories
         /// </param>
         public void Add(ICodeBufferChange change)
         {
+            if (_history.Count == Limit)
+                _history.RemoveAt(0);
+
             _history.Add(change);
             _pointer++;
         }
@@ -72,8 +83,13 @@ namespace Domain.Core.CodeBufferHistories
         /// </returns>
         public ICodeBufferChange Redo()
         {
+            if (_pointer == _history.Count)
+                throw new ValueOutOfRangeException(
+                    "You are already at the latest change!");
+
             _pointer++;
-            return _history[(int)_pointer-1];
+
+            return _history[_pointer];
         }
 
         /// <summary>
@@ -85,7 +101,12 @@ namespace Domain.Core.CodeBufferHistories
         /// </returns>
         public ICodeBufferChange Undo()
         {
+            if (_pointer == -1)
+                throw new ValueOutOfRangeException(
+                    "You are already at the oldest change!");
+
             _pointer--;
+
             return _history[(int)_pointer+1];
         }
 

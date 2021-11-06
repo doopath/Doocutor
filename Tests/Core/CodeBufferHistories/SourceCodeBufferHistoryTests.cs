@@ -132,6 +132,57 @@ namespace Tests.Core.CodeBufferHistories
                 $"changes incorrect! \n'{code}'\n!=\n'{supposedCode}'\n");
         }
 
+        [Test]
+        public void RedoTest()
+        {
+            void Test(string[][] newChangesArray)
+            {
+                string[] oldStatesArray = _buffer!.ToArray();
+
+                if (oldStatesArray.Length != newChangesArray.Length)
+                    throw new IndexOutOfRangeException(
+                        "Lengths of the newChangesArray and oldStatesArray should be equal!");
+
+                for (int i = 0; i < newChangesArray.Length; i++)
+                {
+                    _history!.Add(new CodeBufferChange()
+                    {
+                        Range = new(i, i + 1),
+                        OldState = new[] { oldStatesArray[i] },
+                        NewChanges = newChangesArray[i]
+                    });
+                }
+
+                string supposedCode = string.Join("\n", _buffer);
+                List<string> newBuffer = new();
+
+                for (int i = 0; i < newChangesArray.Length; i++)
+                    _history!.Undo();
+
+                for (int i = newChangesArray.Length - 1; i >= 0; i--)
+                {
+                    newBuffer = newBuffer.Concat(_history!.Redo().OldState).ToList();
+                }
+
+                string code = string.Join("\n", newBuffer);
+                bool isTheCodeCorrect = code == supposedCode;
+
+                Assert.True(isTheCodeCorrect,
+                    $"The `Redo` method does redo changes incorrectly!" +
+                    $"\n'{code}'\n!=\n'{supposedCode}'\n");
+
+                SetUp();
+            };
+
+            Test(new[]
+            {
+                new[] { "First Line" },
+                new[] { "First Line", "Second Line" },
+                new[] { "First LIne", "Second Line", "Third Line" },
+                new[] { "", "", "", "" }
+            });
+        }
+
         private void ModifyBuffer(Range range, string[] lines)
         {
             int end = range.End.Value;
@@ -150,7 +201,7 @@ namespace Tests.Core.CodeBufferHistories
 
         private void FillBuffer()
         {
-            _buffer?.Add("---------");
+            _buffer?.Add("----/----");
             _buffer?.Add("---------");
             _buffer?.Add("\\");
             _buffer?.Add("");

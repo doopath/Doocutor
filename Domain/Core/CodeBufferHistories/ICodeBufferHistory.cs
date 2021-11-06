@@ -4,7 +4,7 @@ namespace Domain.Core.CodeBufferHistories
 {
     public interface ICodeBufferHistory : IEnumerable<ICodeBufferChange>
     {
-        uint MaxLength { get; set; }
+        uint Limit { get; set; }
         uint Size { get; }
         void Add(ICodeBufferChange change);
         void Clear();
