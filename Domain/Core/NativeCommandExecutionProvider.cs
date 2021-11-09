@@ -16,9 +16,9 @@ namespace Domain.Core
 
     public class NativeCommandExecutionProvider
     {
-        public static readonly ICodeBuffer SourceCodeBuffer = new SourceCodeBuffer();
+        public static ICodeBuffer? SourceCodeBuffer { get; set; }
         private static readonly ICache<byte[]> Cache = new CompiledCodeCache();
-        private static readonly ICodeCompiler Compiler = new SourceCodeCompiler(SourceCodeBuffer);
+        private static readonly ICodeCompiler Compiler = new SourceCodeCompiler(SourceCodeBuffer!);
         private static readonly CompiledCodeExecutor Executor = new();
 
         /// <summary>
@@ -37,10 +37,7 @@ namespace Domain.Core
             throw new UnsupportedCommandException($"Given command ({command.Content}) is not supported!");
         }
 
-        /// <summary>
-        /// Using for unit-testing.
-        /// </summary>
-        protected static void AddCommand(string command, ExecuteCommandDelegate function)
+        public static void AddCommand(string command, ExecuteCommandDelegate function)
             => CommandsMap.Add(command, function);
 
         private static readonly Dictionary<string, ExecuteCommandDelegate> CommandsMap =
@@ -71,12 +68,15 @@ namespace Domain.Core
                     new(":help", ExecuteHelpCommand),
                     new(":info", ExecuteInfoCommand),
                     new(":tab", ExecuteTabCommand),
+                    new(":undo", ExecuteUndoCommand),
+                    new(":redo", ExecuteRedoCommand),
                     new(":doNothing", ExecuteDoNothingCommand)
                 }.ToList()
             );
 
         public static readonly List<string> SupportedCommands = CommandsMap.Keys.ToList();
 
+        #region Commands
         private static void ExecuteQuitCommand(NativeCommand command)
         {
             ExecuteClearCommand(command);
@@ -86,18 +86,18 @@ namespace Domain.Core
         private static void ExecuteViewCommand(NativeCommand command)
         {
             Console.Clear();
-            Console.WriteLine(SourceCodeBuffer.CodeWithLineNumbers + "\n");
+            Console.WriteLine(SourceCodeBuffer!.CodeWithLineNumbers + "\n");
         }
 
         private static void ExecuteWriteAfterCommand(NativeCommand command)
-            => SourceCodeBuffer.WriteAfter(command.GetFirstArgumentAsAnInteger(), command.GetArgumentsSinceSecondAsALine());
+            => SourceCodeBuffer!.WriteAfter(command.GetFirstArgumentAsAnInteger(), command.GetArgumentsSinceSecondAsALine());
 
         private static void ExecuteCompileCommand(NativeCommand command)
-            => Cache.Cache(SourceCodeBuffer.Code, Compiler.Compile());
+            => Cache.Cache(SourceCodeBuffer!.Code, Compiler.Compile());
 
         private static void ExecuteRunCommand(NativeCommand command)
         {
-            Executor.Execute(Cache.HasKey(SourceCodeBuffer.Code)
+            Executor.Execute(Cache.HasKey(SourceCodeBuffer!.Code)
                 ? Cache.GetValue(SourceCodeBuffer.Code)
                 : Compiler.Compile(), command.GetArguments());
         }
@@ -107,28 +107,25 @@ namespace Domain.Core
 
         private static void ExecuteUsingCommand(NativeCommand command)
         {
-            if (SourceCodeBuffer.Code.Trim().StartsWith("namespace"))
+            if (SourceCodeBuffer!.Code.Trim().StartsWith("namespace"))
                 SourceCodeBuffer.WriteBefore(1, "");
 
             SourceCodeBuffer.WriteBefore(1, $"using {command.GetArguments()[0]};");
         }
 
         private static void ExecuteCopyCommand(NativeCommand command)
-            => CopyText(SourceCodeBuffer.GetLineAt(command.GetFirstArgumentAsAnInteger()));
+            => CopyText(SourceCodeBuffer!.GetLineAt(command.GetFirstArgumentAsAnInteger()));
 
         private static void ExecuteCopyAllCommand(NativeCommand command)
-            => CopyText(SourceCodeBuffer.Code);
+            => CopyText(SourceCodeBuffer!.Code);
 
         private static void ExecuteCopyBlockCommand(NativeCommand command)
-            => CopyText(string.Join("\n", SourceCodeBuffer.GetCodeBlock(
+            => CopyText(string.Join("\n", SourceCodeBuffer!.GetCodeBlock(
                 new CodeBlockPointer(int.Parse(command.GetArguments()[0]), int.Parse(command.GetArguments()[1])))));
-
-        private static void CopyText(string text)
-            => new Clipboard().SetText(text);
 
         private static void ExecuteRemoveCommand(NativeCommand command)
         {
-            CopyText(SourceCodeBuffer.GetLineAt(command.GetFirstArgumentAsAnInteger()));
+            CopyText(SourceCodeBuffer!.GetLineAt(command.GetFirstArgumentAsAnInteger()));
             SourceCodeBuffer.RemoveLineAt(command.GetFirstArgumentAsAnInteger());
         }
 
@@ -136,37 +133,37 @@ namespace Domain.Core
         {
             var arguments = command.GetArguments();
             var pointer = new CodeBlockPointer(int.Parse(arguments[0]), int.Parse(arguments[1]));
-            SourceCodeBuffer.RemoveCodeBlock(pointer);
+            SourceCodeBuffer!.RemoveCodeBlock(pointer);
         }
 
         private static void ExecuteReplaceCommand(NativeCommand command)
         {
             var arguments = command.GetArguments();
-            SourceCodeBuffer.ReplaceLineAt(int.Parse(arguments[0]), command.GetArgumentsSinceSecondAsALine());
+            SourceCodeBuffer!.ReplaceLineAt(int.Parse(arguments[0]), command.GetArgumentsSinceSecondAsALine());
         }
 
         private static void ExecuteWriteCommand(NativeCommand command)
-            => SourceCodeBuffer.Write(command.GetArgumentsAsALine());
+            => SourceCodeBuffer!.Write(command.GetArgumentsAsALine());
 
         private static void ExecuteSetCommand(NativeCommand command)
-            => SourceCodeBuffer.SetCursorPositionFromTopAt(int.Parse(command.GetArguments()[0]));
+            => SourceCodeBuffer!.SetCursorPositionFromTopAt(int.Parse(command.GetArguments()[0]));
 
         private static void ExecuteShowPosCommand(NativeCommand command)
         {
             Console.Write("Current cursor position: ");
             OutputColorizing.colorizeForeground(ConsoleColor.Cyan,
-                () => Console.Write(SourceCodeBuffer.CursorPositionFromTop + "\n"));
+                () => Console.Write(SourceCodeBuffer!.CursorPositionFromTop + "\n"));
         }
 
         private static void ExecuteAddRefCommand(NativeCommand command)
             => Compiler.AddReference(FileSystem.getGlobalPath(command.GetArguments()[0]));
 
         private static void ExecuteSaveCodeCommand(NativeCommand command)
-            => SourceCodeSaving.saveCode(command.GetArgumentsAsALine(), SourceCodeBuffer.Lines);
+            => SourceCodeSaving.saveCode(command.GetArgumentsAsALine(), SourceCodeBuffer!.Lines);
 
         private static void ExecuteSaveAsmCommand(NativeCommand command)
         {
-            if (!Cache.HasKey(SourceCodeBuffer.Code))
+            if (!Cache.HasKey(SourceCodeBuffer!.Code))
                 Cache.Cache(SourceCodeBuffer.Code, Compiler.Compile());
 
             AssemblySaving.saveAssembly(command.GetArgumentsAsALine(), Cache.GetValue(SourceCodeBuffer.Code));
@@ -179,17 +176,28 @@ namespace Domain.Core
             => Console.WriteLine(Info.Description);
 
         private static void ExecuteAppendLineCommand(NativeCommand command)
-            => SourceCodeBuffer.AppendLine(string.Join(" ", command.Content.Split(" ")[1..]));
+            => SourceCodeBuffer!.AppendLine(string.Join(" ", command.Content.Split(" ")[1..]));
 
         private static void ExecuteEnterCommand(NativeCommand command)
-            => SourceCodeBuffer.Enter();
+            => SourceCodeBuffer!.Enter();
 
         private static void ExecuteBackspaceCommand(NativeCommand command)
-            => SourceCodeBuffer.Backspace();
+            => SourceCodeBuffer!.Backspace();
 
         private static void ExecuteTabCommand(NativeCommand command)
-            => SourceCodeBuffer.AppendLine("    ");
+            => SourceCodeBuffer!.AppendLine("    ");
 
         private static void ExecuteDoNothingCommand(NativeCommand command) { }
+
+        private static void ExecuteUndoCommand(NativeCommand command)
+            => SourceCodeBuffer!.Undo();
+
+        private static void ExecuteRedoCommand(NativeCommand command)
+            => SourceCodeBuffer!.Redo();
+
+        #endregion
+
+        private static void CopyText(string text)
+            => new Clipboard().SetText(text);
     }
 }

@@ -1,8 +1,8 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Text.RegularExpressions;
 using Domain.Core.Exceptions;
-using System;
 
 namespace Domain.Core.CodeFormatters
 {
@@ -16,9 +16,10 @@ namespace Domain.Core.CodeFormatters
             SourceCode = sourceCode;
         }
 
-        public void AdaptCodeForBufferSize(int windowWidth)
+        public bool AdaptCodeForBufferSize(int windowWidth)
         {
             MaxLineLength = windowWidth;
+            bool isModified = false;
 
             for (var i = 0; i < SourceCode.Count; i++)
             {
@@ -34,8 +35,12 @@ namespace Domain.Core.CodeFormatters
                         SourceCode.Insert(i + 1, "");
 
                     SourceCode[i + 1] = line[(windowWidth - prefixLength)..] + SourceCode[i + 1];
+
+                    isModified = true;
                 }
             }
+
+            return isModified;
         }
 
         public string GroupNewLineOfACurrentOne(string newPart, int cursorPositionFromTop, int cursorPositionFromLeft)
@@ -101,7 +106,7 @@ namespace Domain.Core.CodeFormatters
             var lastLineNumber = SourceCode.Count;
             var lastLineContent = SourceCode[LineNumberToIndex(lastLineNumber)];
             var lastLineContentLength = lastLineContent.Length;
-            var lineNumberLength = (int) Math.Log10(lastLineNumber) + 1; // +1 because of log10(n) where n < 10 is a number < 1.
+            var lineNumberLength = (int)Math.Log10(lastLineNumber) + 1; // +1 because of log10(n) where n < 10 is a number < 1.
             var lastLineLength = 4 + lastLineContentLength + lineNumberLength;
 
             return lastLineLength - lastLineContentLength;

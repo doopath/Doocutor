@@ -12,7 +12,7 @@ namespace Domain.Core.CodeFormatters
         string GetSourceCodeWithLineNumbers();
         string SeparateLineFromLineNumber(string line);
         string GetTabulationForLineAt(int lineNumber, string line);
-        void AdaptCodeForBufferSize(int maxLineLength);
+        bool AdaptCodeForBufferSize(int maxLineLength);
         string ModifyLine(string line, int lineNumber);
         string GetLineAt(int lineNumber);
         string GetSourceCode();

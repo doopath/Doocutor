@@ -7,6 +7,8 @@ namespace DynamicEditor.Core
         public static Dictionary<string, string> Map { get; } = new(
             new[] {
                 new KeyValuePair<string, string>(@"Control\+Q", ":quit"),
+                new KeyValuePair<string, string>(@"Control\+U", ":undo"),
+                new KeyValuePair<string, string>(@"Control\+R", ":redo"),
                 new KeyValuePair<string, string>(@"Enter", ":enter"),
                 new KeyValuePair<string, string>(@"(Divide|Add|Subtract|Multiply)", ":appendLine "),
                 new KeyValuePair<string, string>(@"Backspace", ":backspace"),

@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using Domain.Core.CodeBufferHistories;
+using Domain.Core.Cursors;
 using NUnit.Framework;
 
 namespace Tests.Core.CodeBufferHistories
@@ -11,6 +12,8 @@ namespace Tests.Core.CodeBufferHistories
     {
         private uint _maxLength;
         private List<string>? _buffer;
+        private CursorPosition? _oldCursorPosition;
+        private CursorPosition? _newCursorPosition;
         private ICodeBufferHistory? _history;
 
         [SetUp]
@@ -18,8 +21,10 @@ namespace Tests.Core.CodeBufferHistories
         {
             _maxLength = 100;
             _buffer = new();
+            _oldCursorPosition = new CursorPosition(0, 0);
+            _newCursorPosition = new CursorPosition(0, 0);
             _history = new SourceCodeBufferHistory(_maxLength);
-            
+
             FillBuffer();
         }
 
@@ -39,10 +44,12 @@ namespace Tests.Core.CodeBufferHistories
             for (int i = 0; i < _buffer!.Count; i++)
             {
                 string newLine = "+++++++++";
-                
+
                 _history!.Add(new CodeBufferChange()
                 {
-                    Range = new(i, i+1), 
+                    Range = new(i, i + 1),
+                    OldCursorPosition = _oldCursorPosition!.Value,
+                    NewCursorPosition = _newCursorPosition!.Value,
                     NewChanges = new[] { _buffer[i] },
                     OldState = new[] { bufferBackup[i] }
                 });
@@ -53,7 +60,7 @@ namespace Tests.Core.CodeBufferHistories
             {
                 string line = change.OldState[0];
                 string supposedLine = bufferBackup[change.Range.Start];
-                
+
                 Assert.True(line == supposedLine,
                     $"The change committed to the history isn't correct!");
             }
@@ -70,7 +77,9 @@ namespace Tests.Core.CodeBufferHistories
                 ICodeBufferChange change = new CodeBufferChange()
                 {
                     Range = range,
-                    NewChanges = (string[]) lines.Clone(),
+                    OldCursorPosition = _oldCursorPosition!.Value,
+                    NewCursorPosition = _newCursorPosition!.Value,
+                    NewChanges = (string[])lines.Clone(),
                     OldState = oldState
                 };
 
@@ -82,7 +91,7 @@ namespace Tests.Core.CodeBufferHistories
                         + change.NewChanges.Length);
 
                 ModifyBuffer(range, change.OldState);
-                
+
                 string supposedCode = string.Join("\n", bufferBackup);
                 string code = string.Join("\n", _buffer!);
                 bool isTheBufferCorrect = code == supposedCode;
@@ -94,7 +103,7 @@ namespace Tests.Core.CodeBufferHistories
 
                 SetUp();
             }
-            
+
             Test(new(0, 1), new[] { "First Line" });
             Test(new(0, 2), new[] { "First Line", "Second Line" });
             Test(new(0, 3), new[] { "", "", "" });
@@ -112,6 +121,8 @@ namespace Tests.Core.CodeBufferHistories
                 ICodeBufferChange change = new CodeBufferChange()
                 {
                     Range = new(i, i + 1),
+                    OldCursorPosition = _oldCursorPosition!.Value,
+                    NewCursorPosition = _newCursorPosition!.Value,
                     NewChanges = new[] { newLine },
                     OldState = new[] { _buffer[i] }
                 };
@@ -148,6 +159,8 @@ namespace Tests.Core.CodeBufferHistories
                     _history!.Add(new CodeBufferChange()
                     {
                         Range = new(i, i + 1),
+                        OldCursorPosition = _oldCursorPosition!.Value,
+                        NewCursorPosition = _newCursorPosition!.Value,
                         OldState = new[] { oldStatesArray[i] },
                         NewChanges = newChangesArray[i]
                     });
@@ -181,7 +194,7 @@ namespace Tests.Core.CodeBufferHistories
                 new[] { "First LIne", "Second Line", "Third Line" },
                 new[] { string.Empty, string.Empty, string.Empty, string.Empty }
             });
-        }   
+        }
 
         [Test]
         public void LimitOverflowTest()
@@ -191,9 +204,11 @@ namespace Tests.Core.CodeBufferHistories
                 _history!.Limit = limit;
 
                 for (var i = 0; i < limit + overflowValue; i++)
-                    _history.Add(new CodeBufferChange() 
+                    _history.Add(new CodeBufferChange()
                     {
                         Range = new(0, 1),
+                        OldCursorPosition = _oldCursorPosition!.Value,
+                        NewCursorPosition = _newCursorPosition!.Value,
                         OldState = new[] { string.Empty },
                         NewChanges = new[] { i.ToString() }
                     });
@@ -230,13 +245,13 @@ namespace Tests.Core.CodeBufferHistories
 
             if (_buffer!.Count < (end > start ? end : start))
                 throw new IndexOutOfRangeException(
-                    "Length of the buffer is less than the greates value of the range.");
+                    "Length of the buffer is less than the greatest value of the range.");
 
             string[] bufferArray = _buffer!.ToArray();
 
-            _buffer = (bufferArray[..range.Start]
+            _buffer = bufferArray[..range.Start]
                 .Concat(lines)
-                .Concat(bufferArray[range.End..])).ToList();
+                .Concat(bufferArray[range.End..]).ToList();
         }
 
         private void FillBuffer()

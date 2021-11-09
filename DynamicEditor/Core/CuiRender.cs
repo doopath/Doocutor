@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Diagnostics.CodeAnalysis;
 using Domain.Core.CodeBuffers;
 using Domain.Core.ColorSchemes;
 using Domain.Core.OutBuffers;
@@ -144,10 +145,10 @@ namespace DynamicEditor.Core
             => _outBuffer.Clear();
 
         public void MoveCursorUp()
-            => DoHorizontalCursorMovement(_codeBuffer.DecCursorPositionFromTop);
+            => DoVerticalCursorMovement(_codeBuffer.DecCursorPositionFromTop);
 
         public void MoveCursorDown()
-            => DoHorizontalCursorMovement(_codeBuffer.IncCursorPositionFromTop);
+            => DoVerticalCursorMovement(_codeBuffer.IncCursorPositionFromTop);
 
         public void MoveCursorLeft()
             => DoHorizontalCursorMovement(_codeBuffer.DecCursorPositionFromLeft);
@@ -209,6 +210,12 @@ namespace DynamicEditor.Core
             (_outBuffer.CursorLeft, _outBuffer.CursorTop) = initialCursorPosition;
         }
 
+        [SuppressMessage("ReSharper.DPA",
+            "DPA0002: Excessive memory allocations in SOH",
+            MessageId = "type: System.String")]
+        [SuppressMessage("ReSharper.DPA",
+            "DPA0002: Excessive memory allocations in SOH",
+            MessageId = "type: System.Int32")]
         private void SetScene()
         {
             if (IsDeveloperMonitorShown)
@@ -216,12 +223,15 @@ namespace DynamicEditor.Core
 
             _codeBuffer.AdaptCodeForBufferSize(RightEdge);
 
+            _scene.TargetWidth = WindowWidth;
             _pureScene = _scene.GetNewScene(
-                _codeBuffer.CodeWithLineNumbers, WindowWidth, WindowHeight, TopOffset);
-
+                _codeBuffer.CodeWithLineNumbers, WindowHeight, TopOffset);
             _scene.ComposeOf(_pureScene);
         }
 
+        [SuppressMessage("ReSharper.DPA",
+            "DPA0002: Excessive memory allocations in SOH",
+            MessageId = "type: System.String")]
         private void ShowScene(List<string> scene)
         {
             _outBuffer.SetCursorPosition(0, 0);

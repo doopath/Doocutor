@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text.RegularExpressions;
 using Domain.Core.CommandHandlers;
 using Domain.Core.Exceptions;
@@ -64,15 +65,8 @@ namespace DynamicEditor.Core.FlowHandlers
         }
 
         private bool IsMatchedWithAPattern(string input)
-        {
-            foreach (var key in KeyCombinationsMap.Map.Keys)
-            {
-                if (Regex.IsMatch(input, key, RegexOptions.IgnoreCase))
-                    return true;
-            }
-
-            return false;
-        }
+            => KeyCombinationsMap.Map.Keys
+                .Any(key => Regex.IsMatch(input, key, RegexOptions.IgnoreCase));
 
         private string GetCommand(string input)
         {

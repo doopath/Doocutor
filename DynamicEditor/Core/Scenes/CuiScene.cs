@@ -1,18 +1,22 @@
-﻿using Domain.Core.Scenes;
-using System;
+﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq;
+using Domain.Core.Exceptions;
+using Domain.Core.Scenes;
 
 namespace DynamicEditor.Core.Scenes
 {
     public class CuiScene : IScene
     {
-        public List<string> CurrentScene { get; private set; }
-        public event Action<List<string>> OnSceneUpdated;
+        public List<string>? CurrentScene { get; private set; }
+        public event Action<List<string>>? OnSceneUpdated;
+        public int? TargetWidth { get; set; }
+        public List<int>? SplitLinesIndexes { get; private set; }
 
-        public void Compose(string code, int width, int height, int topOffset)
+        public void Compose(string code, int height, int topOffset)
         {
-            CurrentScene = ComposeNewScene(code, width, height, topOffset);
+            CurrentScene = ComposeNewScene(code, height, topOffset);
             OnSceneUpdated?.Invoke(CurrentScene);
         }
 
@@ -22,14 +26,17 @@ namespace DynamicEditor.Core.Scenes
             OnSceneUpdated?.Invoke(CurrentScene);
         }
 
-        public List<string> GetNewScene(string code, int width, int height, int topOffset)
-            => ComposeNewScene(code, width, height, topOffset);
-        
-        private List<string> ComposeNewScene(string code, int width, int height, int topOffset)
+        public List<string> GetNewScene(string code, int height, int topOffset)
+            => ComposeNewScene(code, height, topOffset);
+
+
+        private List<string> ComposeNewScene(string code, int height, int topOffset)
         {
+            RequireTargetWidth();
+
             var bottomEdge = height - 1;
             var buffer = new string[bottomEdge];
-            var output = PrepareOutput(code, width, height, topOffset);
+            var output = PrepareOutput(code, height, topOffset);
 
             for (var i = 0; i < bottomEdge; i++)
                 buffer[i] = output[i];
@@ -37,25 +44,39 @@ namespace DynamicEditor.Core.Scenes
             return buffer.ToList();
         }
 
-        private List<string> PrepareOutput(string code, int width, int height, int topOffset)
+        [SuppressMessage("ReSharper.DPA",
+            "DPA0002: Excessive memory allocations in SOH",
+            MessageId = "type: System.String")]
+        private List<string> PrepareOutput(string code, int height, int topOffset)
         {
-            var output = GetOutput(width, code, topOffset);
+            var output = GetOutput(code, topOffset);
 
             if (output.Count < height)
             {
                 var emptyLinesCount = height - output.Count;
 
                 for (var i = 0; i < emptyLinesCount; i++)
-                    output.Add(new string(' ', width));
+                    output.Add(new string(' ', TargetWidth!.Value));
             }
 
             return output;
         }
 
-        private List<string> GetOutput(int width, string code, int topOffset)
+        [SuppressMessage("ReSharper.DPA",
+            "DPA0002: Excessive memory allocations in SOH",
+            MessageId = "type: System.String")]
+        private List<string> GetOutput(string code, int topOffset)
             => code
                 .Split("\n")[topOffset..]
-                .Select(l => l + (l.Length < width ? new string(' ', width - l.Length) : string.Empty))
+                .Select(l => l + (l.Length < TargetWidth
+                    ? new string(' ', TargetWidth!.Value - l.Length)
+                    : string.Empty))
                 .ToList();
+
+        private void RequireTargetWidth()
+        {
+            if (TargetWidth is null)
+                throw new PropertyIsNotDefinedException("TargetWidth property isn't set!");
+        }
     }
 }
