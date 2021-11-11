@@ -1,26 +1,30 @@
 ﻿using System;
-using NLog;
 using Domain.Core.Commands;
+using Domain.Core.Exceptions;
 using Libraries.Core;
+using NLog;
 
-namespace Domain.Core.Executors
+namespace Domain.Core.Executors;
+
+public class EditorCommandExecutor : ICommandExecutor<EditorCommand>
 {
-    public class EditorCommandExecutor : ICommandExecutor<EditorCommand>
-    {
-        private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
-        
-        public void Execute(EditorCommand command)
-        {
-            Logger.Debug($"Start execution of the editor command ({command.Content})");
+    private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
 
-            try
-            {
-                NativeCommandExecutionProvider.GetExecutingFunction(new NativeCommand(":write " + command.Content.Trim()))();
-            }
-            catch (Exception error)
-            {
-                ErrorHandling.showError(error);
-            }
+    public void Execute(EditorCommand command)
+    {
+        Logger.Debug($"Start execution of the native command ({command.Content})");
+
+        try
+        {
+            EditorCommandExecutionProvider.GetExecutingFunction(command)();
+        }
+        catch (SourceCodeCompilationException error)
+        {
+            Logger.Debug(error);
+        }
+        catch (Exception error) when (error.GetType() != typeof(InterruptedExecutionException))
+        {
+            ErrorHandling.showError(error);
         }
     }
 }

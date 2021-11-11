@@ -1,8 +1,8 @@
 using System.Collections.Generic;
 using System.Linq;
 using Domain.Core.ColorSchemes;
-using Pastel;
 using Domain.Core.Scenes;
+using Pastel;
 
 namespace DynamicEditor.Core
 {
@@ -18,7 +18,7 @@ namespace DynamicEditor.Core
         private ulong _renderedFrames;
         private ulong _renderTimeAcc;
         private int _avgRenderTime;
-        private string _longestMonitorLine;
+        private string? _longestMonitorLine;
         private const int Padding = 1;
         private const int AvgFramesCount = 5;
 
@@ -54,14 +54,14 @@ namespace DynamicEditor.Core
             _topOffset = topOffset;
             _positionFromTop = positionFromTop;
             _positionFromLeft = positionFromLeft;
-            
+
             _renderTime = renderTime;
             _renderTimeAcc += renderTime;
             _renderedFrames++;
-            
+
             if (_renderedFrames == AvgFramesCount)
             {
-                _avgRenderTime = (int) _renderTimeAcc / AvgFramesCount;
+                _avgRenderTime = (int)_renderTimeAcc / AvgFramesCount;
                 _renderTimeAcc = 0;
                 _renderedFrames = 0;
             }
@@ -91,9 +91,9 @@ namespace DynamicEditor.Core
                 $" Render [ avg: {_avgRenderTime}ms; last: {_renderTime}ms ]"
             };
 
-             _longestMonitorLine = monitor
-                .OrderByDescending(l => l.Length)
-                .ToArray()[0];
+            _longestMonitorLine = monitor
+               .OrderByDescending(l => l.Length)
+               .ToArray()[0];
 
             string GetSpacesForShorterLine(string longestLine, string line)
                 => new(' ', longestLine.Length - line.Length + 1);
@@ -112,7 +112,7 @@ namespace DynamicEditor.Core
             for (var i = start; i < end; i++)
             {
                 var line = sceneContent[i];
-                var right = (_longestMonitorLine.Length + 1);
+                var right = _longestMonitorLine!.Length + 1;
                 var monitorLine = line[^right..];
                 var result = line[..^right] + monitorLine
                     .Pastel(ColorScheme.DeveloperMonitorForeground)

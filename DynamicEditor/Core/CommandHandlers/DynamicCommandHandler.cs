@@ -9,7 +9,6 @@ namespace DynamicEditor.Core.CommandHandlers
 {
     public sealed class DynamicCommandHandler : ICommandHandler
     {
-        private ICommandExecutor<NativeCommand> _nativeCommandExecutor;
         private ICommandExecutor<EditorCommand> _editorCommandExecutor;
         private ICommandRecognizer _commandRecognizer;
 
@@ -19,7 +18,6 @@ namespace DynamicEditor.Core.CommandHandlers
         /// </summary>
         public DynamicCommandHandler()
         {
-            _nativeCommandExecutor = new NativeCommandExecutor();
             _editorCommandExecutor = new EditorCommandExecutor();
             _commandRecognizer = new CommandRecognizer();
         }
@@ -34,13 +32,6 @@ namespace DynamicEditor.Core.CommandHandlers
             private readonly DynamicCommandHandler _commandHandler = new();
 
             public DynamicCommandHandler Build() => _commandHandler;
-
-            public Builder SetNativeCommandExecutor(
-                    ICommandExecutor<NativeCommand> nativeCommandExecutor)
-            {
-                _commandHandler._nativeCommandExecutor = nativeCommandExecutor;
-                return this;
-            }
 
             public Builder SetEditorCommandExecutor(
                     ICommandExecutor<EditorCommand> editorCommandExecutor)
@@ -71,9 +62,6 @@ namespace DynamicEditor.Core.CommandHandlers
             {
                 case CommandType.EDITOR_COMMAND:
                     _editorCommandExecutor.Execute((EditorCommand)recognizedCommand);
-                    break;
-                case CommandType.NATIVE_COMMAND:
-                    _nativeCommandExecutor.Execute((NativeCommand)recognizedCommand);
                     break;
                 default:
                     throw new UnsupportedCommandException(exceptionMessage);

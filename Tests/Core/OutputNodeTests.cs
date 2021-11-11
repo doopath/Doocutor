@@ -1,10 +1,10 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
-using Domain.Core.CodeBufferContents;
-using Domain.Core.CodeBuffers;
 using Domain.Core.ColorSchemes;
 using Domain.Core.OutBuffers;
 using Domain.Core.Scenes;
+using Domain.Core.TextBufferContents;
+using Domain.Core.TextBuffers;
 using DynamicEditor.Core;
 using DynamicEditor.Core.Scenes;
 using NUnit.Framework;
@@ -16,18 +16,18 @@ namespace Tests.Core
     internal class OutputNodeTests
     {
         private const int UpdateRate = 300;
-        private IColorScheme _colorScheme;
-        private ICodeBuffer _codeBuffer;
-        private IOutBuffer _outBuffer;
-        private CuiRender _render;
-        private IScene _scene;
+        private IColorScheme? _colorScheme;
+        private ITextBuffer? _codeBuffer;
+        private IOutBuffer? _outBuffer;
+        private CuiRender? _render;
+        private IScene? _scene;
 
         [SetUp]
         public void Setup()
         {
             _colorScheme = new DefaultDarkColorScheme();
             _outBuffer = new MockConsole();
-            _codeBuffer = new SourceCodeBuffer(new MockCodeBufferContent());
+            _codeBuffer = new TextBuffer(new MockCodeBufferContent());
             _scene = new CuiScene();
             _render = new CuiRender(_codeBuffer, _outBuffer, _scene, _colorScheme);
             _render.DisableDeveloperMonitor();
@@ -38,9 +38,9 @@ namespace Tests.Core
         [Test]
         public void RenderTest()
         {
-            int top = _codeBuffer.CursorPositionFromTop;
+            int top = _codeBuffer!.CursorPositionFromTop;
             int left = _codeBuffer.CursorPositionFromLeft;
-            int width = _outBuffer.Width;
+            int width = _outBuffer!.Width;
             string supposedCode = _codeBuffer.CodeWithLineNumbers;
             List<string> supposedLines = supposedCode.Split("\n").ToList();
             string lastLine = supposedLines[^1];
@@ -52,16 +52,16 @@ namespace Tests.Core
             supposedLines.Add(lastLine);
             supposedLines[top] = supposedLines[top][..left] + supposedLines[top][left]
                 .ToString()
-                .Pastel(_colorScheme.CursorForeground)
+                .Pastel(_colorScheme!.CursorForeground)
                 .PastelBg(_colorScheme.CursorBackground) + supposedLines[top][left..];
             supposedCode = string.Join("", supposedLines);
 
-            _render.Render();
+            _render!.Render();
 
             List<string> lines = MockConsoleBuffer.Content;
             string code = string.Join("\n", lines).Trim();
             bool isRenderedCodeCorrect = code == supposedCode;
-            
+
             Assert.True(isRenderedCodeCorrect,
                 $"The rendered code isn't correct! \n{code}\n!=\n{supposedCode}");
         }
@@ -145,7 +145,7 @@ namespace Tests.Core
         }
     }
 
-    internal sealed record MockCodeBufferContent : ICodeBufferContent
+    internal sealed record MockCodeBufferContent : ITextBufferContent
     {
         public List<string> SourceCode => new(new[]
         {

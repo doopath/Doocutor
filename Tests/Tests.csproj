@@ -16,7 +16,7 @@
     <ItemGroup>
       <ProjectReference Include="../Domain/Domain.csproj" />
       <ProjectReference Include="../DynamicEditor/DynamicEditor.csproj" />
-      <Reference Include="../Libraries/bin/Debug/net5.0/Libraries.dll" />
+      <Reference Include="../Libraries/bin/Debug/net6.0/Libraries.dll" />
     </ItemGroup>
 
 </Project>

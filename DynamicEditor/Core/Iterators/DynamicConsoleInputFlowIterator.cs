@@ -16,6 +16,6 @@ namespace DynamicEditor.Core.Iterators
         }
 
         public string NextLine()
-            => Console.ReadLine();
+            => Console.ReadLine()!;
     }
 }

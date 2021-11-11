@@ -1,5 +1,4 @@
 ﻿using Domain.Core;
-using Domain.Core.CodeBuffers;
 using Domain.Core.ColorSchemes;
 using Domain.Core.CommandHandlers;
 using Domain.Core.Exceptions;
@@ -7,6 +6,7 @@ using Domain.Core.FlowHandlers;
 using Domain.Core.Iterators;
 using Domain.Core.OutBuffers;
 using Domain.Core.Scenes;
+using Domain.Core.TextBuffers;
 using Domain.Options;
 using DynamicEditor.Core;
 using DynamicEditor.Core.CommandHandlers;
@@ -20,7 +20,7 @@ public class DynamicEditorSetup : IEditorSetup
 {
     public int? BufferSizeUpdateRate { get; set; }
     public uint? SourceCodeBufferHistoryLimit { get; set; }
-    public ICodeBuffer? SourceCodeBuffer { get; set; }
+    public ITextBuffer? TextBuffer { get; set; }
     public IInputFlowIterator? Iterator { get; set; }
     public ICommandHandler? CommandHandler { get; set; }
     public IOutBuffer? OutBuffer { get; set; }
@@ -41,14 +41,15 @@ public class DynamicEditorSetup : IEditorSetup
 
         BufferSizeUpdateRate = 300;
         SourceCodeBufferHistoryLimit = 10000;
-        SourceCodeBuffer = new SourceCodeBuffer(SourceCodeBufferHistoryLimit!.Value);
-        NativeCommandExecutionProvider.SourceCodeBuffer = SourceCodeBuffer;
+        TextBuffer = new TextBuffer(SourceCodeBufferHistoryLimit!.Value);
+        ITextBuffer sourceCodeBuffer = TextBuffer;
+        EditorCommandsList.InitializeCodeBuffer(ref sourceCodeBuffer);
         Iterator = new DynamicConsoleInputFlowIterator();
         CommandHandler = new DynamicCommandHandler();
         OutBuffer = new StandardConsoleOutBuffer();
         CuiScene = new CuiScene();
         Render = new CuiRender(
-                SourceCodeBuffer,
+                TextBuffer,
                 OutBuffer,
                 CuiScene,
                 defaultLightColorScheme);
@@ -66,9 +67,6 @@ public class DynamicEditorSetup : IEditorSetup
 
     public void Run(ProgramOptions options)
     {
-        // Set update rate in milliseconds. I do not recommend
-        // to set the value less than 300, because of the 
-        // OutBufferSizeHandler behaves unstable.
         ColorScheme = ColorSchemesRepository!
             .Get(options.ColorScheme ?? "DoocutorDark");
         OutBuffer!.CursorVisible = false;

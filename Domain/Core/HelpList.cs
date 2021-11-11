@@ -1,6 +1,6 @@
 ﻿using System;
-using System.Linq;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text.RegularExpressions;
 using Spectre.Console;
 
@@ -78,6 +78,6 @@ namespace Domain.Core
                     ColorizeArguments(commandDescriptionPair[1]));
 
         private static string ColorizeMatchAsAnArgumentIn(string command, object match)
-            => command.Replace(match?.ToString(), $"[royalblue1 italic]{match}[/]");
+            => command.Replace(match.ToString()!, $"[royalblue1 italic]{match}[/]");
     }
 }
