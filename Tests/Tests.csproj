@@ -10,13 +10,13 @@
         <PackageReference Include="NUnit" Version="3.12.0" />
         <PackageReference Include="NUnit3TestAdapter" Version="3.16.1" />
         <PackageReference Include="Microsoft.NET.Test.Sdk" Version="16.5.0" />
-        <PackageReference Include="Pastel" Version="2.1.0" />
+        <PackageReference Include="Pastel" Version="3.0.0" />
     </ItemGroup>
 
     <ItemGroup>
       <ProjectReference Include="../Domain/Domain.csproj" />
       <ProjectReference Include="../DynamicEditor/DynamicEditor.csproj" />
-      <Reference Include="../Libraries/bin/Debug/net6.0/Libraries.dll" />
+      <ProjectReference Include="../Libraries/Libraries.fsproj" />
     </ItemGroup>
 
 </Project>

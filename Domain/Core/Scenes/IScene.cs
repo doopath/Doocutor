@@ -6,7 +6,7 @@ namespace Domain.Core.Scenes
     public interface IScene
     {
         int? TargetWidth { get; set; }
-        event Action<List<string>> OnSceneUpdated;
+        event EventHandler<SceneUpdatedEventArgs> SceneUpdated;
         List<string>? CurrentScene { get; }
         List<string> GetNewScene(string code, int height, int topOffset);
         void ComposeOf(List<string> sceneContent);

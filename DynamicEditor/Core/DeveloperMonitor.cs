@@ -1,5 +1,7 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
+using Domain.Core;
 using Domain.Core.ColorSchemes;
 using Domain.Core.Scenes;
 using Pastel;
@@ -8,7 +10,7 @@ namespace DynamicEditor.Core
 {
     public sealed class DeveloperMonitor
     {
-        public IColorScheme ColorScheme { get; set; }
+        public static IColorScheme? ColorScheme { get; set; } = Settings.ColorScheme;
         private IEnumerable<string> _monitor;
         private readonly IScene _scene;
         private int _topOffset;
@@ -39,14 +41,14 @@ namespace DynamicEditor.Core
 
         public void TurnOn()
         {
-            _scene.OnSceneUpdated += AddMonitor;
-            _scene.OnSceneUpdated += ColorizeMonitor;
+            _scene.SceneUpdated += OnSceneUpdated(AddMonitor);
+            _scene.SceneUpdated += OnSceneUpdated(ColorizeMonitor);
         }
 
         public void TurnOff()
         {
-            _scene.OnSceneUpdated -= AddMonitor;
-            _scene.OnSceneUpdated -= ColorizeMonitor;
+            _scene.SceneUpdated -= OnSceneUpdated(AddMonitor);
+            _scene.SceneUpdated -= OnSceneUpdated(ColorizeMonitor);
         }
 
         public void Update(int topOffset, int positionFromTop, int positionFromLeft, ulong renderTime)
@@ -115,11 +117,14 @@ namespace DynamicEditor.Core
                 var right = _longestMonitorLine!.Length + 1;
                 var monitorLine = line[^right..];
                 var result = line[..^right] + monitorLine
-                    .Pastel(ColorScheme.DeveloperMonitorForeground)
+                    .Pastel(ColorScheme!.DeveloperMonitorForeground)
                     .PastelBg(ColorScheme.DeveloperMonitorBackground);
 
                 sceneContent[i] = result;
             }
         }
+
+        private EventHandler<SceneUpdatedEventArgs> OnSceneUpdated(Action<List<string>> action)
+            => (object? sender, SceneUpdatedEventArgs eventArgs) => action(eventArgs.SceneContent!);
     }
 }

@@ -10,5 +10,6 @@ namespace Domain.Core.TextBufferHistories
         public CursorPosition NewCursorPosition { get; init; }
         public string[] NewChanges { get; init; }
         public string[] OldState { get; init; }
+        public TextBufferChangeType Type { get; init; }
     }
 }

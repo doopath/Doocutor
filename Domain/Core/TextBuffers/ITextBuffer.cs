@@ -13,9 +13,9 @@ public interface ITextBuffer
     void RemoveLineAt(int lineNumber);
     void IncreaseBufferSize();
     int GetPrefixLength();
-    void RemoveCodeBlock(ITextBlockPointer pointer);
+    void RemoveTextBlock(ITextBlockPointer pointer);
     void ReplaceLineAt(int lineNumber, string newLine);
-    void AdaptCodeForBufferSize(int maxLineLength);
+    void AdaptTextForBufferSize(int maxLineLength);
     void SetCursorPositionFromTopAt(int lineNumber);
     void SetCursorPositionFromLeftAt(int position);
     void IncCursorPositionFromLeft();

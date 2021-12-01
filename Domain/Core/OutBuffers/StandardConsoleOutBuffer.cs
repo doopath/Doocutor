@@ -1,3 +1,4 @@
+using Domain.Core.Cursors;
 using System;
 using System.Collections.Generic;
 
@@ -23,6 +24,12 @@ namespace Domain.Core.OutBuffers
 
         public void SetCursorPosition(int left, int top)
             => Console.SetCursorPosition(left, top);
+
+        public void SetCursorPosition(CursorPosition position)
+            => Console.SetCursorPosition(position.Left, position.Top);
+
+        public ConsoleKeyInfo ReadKey()
+            => Console.ReadKey(true);
 
         public void Write(string line)
             => Console.Write(line);

@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using Domain.Core.ColorSchemes;
+using Domain.Core.Cursors;
 using Domain.Core.OutBuffers;
 using Domain.Core.Scenes;
 using Domain.Core.TextBufferContents;
@@ -106,6 +107,9 @@ namespace Tests.Core
 
         public void SetCursorPosition(int left, int top)
             => (MockConsoleBuffer.CursorTop, MockConsoleBuffer.CursorLeft) = (top, left);
+
+        public void SetCursorPosition(CursorPosition position)
+            => (MockConsoleBuffer.CursorTop, MockConsoleBuffer.CursorLeft) = (position.Top, position.Left);
 
         public void Write(string line)
         {

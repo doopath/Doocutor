@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using Domain.Core.Exceptions;
 using Domain.Core.Scenes;
@@ -10,20 +9,19 @@ namespace DynamicEditor.Core.Scenes
     public class CuiScene : IScene
     {
         public List<string>? CurrentScene { get; private set; }
-        public event Action<List<string>>? OnSceneUpdated;
+        public event EventHandler<SceneUpdatedEventArgs>? SceneUpdated;
         public int? TargetWidth { get; set; }
-        public List<int>? SplitLinesIndexes { get; private set; }
 
         public void Compose(string code, int height, int topOffset)
         {
             CurrentScene = ComposeNewScene(code, height, topOffset);
-            OnSceneUpdated?.Invoke(CurrentScene);
+            SceneUpdated?.Invoke(this, new() { SceneContent = CurrentScene });
         }
 
         public void ComposeOf(List<string> sceneContent)
         {
             CurrentScene = new List<string>(sceneContent);
-            OnSceneUpdated?.Invoke(CurrentScene);
+            SceneUpdated?.Invoke(this, new() { SceneContent = CurrentScene });
         }
 
         public List<string> GetNewScene(string code, int height, int topOffset)
@@ -44,9 +42,6 @@ namespace DynamicEditor.Core.Scenes
             return buffer.ToList();
         }
 
-        [SuppressMessage("ReSharper.DPA",
-            "DPA0002: Excessive memory allocations in SOH",
-            MessageId = "type: System.String")]
         private List<string> PrepareOutput(string code, int height, int topOffset)
         {
             var output = GetOutput(code, topOffset);
@@ -62,9 +57,6 @@ namespace DynamicEditor.Core.Scenes
             return output;
         }
 
-        [SuppressMessage("ReSharper.DPA",
-            "DPA0002: Excessive memory allocations in SOH",
-            MessageId = "type: System.String")]
         private List<string> GetOutput(string code, int topOffset)
             => code
                 .Split("\n")[topOffset..]

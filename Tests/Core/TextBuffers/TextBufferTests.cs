@@ -187,7 +187,7 @@ namespace Tests.Core.TextBuffers
                 var supposedCode = string.Join("\n",
                     codeContent[..(pointer.StartLineNumber - 1)].Concat(codeContent[(pointer.EndLineNumber - 1)..]));
 
-                _codeBuffer!.RemoveCodeBlock(pointer);
+                _codeBuffer!.RemoveTextBlock(pointer);
 
                 var isTheCodeCorrect = _codeBuffer.Code == supposedCode;
 

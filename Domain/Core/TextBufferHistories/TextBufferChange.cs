@@ -36,4 +36,9 @@ public readonly struct TextBufferChange : ITextBufferChange
     /// Lines those be replaced by the `NewChanges` at `Range`.
     /// </summary>
     public string[] OldState { get; init; }
+
+    /// <summary>
+    /// Type of the committed change.
+    /// </summary>
+    public TextBufferChangeType Type { get; init; } = TextBufferChangeType.UNNAMED;
 }

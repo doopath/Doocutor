@@ -14,20 +14,17 @@ namespace DynamicEditor.Core.FlowHandlers
         private readonly IInputFlowIterator _inputFlowIterator;
         private readonly ICommandHandler _commandHandler;
         private readonly KeyCombinationTranslating _keyCombinationTranslating;
-        private readonly CuiRender _cuiRender;
 
         public bool IsClosed { get; private set; }
 
         public DynamicKeyFlowHandler(
             IInputFlowIterator iterator,
             ICommandHandler commandHandler,
-            Dictionary<string, string> keyCombinationsMap,
-            CuiRender cuiRender)
+            Dictionary<string, string> keyCombinationsMap)
         {
             _inputFlowIterator = iterator;
             _commandHandler = commandHandler;
             _keyCombinationTranslating = new KeyCombinationTranslating(keyCombinationsMap);
-            _cuiRender = cuiRender;
             IsClosed = false;
         }
 
@@ -50,14 +47,14 @@ namespace DynamicEditor.Core.FlowHandlers
                 {
                     try
                     {
-                        MovementKeysMap.Map[keyCombination](_cuiRender);
+                        MovementKeysMap.Map[keyCombination]();
                     }
                     catch (OutOfCodeBufferSizeException) { }
                 }
                 else
                 {
                     _commandHandler.Handle(command);
-                    _cuiRender.Render();
+                    CuiRender.Render();
                 }
             }
 

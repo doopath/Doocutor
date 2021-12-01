@@ -25,7 +25,6 @@ public class DynamicEditorSetup : IEditorSetup
     public ICommandHandler? CommandHandler { get; set; }
     public IOutBuffer? OutBuffer { get; set; }
     public IScene? CuiScene { get; set; }
-    public CuiRender? Render { get; set; }
     public OutBufferSizeHandler? OutBufferSizeHandler { get; set; }
     public IInputFlowHandler? InputFlowHandler { get; set; }
     public IColorScheme? ColorScheme { get; set; }
@@ -33,10 +32,10 @@ public class DynamicEditorSetup : IEditorSetup
 
     public DynamicEditorSetup()
     {
-        var defaultLightColorScheme = new DefaultLightColorScheme();
+        Settings.ColorScheme = new DefaultLightColorScheme();
 
         ColorSchemesRepository = new();
-        ColorSchemesRepository.Add(defaultLightColorScheme);
+        ColorSchemesRepository.Add(Settings.ColorScheme);
         ColorSchemesRepository.Add(new DefaultDarkColorScheme());
 
         BufferSizeUpdateRate = 300;
@@ -48,35 +47,39 @@ public class DynamicEditorSetup : IEditorSetup
         CommandHandler = new DynamicCommandHandler();
         OutBuffer = new StandardConsoleOutBuffer();
         CuiScene = new CuiScene();
-        Render = new CuiRender(
-                TextBuffer,
-                OutBuffer,
-                CuiScene,
-                defaultLightColorScheme);
+
+        CuiRender.Scene = CuiScene;
+        CuiRender.OutBuffer = OutBuffer;
+        CuiRender.TextBuffer = TextBuffer;
+        CuiRender.InitializeDeveloperMonitor();
+
+        WidgetsMount.Scene = CuiScene;
+        WidgetsMount.OutBuffer = OutBuffer;
+        WidgetsMount.Refresh = CuiRender.Render;
 
         OutBufferSizeHandler = new OutBufferSizeHandler(
                 OutBuffer,
-                Render,
                 BufferSizeUpdateRate!.Value);
 
         InputFlowHandler = new DynamicKeyFlowHandler(
                 Iterator,
                 CommandHandler,
-                KeyCombinationsMap.Map, Render);
+                KeyCombinationsMap.Map);
+
+        Settings.OutBuffer = OutBuffer;
     }
 
     public void Run(ProgramOptions options)
     {
-        ColorScheme = ColorSchemesRepository!
+        Settings.ColorScheme = ColorSchemesRepository!
             .Get(options.ColorScheme ?? "DoocutorDark");
         OutBuffer!.CursorVisible = false;
-        Render!.ColorScheme = ColorScheme;
 
 #if DEBUG
-        Render.EnableDeveloperMonitor();
+        CuiRender.EnableDeveloperMonitor();
 #endif
 
-        Render.Render();
+        CuiRender.Render();
         OutBufferSizeHandler!.Start();
 
         try

@@ -21,8 +21,8 @@ internal class TextBufferHistoryTests
     {
         _maxLength = 100;
         _buffer = new();
-        _oldCursorPosition = new CursorPosition(0, 0);
-        _newCursorPosition = new CursorPosition(0, 0);
+        _oldCursorPosition = new() { Left = 0, Top = 0 };
+        _newCursorPosition = new() { Left = 0, Top = 0 };
         _history = new TextBufferHistory(_maxLength);
 
         FillBuffer();

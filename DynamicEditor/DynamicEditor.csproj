@@ -7,12 +7,12 @@
 
     <ItemGroup>
         <PackageReference Include="FSharp.Core" Version="6.0.1" />
-        <PackageReference Include="Pastel" Version="2.1.0" />
+        <PackageReference Include="Pastel" Version="3.0.0" />
     </ItemGroup>
 
     <ItemGroup>
         <ProjectReference Include="../Domain/Domain.csproj" />
-        <Reference Include="../Libraries/bin/Debug/net6.0/Libraries.dll" />
+        <ProjectReference Include="../Libraries/Libraries.fsproj" />
     </ItemGroup>
 
 </Project>

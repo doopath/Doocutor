@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
-using System.Diagnostics.CodeAnalysis;
+using Domain.Core;
 using Domain.Core.ColorSchemes;
 using Domain.Core.OutBuffers;
 using Domain.Core.Scenes;
@@ -17,13 +17,18 @@ namespace DynamicEditor.Core;
 /// (for being more faster), it uses the virtual one
 /// (a colorized symbol).
 /// </summary>
-public sealed class CuiRender
+public static class CuiRender
 {
     /// <summary>
     /// Offset value from the top of the code buffer.
     /// Is used to scrolling rendered content.
     /// </summary>
-    public int TopOffset { get; set; }
+    public static int TopOffset { get; set; }
+
+    public static ITextBuffer? TextBuffer { get; set; }
+    public static IScene? Scene { get; set; }
+    public static IOutBuffer? OutBuffer { get; set; }
+
 
     /// <summary>
     /// Enable/disable developer monitor
@@ -31,35 +36,30 @@ public sealed class CuiRender
     /// of the out buffer and shows render time, position, etc).
     /// Usually disabled in 'release' version.
     /// </summary>
-    public bool IsDeveloperMonitorShown { get; set; }
+    public static bool IsDeveloperMonitorShown { get; set; }
 
     /// <summary>
     /// Set color scheme for the rendered text and the
     /// developer monitor.
     /// </summary>
-    public IColorScheme ColorScheme
+    public static IColorScheme? ColorScheme
     {
-        get => _colorScheme;
+        get => Settings.ColorScheme;
         set
         {
-            _colorScheme = value;
-            _developerMonitor.ColorScheme = value;
+            DeveloperMonitor.ColorScheme = value;
         }
     }
 
     private static readonly object RenderLocker = new();
-    private readonly ITextBuffer _textBuffer;
-    private readonly DeveloperMonitor _developerMonitor;
-    private readonly IOutBuffer _outBuffer;
-    private readonly IScene _scene;
-    private List<string> _pureScene;
-    private IColorScheme _colorScheme;
-    private int WindowWidth => _outBuffer.Width;
-    private int WindowHeight => _outBuffer.Height;
-    private int RightEdge => _outBuffer.Width - 2;
-    private int BottomEdge => _outBuffer.Height - 1;
-    private Stopwatch _watch;
-    private long _lastFrameRenderTime;
+    private static DeveloperMonitor? DeveloperMonitor;
+    private static List<string> PureScene;
+    private static int WindowWidth => OutBuffer!.Width;
+    private static int WindowHeight => OutBuffer!.Height;
+    private static int RightEdge => OutBuffer!.Width - 2;
+    private static int BottomEdge => OutBuffer!.Height - 1;
+    private static Stopwatch _watch;
+    private static long _lastFrameRenderTime;
     private const int TopEdge = 0;
 
     /// <param name="codeBuffer">
@@ -75,42 +75,47 @@ public sealed class CuiRender
     /// <param name="colorScheme">
     /// A color scheme which is used to colorize output.
     /// </param>
-    public CuiRender(ITextBuffer codeBuffer, IOutBuffer outBuffer,
-            IScene scene, IColorScheme colorScheme)
+    static CuiRender()
     {
         _watch = new Stopwatch();
-        _textBuffer = codeBuffer;
-        _outBuffer = outBuffer;
-        _scene = scene;
-        _pureScene = new();
-
+        PureScene = new();
         TopOffset = 0;
-        _colorScheme = colorScheme;
-
-        _developerMonitor = new DeveloperMonitor(
-            TopOffset,
-            _textBuffer.CursorPositionFromTop,
-            _textBuffer.CursorPositionFromLeft,
-            _scene,
-            ColorScheme);
     }
 
-    public void EnableDeveloperMonitor()
+    /// <summary>
+    /// TextBuffer, Scene and ColorScheme must be set
+    /// before the developer monitor initializing.
+    /// </summary>
+    public static void InitializeDeveloperMonitor()
+        => DeveloperMonitor = new DeveloperMonitor(
+            TopOffset,
+            TextBuffer!.CursorPositionFromTop,
+            TextBuffer.CursorPositionFromLeft,
+            Scene!,
+            ColorScheme!);
+
+    /// <summary>
+    /// The DeveloperMonitor must be set before enabling it.
+    /// </summary>
+    public static void EnableDeveloperMonitor()
     {
         IsDeveloperMonitorShown = true;
-        _developerMonitor.TurnOn();
+        DeveloperMonitor!.TurnOn();
     }
 
-    public void DisableDeveloperMonitor()
+    /// <summary>
+    /// The DeveloperMonitor must be set before disabling it.
+    /// </summary>
+    public static void DisableDeveloperMonitor()
     {
         IsDeveloperMonitorShown = false;
-        _developerMonitor.TurnOff();
+        DeveloperMonitor!.TurnOff();
     }
 
-    public void Render()
+    public static void Render()
     {
         SetScene();
-        Render(_scene.CurrentScene!);
+        Render(Scene!.CurrentScene!);
     }
 
     /// <summary>
@@ -122,9 +127,9 @@ public sealed class CuiRender
     /// </summary>
     /// 
     /// <param name="scene">
-    /// A list of lines to be rendred.
+    /// A list of lines to be rendered.
     /// </param>
-    public void Render(List<string> scene)
+    public static void Render(IEnumerable<string> scene)
     {
         lock (RenderLocker)
         {
@@ -141,25 +146,41 @@ public sealed class CuiRender
         }
     }
 
-    public void Clear()
-        => _outBuffer.Clear();
+    public static void Clear()
+        => OutBuffer!.Clear();
 
-    public void MoveCursorUp()
-        => DoVerticalCursorMovement(_textBuffer.DecCursorPositionFromTop);
+    /// <summary>
+    /// Disable real (not virtual) cursor of the out buffer.
+    /// </summary>
+    public static void DisableOutBufferCursor()
+        => OutBuffer!.CursorVisible = false;
 
-    public void MoveCursorDown()
-        => DoVerticalCursorMovement(_textBuffer.IncCursorPositionFromTop);
+    public static void MoveCursorUp()
+        => DoVerticalCursorMovement(TextBuffer!.DecCursorPositionFromTop);
 
+    public static void MoveCursorDown()
+        => DoVerticalCursorMovement(TextBuffer!.IncCursorPositionFromTop);
+
+#if DEBUG
+    public static void MoveCursorLeft()
+        => DoVerticalCursorMovement(TextBuffer!.DecCursorPositionFromLeft);
+
+    public static void MoveCursorRight()
+        => DoVerticalCursorMovement(TextBuffer!.IncCursorPositionFromLeft);
+#else
+    // These two methods don't update the screen.
+    // It enhances performance, but is not comfy for debug.
     public void MoveCursorLeft()
         => DoHorizontalCursorMovement(_textBuffer.DecCursorPositionFromLeft);
 
     public void MoveCursorRight()
         => DoHorizontalCursorMovement(_textBuffer.IncCursorPositionFromLeft);
+#endif
 
-    private void DoHorizontalCursorMovement(Action movement)
+    private static void DoHorizontalCursorMovement(Action movement)
     {
-        int initialLeftPosition = _textBuffer.CursorPositionFromLeft;
-        int initialTopPosition = _textBuffer.CursorPositionFromTop - TopOffset;
+        int initialLeftPosition = TextBuffer!.CursorPositionFromLeft;
+        int initialTopPosition = TextBuffer.CursorPositionFromTop - TopOffset;
 
         try
         {
@@ -173,7 +194,7 @@ public sealed class CuiRender
         }
     }
 
-    private void DoVerticalCursorMovement(Action movement)
+    private static void DoVerticalCursorMovement(Action movement)
     {
         try
         {
@@ -185,80 +206,71 @@ public sealed class CuiRender
         }
     }
 
-    private void RemoveCursor(int initialLeftPosition, int initialTopPosition)
+    private static void RemoveCursor(int initialLeftPosition, int initialTopPosition)
     {
-        char initialCursorSymbol = _scene
+        char initialCursorSymbol = Scene!
             .CurrentScene![initialTopPosition][initialLeftPosition];
 
-        _outBuffer.SetCursorPosition(initialLeftPosition, initialTopPosition);
-        _outBuffer.Write(initialCursorSymbol.ToString());
+        OutBuffer!.SetCursorPosition(initialLeftPosition, initialTopPosition);
+        OutBuffer.Write(initialCursorSymbol.ToString());
     }
 
-    private void RenderCursor()
+    private static void RenderCursor()
     {
-        var top = _textBuffer.CursorPositionFromTop - TopOffset;
-        var left = _textBuffer.CursorPositionFromLeft;
-        var initialCursorPosition = (_outBuffer.CursorLeft, _outBuffer.CursorTop);
-        var symbol = _pureScene[top][left];
+        var top = TextBuffer!.CursorPositionFromTop - TopOffset;
+        var left = TextBuffer.CursorPositionFromLeft;
+        var initialCursorPosition = (OutBuffer!.CursorLeft, OutBuffer.CursorTop);
+        var symbol = PureScene[top][left];
 
-        _outBuffer.SetCursorPosition(left, top);
-        _outBuffer.Write(symbol
+        OutBuffer.SetCursorPosition(left, top);
+        OutBuffer.Write(symbol
             .ToString()
-            .Pastel(ColorScheme.CursorForeground)
+            .Pastel(ColorScheme!.CursorForeground)
             .PastelBg(ColorScheme.CursorBackground));
 
-        (_outBuffer.CursorLeft, _outBuffer.CursorTop) = initialCursorPosition;
+        (OutBuffer.CursorLeft, OutBuffer.CursorTop) = initialCursorPosition;
     }
 
-    [SuppressMessage("ReSharper.DPA",
-        "DPA0002: Excessive memory allocations in SOH",
-        MessageId = "type: System.String")]
-    [SuppressMessage("ReSharper.DPA",
-        "DPA0002: Excessive memory allocations in SOH",
-        MessageId = "type: System.Int32")]
-    private void SetScene()
+    private static void SetScene()
     {
         if (IsDeveloperMonitorShown)
             UpdateDeveloperMonitor();
 
-        _textBuffer.AdaptCodeForBufferSize(RightEdge);
+        TextBuffer!.AdaptTextForBufferSize(RightEdge);
 
-        _scene.TargetWidth = WindowWidth;
-        _pureScene = _scene.GetNewScene(
-            _textBuffer.CodeWithLineNumbers, WindowHeight, TopOffset);
-        _scene.ComposeOf(_pureScene);
+        Scene!.TargetWidth = WindowWidth;
+        PureScene = Scene.GetNewScene(
+            TextBuffer.CodeWithLineNumbers, WindowHeight, TopOffset);
+        Scene.ComposeOf(PureScene);
     }
 
-    [SuppressMessage("ReSharper.DPA",
-        "DPA0002: Excessive memory allocations in SOH",
-        MessageId = "type: System.String")]
-    private void ShowScene(List<string> scene)
+    private static void ShowScene(IEnumerable<string> scene)
     {
-        _outBuffer.SetCursorPosition(0, 0);
-        _outBuffer.WriteLine(string.Join("", scene));
+        OutBuffer!.SetCursorPosition(0, 0);
+        OutBuffer.WriteLine(string.Join("", scene));
 
         FixCursorPosition();
     }
 
-    private void StartWatching()
+    private static void StartWatching()
         => _watch.Start();
 
-    private void StopWatching()
+    private static void StopWatching()
     {
         _watch.Stop();
         _lastFrameRenderTime = _watch.ElapsedMilliseconds;
         _watch = new Stopwatch();
     }
 
-    private void FixCursorPosition()
+    private static void FixCursorPosition()
     {
         FixVerticalCursorPosition();
         FixHorizontalCursorPosition();
     }
 
-    private void FixVerticalCursorPosition()
+    private static void FixVerticalCursorPosition()
     {
-        var internalCursorPositionFromTop = _textBuffer.CursorPositionFromTop - TopOffset;
+        var internalCursorPositionFromTop = TextBuffer!.CursorPositionFromTop - TopOffset;
         var isItNotFirstLine = TopOffset != 0;
 
         if (internalCursorPositionFromTop >= BottomEdge)
@@ -273,26 +285,26 @@ public sealed class CuiRender
         }
     }
 
-    private void FixHorizontalCursorPosition()
+    private static void FixHorizontalCursorPosition()
     {
-        if (_textBuffer.CursorPositionFromLeft > RightEdge)
+        if (TextBuffer!.CursorPositionFromLeft > RightEdge)
         {
-            if (_textBuffer.CursorPositionFromTop >= _textBuffer.Size)
-                _textBuffer.IncreaseBufferSize();
+            if (TextBuffer.CursorPositionFromTop >= TextBuffer.Size)
+                TextBuffer.IncreaseBufferSize();
 
-            var targetPositionFromLeft = _textBuffer.GetPrefixLength() + 1;
+            var targetPositionFromLeft = TextBuffer.GetPrefixLength() + 1;
 
-            _textBuffer.SetCursorPositionFromLeftAt(targetPositionFromLeft);
-            _textBuffer.IncCursorPositionFromTop();
+            TextBuffer.SetCursorPositionFromLeftAt(targetPositionFromLeft);
+            TextBuffer.IncCursorPositionFromTop();
             Render();
         }
     }
 
 
-    private void UpdateDeveloperMonitor()
-        => _developerMonitor.Update(
+    private static void UpdateDeveloperMonitor()
+        => DeveloperMonitor!.Update(
                TopOffset,
-               _textBuffer.CursorPositionFromTop,
-               _textBuffer.CursorPositionFromLeft,
+               TextBuffer!.CursorPositionFromTop,
+               TextBuffer.CursorPositionFromLeft,
                (ulong)_lastFrameRenderTime);
 }

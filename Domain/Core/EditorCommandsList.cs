@@ -65,7 +65,7 @@ public static class EditorCommandsList
     {
         var arguments = command.GetArguments();
         var pointer = new TextBlockPointer(int.Parse(arguments[0]), int.Parse(arguments[1]));
-        SourceCodeBuffer!.RemoveCodeBlock(pointer);
+        SourceCodeBuffer!.RemoveTextBlock(pointer);
     }
 
     public static void ExecuteReplaceCommand(EditorCommand command)

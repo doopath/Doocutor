@@ -16,20 +16,18 @@ namespace DynamicEditor.Core
         /// because the behavior becomes unstable.
         /// </summary>
         [Range(0, 1000)]
-        public int UpdateRate { get; set; }
+        public virtual int UpdateRate { get; set; }
 
-        private readonly IOutBuffer _outBuffer;
-        private readonly CuiRender _render;
-        private bool _isActive = true;
+        protected readonly IOutBuffer _outBuffer;
+        protected bool _isActive = true;
 
-        public OutBufferSizeHandler(IOutBuffer outBuffer, CuiRender render, int updateRate)
+        public OutBufferSizeHandler(IOutBuffer outBuffer, int updateRate)
         {
             UpdateRate = updateRate;
             _outBuffer = outBuffer;
-            _render = render;
         }
 
-        public Task Start()
+        public virtual Task Start()
         {
             if (!_isActive)
                 _isActive = true;
@@ -37,10 +35,10 @@ namespace DynamicEditor.Core
             return Task.Run(AdaptOutBufferSize);
         }
 
-        public void Stop()
+        public virtual void Stop()
             => _isActive = false;
 
-        private void AdaptOutBufferSize()
+        protected virtual void AdaptOutBufferSize()
         {
             while (_isActive)
             {
@@ -53,12 +51,14 @@ namespace DynamicEditor.Core
                 {
                     if (width != _outBuffer.Width || height != _outBuffer.Height)
                     {
-                        _render.Render();
+                        CuiRender.Clear();
+                        CuiRender.Render();
+                        CuiRender.DisableOutBufferCursor();
                     }
                 }
                 catch (ArgumentOutOfRangeException)
                 {
-                    _render.Render();
+                    CuiRender.Render();
                 }
                 catch (Exception exc)
                 {
