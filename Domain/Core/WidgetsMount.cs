@@ -1,8 +1,8 @@
-﻿using Domain.Core.OutBuffers;
+﻿using System;
+using System.Collections.Generic;
+using Domain.Core.OutBuffers;
 using Domain.Core.Scenes;
 using Domain.Core.Widgets;
-using System;
-using System.Collections.Generic;
 
 namespace Domain.Core;
 
@@ -22,10 +22,10 @@ public static class WidgetsMount
         var mounted = OnSceneUpdated(renderableObject.OnSceneUpdated);
         Scene!.SceneUpdated += mounted;
         Refresh!.Invoke();
-        renderableObject.OnMounted((IWidget ro) => Unmount(ro, mounted), Refresh!);
+        renderableObject.OnMounted(() => Unmount(mounted), Refresh!);
     }
 
-    public static void Unmount(IWidget renderableObject, EventHandler<SceneUpdatedEventArgs> mounted)
+    public static void Unmount(EventHandler<SceneUpdatedEventArgs> mounted)
     {
         Scene!.SceneUpdated -= mounted;
         Refresh!.Invoke();

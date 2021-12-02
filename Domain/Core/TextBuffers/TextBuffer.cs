@@ -160,11 +160,13 @@ public class TextBuffer : ITextBuffer
             return;
 
         string[] newSourceCode = _sourceText.ToArray();
-        CursorPosition initialCursorPosition = new() {
+        CursorPosition initialCursorPosition = new()
+        {
             Left = initialCursorPositionFromLeft,
             Top = initialCursorPositionFromTop
         };
-        CursorPosition cursorPosition = new() {
+        CursorPosition cursorPosition = new()
+        {
             Left = CursorPositionFromLeft,
             Top = CursorPositionFromTop
         };

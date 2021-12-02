@@ -6,5 +6,5 @@ namespace Domain.Core.Widgets;
 public interface IWidget : IRenderable<List<string>>
 {
     void OnSceneUpdated(List<string> scene);
-    void OnMounted(Action<IWidget> unmount, Action action);
+    void OnMounted(Action unmount, Action action);
 }

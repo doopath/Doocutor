@@ -1,13 +1,13 @@
-﻿using Domain.Core.ColorSchemes;
-using Domain.Core.Cursors;
+﻿using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.Linq;
-using Pastel;
-using System;
 using System.ComponentModel.DataAnnotations;
-using Libraries.Core;
 using System.Diagnostics.CodeAnalysis;
+using System.Linq;
+using Domain.Core.ColorSchemes;
+using Domain.Core.Cursors;
+using Libraries.Core;
+using Pastel;
 
 namespace Domain.Core.Widgets;
 
@@ -46,7 +46,7 @@ public abstract class Widget : IWidget
     #endregion
 
     #region Public methods
-    public virtual void OnSceneUpdated(List<string> scene)
+    public virtual void OnSceneUpdated([NotNull] List<string> scene)
     {
         Refresh();
 
@@ -61,7 +61,7 @@ public abstract class Widget : IWidget
         }
     }
 
-    public virtual void OnMounted([NotNull] Action<IWidget> unmount, [NotNull] Action render)
+    public virtual void OnMounted([NotNull] Action unmount, [NotNull] Action render)
     {
         while (true)
         {
@@ -82,7 +82,7 @@ public abstract class Widget : IWidget
         }
 
         render.Invoke();
-        unmount.Invoke(this);
+        unmount.Invoke();
     }
 
     public virtual IEnumerator<string> GetEnumerator()
