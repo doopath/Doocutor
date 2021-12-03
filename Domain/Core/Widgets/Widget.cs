@@ -6,7 +6,6 @@ using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using Domain.Core.ColorSchemes;
 using Domain.Core.Cursors;
-using Libraries.Core;
 using Pastel;
 
 namespace Domain.Core.Widgets;
@@ -77,7 +76,7 @@ public abstract class Widget : IWidget
             }
             catch (ArgumentOutOfRangeException exc)
             {
-                ErrorHandling.fileLogger.Error(exc);
+                ErrorHandling.FileLogger.Error(exc);
             }
         }
 

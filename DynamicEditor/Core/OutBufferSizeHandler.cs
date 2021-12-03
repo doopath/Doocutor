@@ -1,9 +1,10 @@
 using System;
+using System.ComponentModel.DataAnnotations;
 using System.Threading;
 using System.Threading.Tasks;
+using Domain.Core;
 using Domain.Core.OutBuffers;
-using System.ComponentModel.DataAnnotations;
-using Libraries.Core;
+
 
 namespace DynamicEditor.Core
 {
@@ -62,7 +63,7 @@ namespace DynamicEditor.Core
                 }
                 catch (Exception exc)
                 {
-                    ErrorHandling.fileLogger.Error(exc);
+                    ErrorHandling.FileLogger.Error(exc);
                 }
             }
         }

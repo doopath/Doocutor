@@ -42,7 +42,7 @@ public class DynamicEditorSetup : IEditorSetup
         SourceCodeBufferHistoryLimit = 10000;
         TextBuffer = new TextBuffer(SourceCodeBufferHistoryLimit!.Value);
         ITextBuffer sourceCodeBuffer = TextBuffer;
-        EditorCommandsList.InitializeCodeBuffer(ref sourceCodeBuffer);
+        EditorCommands.InitializeCodeBuffer(ref sourceCodeBuffer);
         Iterator = new DynamicConsoleInputFlowIterator();
         CommandHandler = new DynamicCommandHandler();
         OutBuffer = new StandardConsoleOutBuffer();
