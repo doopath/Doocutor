@@ -13,11 +13,8 @@ namespace Domain.Core.Widgets;
 public abstract class Widget : IWidget
 {
     #region Stuff declaring
+    #region Public fields, properties and events
     public static IColorScheme? ColorScheme { get; set; } = Settings.ColorScheme;
-    protected const float RelativeWidgetWidth = 0.5f;
-    protected const float RelativeWidgetHeight = 0.5f;
-    public event Action<WidgetAction>? KeyPressed;
-    public virtual CursorPosition CursorPosition { get; protected set; }
 
     [Range(4, int.MaxValue)]
     public virtual int Width { get; protected set; }
@@ -26,6 +23,13 @@ public abstract class Widget : IWidget
     public virtual int Height { get; protected set; }
 
     public virtual string? Text { get; init; }
+    public event Action<WidgetAction>? KeyPressed;
+    public virtual CursorPosition CursorPosition { get; protected set; }
+    #endregion
+
+    #region Protected fields and properties
+    protected virtual float RelativeWidgetWidth { get; set; } = 0.5f;
+    protected virtual float RelativeWidgetHeight { get; set; } = 0.5f;
     protected virtual List<string> Lines => Items!.Select(sublist => string.Join("", sublist)).ToList();
     protected virtual List<List<string>>? Items { get; set; }
     protected int _activeButtonIndex;
@@ -42,6 +46,7 @@ public abstract class Widget : IWidget
     protected string? _topRightCorner;
     protected string? _bottomLeftCorner;
     protected string? _bottomRightCorner;
+    #endregion
     #endregion
 
     #region Public methods
@@ -80,15 +85,15 @@ public abstract class Widget : IWidget
             }
         }
 
-        render.Invoke();
-        unmount.Invoke();
+        render();
+        unmount();
     }
 
     public virtual IEnumerator<string> GetEnumerator()
         => new WidgetEnumerator(Lines);
 
     IEnumerator IEnumerable.GetEnumerator()
-    => GetEnumerator();
+        => GetEnumerator();
 
     public virtual List<string> GetView()
         => Lines;
