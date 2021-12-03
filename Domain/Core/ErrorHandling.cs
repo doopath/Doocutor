@@ -1,6 +1,7 @@
 using System;
 using System.Diagnostics.CodeAnalysis;
 using Domain.Core.Exceptions;
+using Domain.Core.Widgets;
 using NLog;
 
 namespace Domain.Core;
@@ -19,8 +20,9 @@ public class ErrorHandling
     public static void ShowError([NotNull] Exception error)
     => OutputColorizing.ColorizeForeground(ConsoleColor.Red, () =>
    {
-       ConsoleLogger.Error(error.Message);
-       FileLogger.Debug($"Thrown an error: \"{error.Message}\" {error.StackTrace} \n");
+       string alertMessage = $"ERROR: {error.Message}";
+       WidgetsMount.Mount(new AlertWidget(alertMessage, AlertLevel.ERROR));
+       FileLogger.Debug($"Thrown an error: \"{error.Message}\"\n {error.StackTrace} \n");
    });
 
     public static void HandleInterruptedExecutionException(
