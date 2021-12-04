@@ -4,12 +4,12 @@ using Domain.Core.Commands;
 using Domain.Core.Exceptions;
 using Domain.Core.TextBuffers;
 using Domain.Core.TextBuffers.TextPointers;
-using Libraries.Core;
+
 using TextCopy;
 
 namespace Domain.Core;
 
-public static class EditorCommandsList
+public static class EditorCommands
 {
     public static ITextBuffer? SourceCodeBuffer { get; set; }
 
@@ -83,12 +83,9 @@ public static class EditorCommandsList
     public static void ExecuteShowPosCommand(EditorCommand command)
     {
         Console.Write("Current cursor position: ");
-        OutputColorizing.colorizeForeground(ConsoleColor.Cyan,
-            () => Console.Write(SourceCodeBuffer!.CursorPositionFromTop + "\n"));
+        OutputColorizing.ColorizeForeground(ConsoleColor.Cyan,
+           () => Console.Write(SourceCodeBuffer!.CursorPositionFromTop + "\n"));
     }
-
-    public static void ExecuteSaveCodeCommand(EditorCommand command)
-        => SourceCodeSaving.saveCode(command.GetArgumentsAsALine(), SourceCodeBuffer!.Lines);
 
     public static void ExecuteHelpCommand(EditorCommand command)
         => HelpList.Show();

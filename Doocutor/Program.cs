@@ -4,14 +4,18 @@ using Domain.Core;
 using Domain.Core.Exceptions;
 using Domain.Options;
 using DynamicEditor;
-using Libraries.Core;
 using NLog;
 
 namespace Doocutor
 {
     public static class Program
     {
-        private static readonly Logger Logger = LogManager.GetLogger("Doocutor.Program");
+        private static Logger Logger { get; }
+
+        static Program()
+        {
+            Logger = LogManager.GetLogger("Doocutor.Program");
+        }
 
         public static void Main(string[] args)
         {
@@ -23,11 +27,11 @@ namespace Doocutor
             }
             catch (InterruptedExecutionException error)
             {
-                ErrorHandling.handleInterruptedExecutionException(error, End);
+                ErrorHandling.HandleInterruptedExecutionException(error, End);
             }
             catch (Exception error)
             {
-                ErrorHandling.showError(error);
+                ErrorHandling.ShowError(error);
             }
             finally
             {
@@ -36,18 +40,19 @@ namespace Doocutor
         }
 
         private static void Start()
-            => OutputColorizing.colorizeForeground(ConsoleColor.Cyan, () =>
-            {
-                Logger.Debug("Start of the program");
-                Info.ShowDoocutorInfo();
-            });
+            => OutputColorizing.ColorizeForeground(ConsoleColor.Cyan, () =>
+           {
+               Logger.Debug("Start of the program");
+               Info.ShowDoocutorInfo();
+           });
 
         private static void End()
-            => OutputColorizing.colorizeForeground(ConsoleColor.Cyan,
+            => OutputColorizing.ColorizeForeground(ConsoleColor.Cyan,
                 () =>
                 {
                     Logger.Debug("End of the program\n\n");
-                    OutputColorizing.colorizeForeground(ConsoleColor.Cyan, () => Console.WriteLine("\nGood bye!\n"));
+                    OutputColorizing.ColorizeForeground(ConsoleColor.Cyan,
+                       () => Console.WriteLine("\nGood bye!\n"));
                 });
 
         private static ProgramOptions ParseCommandLineArguments(string[] args)

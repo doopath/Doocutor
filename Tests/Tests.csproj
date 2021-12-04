@@ -16,7 +16,6 @@
     <ItemGroup>
       <ProjectReference Include="../Domain/Domain.csproj" />
       <ProjectReference Include="../DynamicEditor/DynamicEditor.csproj" />
-      <ProjectReference Include="../Libraries/Libraries.fsproj" />
     </ItemGroup>
 
 </Project>

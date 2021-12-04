@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using Domain.Core.ColorSchemes;
 using Domain.Core.Cursors;
@@ -18,9 +19,8 @@ namespace Tests.Core
     {
         private const int UpdateRate = 300;
         private IColorScheme? _colorScheme;
-        private ITextBuffer? _codeBuffer;
+        private ITextBuffer? _textBuffer;
         private IOutBuffer? _outBuffer;
-        private CuiRender? _render;
         private IScene? _scene;
 
         [SetUp]
@@ -28,10 +28,12 @@ namespace Tests.Core
         {
             _colorScheme = new DefaultDarkColorScheme();
             _outBuffer = new MockConsole();
-            _codeBuffer = new TextBuffer(new MockCodeBufferContent());
+            _textBuffer = new TextBuffer(new MockCodeBufferContent());
             _scene = new CuiScene();
-            _render = new CuiRender(_codeBuffer, _outBuffer, _scene, _colorScheme);
-            _render.DisableDeveloperMonitor();
+            CuiRender.TextBuffer = _textBuffer;
+            CuiRender.OutBuffer = _outBuffer;
+            CuiRender.Scene = _scene;
+            CuiRender.ColorScheme = _colorScheme;
             Checkbox.TurnOff();
             MockConsoleBuffer.ResetBuffer();
         }
@@ -39,10 +41,10 @@ namespace Tests.Core
         [Test]
         public void RenderTest()
         {
-            int top = _codeBuffer!.CursorPositionFromTop;
-            int left = _codeBuffer.CursorPositionFromLeft;
+            int top = _textBuffer!.CursorPositionFromTop;
+            int left = _textBuffer.CursorPositionFromLeft;
             int width = _outBuffer!.Width;
-            string supposedCode = _codeBuffer.CodeWithLineNumbers;
+            string supposedCode = _textBuffer.CodeWithLineNumbers;
             List<string> supposedLines = supposedCode.Split("\n").ToList();
             string lastLine = supposedLines[^1];
 
@@ -57,7 +59,7 @@ namespace Tests.Core
                 .PastelBg(_colorScheme.CursorBackground) + supposedLines[top][left..];
             supposedCode = string.Join("", supposedLines);
 
-            _render!.Render();
+            CuiRender.Render();
 
             List<string> lines = MockConsoleBuffer.Content;
             string code = string.Join("\n", lines).Trim();
@@ -103,6 +105,11 @@ namespace Tests.Core
         {
             foreach (var line in scene)
                 MockConsoleBuffer.Content.Add(line);
+        }
+
+        public ConsoleKeyInfo ReadKey()
+        {
+            throw new NotImplementedException();
         }
 
         public void SetCursorPosition(int left, int top)

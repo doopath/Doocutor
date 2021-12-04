@@ -1,7 +1,6 @@
 ﻿using System;
 using Domain.Core.Commands;
 using Domain.Core.Exceptions;
-using Libraries.Core;
 using NLog;
 
 namespace Domain.Core.Executors;
@@ -24,7 +23,7 @@ public class EditorCommandExecutor : ICommandExecutor<EditorCommand>
         }
         catch (Exception error) when (error.GetType() != typeof(InterruptedExecutionException))
         {
-            ErrorHandling.showError(error);
+            ErrorHandling.ShowError(error);
         }
     }
 }

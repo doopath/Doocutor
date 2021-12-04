@@ -29,6 +29,5 @@
 
     <ItemGroup>
         <ProjectReference Include="../DynamicEditor/DynamicEditor.csproj" />
-        <ProjectReference Include="../Libraries/Libraries.fsproj" />
     </ItemGroup>
 </Project>

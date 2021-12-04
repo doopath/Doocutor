@@ -6,7 +6,6 @@ using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using Domain.Core.ColorSchemes;
 using Domain.Core.Cursors;
-using Libraries.Core;
 using Pastel;
 
 namespace Domain.Core.Widgets;
@@ -14,11 +13,8 @@ namespace Domain.Core.Widgets;
 public abstract class Widget : IWidget
 {
     #region Stuff declaring
-    protected const float RelativeWidgetWidth = 0.5f;
-    protected const float RelativeWidgetHeight = 0.5f;
-    public event Action<WidgetAction>? KeyPressed;
+    #region Public fields, properties and events
     public static IColorScheme? ColorScheme { get; set; } = Settings.ColorScheme;
-    public virtual CursorPosition CursorPosition { get; protected set; }
 
     [Range(4, int.MaxValue)]
     public virtual int Width { get; protected set; }
@@ -27,6 +23,13 @@ public abstract class Widget : IWidget
     public virtual int Height { get; protected set; }
 
     public virtual string? Text { get; init; }
+    public event Action<WidgetAction>? KeyPressed;
+    public virtual CursorPosition CursorPosition { get; protected set; }
+    #endregion
+
+    #region Protected fields and properties
+    protected virtual float RelativeWidgetWidth { get; set; } = 0.5f;
+    protected virtual float RelativeWidgetHeight { get; set; } = 0.5f;
     protected virtual List<string> Lines => Items!.Select(sublist => string.Join("", sublist)).ToList();
     protected virtual List<List<string>>? Items { get; set; }
     protected int _activeButtonIndex;
@@ -36,13 +39,14 @@ public abstract class Widget : IWidget
         new KeyValuePair<string, WidgetAction>("OK", WidgetAction.OK),
     });
 
-    protected string? _borderColor;
+    protected string? _textForegroundColor;
     protected string? _horizontalSymbol;
     protected string? _verticalSymbol;
     protected string? _topLeftCorner;
     protected string? _topRightCorner;
     protected string? _bottomLeftCorner;
     protected string? _bottomRightCorner;
+    #endregion
     #endregion
 
     #region Public methods
@@ -77,19 +81,19 @@ public abstract class Widget : IWidget
             }
             catch (ArgumentOutOfRangeException exc)
             {
-                ErrorHandling.fileLogger.Error(exc);
+                ErrorHandling.FileLogger.Error(exc);
             }
         }
 
-        render.Invoke();
-        unmount.Invoke();
+        render();
+        unmount();
     }
 
     public virtual IEnumerator<string> GetEnumerator()
         => new WidgetEnumerator(Lines);
 
     IEnumerator IEnumerable.GetEnumerator()
-    => GetEnumerator();
+        => GetEnumerator();
 
     public virtual List<string> GetView()
         => Lines;
@@ -134,7 +138,7 @@ public abstract class Widget : IWidget
     {
         string[] textItems = Text!
             .ToCharArray()
-            .Select(c => c.ToString())
+            .Select(c => c.ToString().Pastel(_textForegroundColor))
             .ToArray();
         int leftEdge = 2;
         int rightEdge = Width - 2;
@@ -189,7 +193,6 @@ public abstract class Widget : IWidget
     {
         int buttonsCount = ButtonsMap.Keys.Count;
         int buttonNumber = 1;
-        int prevButtonWidth = 0;
         int bottomPos = 3;
         string[] buttons = ButtonsMap.Keys
             .Select(b => _verticalSymbol + b + _verticalSymbol)
@@ -198,24 +201,26 @@ public abstract class Widget : IWidget
         foreach (string button in ButtonsMap.Keys)
         {
             List<string> buttonItems = GetButtonItems(button);
-            int leftPos = (Width - 2 - buttonsCount * 4)
-                / buttonsCount
-                / 2 * buttonNumber
-                + prevButtonWidth;
-            AddAditionalButtonSymbols(buttonItems);
+            int contentWidth = Width - 2;
+            int chunkWidth = contentWidth / buttonsCount - 1;
+            int leftPos = chunkWidth * (buttonNumber - 1) + chunkWidth / 2;
+
+            AddAdditionalButtonSymbols(buttonItems);
 
             for (int i = leftPos; i < leftPos + buttonItems.Count; i++)
             {
+                int buttonItemsIndex = i - leftPos;
                 string content = IsActiveButton(button)
-                    ? ToInactiveButton(buttonItems[i - leftPos])
-                    : ToActiveButton(buttonItems[i - leftPos]);
-                Items![^bottomPos][leftPos - 2] = (IsActiveButton(button) ? ">" : " ")
+                    ? ToActiveButton(buttonItems[buttonItemsIndex])
+                    : ToInactiveButton(buttonItems[buttonItemsIndex]);
+                string selectedButtonSymbol = (IsActiveButton(button) ? "" : " ")
                     .Pastel(ColorScheme!.TextForeground);
+
+                Items![^bottomPos][leftPos - 2] = selectedButtonSymbol;
                 Items[^bottomPos][i] = content;
             }
 
             buttonNumber++;
-            prevButtonWidth += buttonItems.Count;
         }
     }
 
@@ -224,13 +229,16 @@ public abstract class Widget : IWidget
         ConsoleKeyInfo key = Settings.OutBuffer!.ReadKey();
 
         if (key.Key == ConsoleKey.RightArrow)
-            _activeButtonIndex += 1;
+            _activeButtonIndex++;
         else if (key.Key == ConsoleKey.LeftArrow)
-            _activeButtonIndex -= 1;
+            _activeButtonIndex--;
         else if (key.Key == ConsoleKey.Enter)
             return true;
 
-        _activeButtonIndex %= ButtonsMap.Keys.Count;
+        int buttonsCount = ButtonsMap.Keys.Count;
+        _activeButtonIndex = ((_activeButtonIndex % buttonsCount)
+            + buttonsCount)
+            % buttonsCount;
 
         return false;
     }
@@ -245,10 +253,10 @@ public abstract class Widget : IWidget
     protected virtual List<string> GetButtonItems(string button)
         => button.ToCharArray().Select(i => i.ToString()).ToList();
 
-    protected virtual void AddAditionalButtonSymbols(List<string> buttonItems)
+    protected virtual void AddAdditionalButtonSymbols(List<string> buttonItems)
     {
-        buttonItems.Insert(0, _verticalSymbol!);
-        buttonItems.Insert(buttonItems.Count, _verticalSymbol!);
+        buttonItems.Insert(0, " ");
+        buttonItems.Insert(buttonItems.Count, " ");
         buttonItems.Insert(1, " ");
         buttonItems.Insert(buttonItems.Count - 1, " ");
     }
@@ -257,12 +265,12 @@ public abstract class Widget : IWidget
         => buttonName == ButtonsMap.Keys.ToArray()[_activeButtonIndex];
 
     protected virtual string ToActiveButton(string button)
-        => button.PastelBg(ColorScheme!.TextBackground)
-                 .Pastel(ColorScheme!.TextForeground);
+        => button.PastelBg(ColorScheme!.WidgetActiveButtonBackground)
+                 .Pastel(ColorScheme!.WidgetActiveButtonForeground);
 
     protected virtual string ToInactiveButton(string button)
-        => button.PastelBg(ColorScheme!.TextForeground)
-                 .Pastel(ColorScheme!.TextBackground);
+        => button.PastelBg(ColorScheme!.WidgetInactiveButtonBackground)
+                 .Pastel(ColorScheme!.WidgetInactiveButtonForeground);
     #endregion
 }
 
