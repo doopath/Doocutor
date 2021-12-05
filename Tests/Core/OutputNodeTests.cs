@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using Domain.Core;
 using Domain.Core.ColorSchemes;
 using Domain.Core.Cursors;
 using Domain.Core.OutBuffers;
@@ -30,10 +31,11 @@ namespace Tests.Core
             _outBuffer = new MockConsole();
             _textBuffer = new TextBuffer(new MockCodeBufferContent());
             _scene = new CuiScene();
+            Settings.ColorScheme = _colorScheme;
+            Settings.OutBuffer = _outBuffer;
             CuiRender.TextBuffer = _textBuffer;
             CuiRender.OutBuffer = _outBuffer;
             CuiRender.Scene = _scene;
-            CuiRender.ColorScheme = _colorScheme;
             Checkbox.TurnOff();
             MockConsoleBuffer.ResetBuffer();
         }

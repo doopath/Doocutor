@@ -10,7 +10,7 @@ namespace DynamicEditor.Core
 {
     public sealed class DeveloperMonitor
     {
-        public static IColorScheme? ColorScheme { get; set; } = Settings.ColorScheme;
+        public static IColorScheme ColorScheme { get; set; }
         private IEnumerable<string> _monitor;
         private readonly IScene _scene;
         private int _topOffset;
@@ -23,6 +23,11 @@ namespace DynamicEditor.Core
         private string? _longestMonitorLine;
         private const int Padding = 1;
         private const int AvgFramesCount = 5;
+
+        static DeveloperMonitor()
+        {
+             ColorScheme = Settings.ColorScheme;
+        }
 
         public DeveloperMonitor(int topOffset, int positionFromTop,
             int positionFromLeft, IScene scene, IColorScheme colorScheme)
