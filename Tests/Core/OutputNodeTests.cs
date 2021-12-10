@@ -31,10 +31,11 @@ namespace Tests.Core
             _outBuffer = new MockConsole();
             _textBuffer = new TextBuffer(new MockCodeBufferContent());
             _scene = new CuiScene();
-            Settings.ColorScheme = _colorScheme;
             Settings.OutBuffer = _outBuffer;
+            Settings.ColorScheme = _colorScheme;
             CuiRender.TextBuffer = _textBuffer;
             CuiRender.OutBuffer = _outBuffer;
+            CuiRender.ColorScheme = _colorScheme;
             CuiRender.Scene = _scene;
             Checkbox.TurnOff();
             MockConsoleBuffer.ResetBuffer();

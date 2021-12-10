@@ -153,13 +153,16 @@ public class TextBuffer : ITextBuffer
         string[] oldSourceCode = _sourceText.ToArray();
         int initialCursorPositionFromLeft = CursorPositionFromLeft;
         int initialCursorPositionFromTop = CursorPositionFromTop;
+        int initialPrefixLength = GetPrefixLength();
 
-        bool isModified = _codeFormatter.AdaptCodeForBufferSize(maxLineLength);
-
-        if (!isModified)
-            return;
+        while (_codeFormatter.AdaptCodeForBufferSize(maxLineLength))
+            continue;
 
         string[] newSourceCode = _sourceText.ToArray();
+        int prefixLengthDiff = initialPrefixLength - GetPrefixLength();
+
+        SetCursorPositionFromLeftAt(CursorPositionFromLeft + prefixLengthDiff);
+        
         CursorPosition initialCursorPosition = new()
         {
             Left = initialCursorPositionFromLeft,

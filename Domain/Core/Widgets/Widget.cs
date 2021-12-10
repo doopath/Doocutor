@@ -213,7 +213,7 @@ public abstract class Widget : IWidget
                 string content = IsActiveButton(button)
                     ? ToActiveButton(buttonItems[buttonItemsIndex])
                     : ToInactiveButton(buttonItems[buttonItemsIndex]);
-                string selectedButtonSymbol = (IsActiveButton(button) ? "" : " ")
+                string selectedButtonSymbol = (IsActiveButton(button) ? ">" : " ")
                     .Pastel(ColorScheme!.TextForeground);
 
                 Items![^bottomPos][leftPos - 2] = selectedButtonSymbol;
