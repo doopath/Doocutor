@@ -51,10 +51,12 @@ namespace DynamicEditor.Core.FlowHandlers
                     }
                     catch (OutOfCodeBufferSizeException) { }
                 }
+                else if (command == ":quit")
+                    _commandHandler.Handle(command);
                 else
                 {
                     _commandHandler.Handle(command);
-                    CuiRender.Render();
+                    CuiRender.RenderAsync();
                 }
             }
 

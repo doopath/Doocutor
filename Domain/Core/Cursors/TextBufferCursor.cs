@@ -25,8 +25,6 @@ public sealed class TextBufferCursor : ICursor
 
     public void SetCursorPositionFromTopAt(int position)
     {
-        CheckIfLineExistsAt(_formatter.IndexToLineNumber(position));
-
         var currentLineNumber = _formatter.IndexToLineNumber(CursorPositionFromTop);
         var prefixLength = _formatter.GetPrefixLength(currentLineNumber);
         var targetLineNumber = _formatter.IndexToLineNumber(position);

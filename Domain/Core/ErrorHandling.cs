@@ -18,12 +18,12 @@ public class ErrorHandling
     }
 
     public static void ShowError([NotNull] Exception error)
-    => OutputColorizing.ColorizeForeground(ConsoleColor.Red, () =>
-   {
-       string alertMessage = $"ERROR: {error.Message}";
-       WidgetsMount.Mount(new AlertWidget(alertMessage, AlertLevel.ERROR));
-       FileLogger.Debug($"Thrown an error: \"{error.Message}\"\n {error.StackTrace} \n");
-   });
+        => OutputColorizing.ColorizeForeground(ConsoleColor.Red, () =>
+        {
+            string alertMessage = $"ERROR: {error.Message}";
+            FileLogger.Debug($"Thrown an error: \"{error.Message}\"\n {error.StackTrace} \n");
+            WidgetsMount.Mount(new AlertWidget(alertMessage, AlertLevel.ERROR));
+        });
 
     public static void HandleInterruptedExecutionException(
         [NotNull] InterruptedExecutionException error,

@@ -31,5 +31,5 @@ public static class WidgetsMount
         Refresh!.Invoke();
     }
     private static EventHandler<SceneUpdatedEventArgs> OnSceneUpdated(Action<List<string>> action)
-    => (object? sender, SceneUpdatedEventArgs eventArgs) => action(eventArgs.SceneContent!);
+        => (object? sender, SceneUpdatedEventArgs eventArgs) => action(eventArgs.SceneContent!);
 }

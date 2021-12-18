@@ -155,8 +155,11 @@ public class TextBuffer : ITextBuffer
         int initialCursorPositionFromTop = CursorPositionFromTop;
         int initialPrefixLength = GetPrefixLength();
 
-        while (_codeFormatter.AdaptCodeForBufferSize(maxLineLength))
-            continue;
+        if (_codeFormatter.AdaptCodeForBufferSize(maxLineLength))
+            while (_codeFormatter.AdaptCodeForBufferSize(maxLineLength))
+                continue;
+        else
+            return;
 
         string[] newSourceCode = _sourceText.ToArray();
         int prefixLengthDiff = initialPrefixLength - GetPrefixLength();
