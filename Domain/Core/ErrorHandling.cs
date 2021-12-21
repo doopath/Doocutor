@@ -20,8 +20,9 @@ public class ErrorHandling
     public static void ShowError([NotNull] Exception error)
         => OutputColorizing.ColorizeForeground(ConsoleColor.Red, () =>
         {
-            string alertMessage = $"ERROR: {error.Message}";
             FileLogger.Debug($"Thrown an error: \"{error.Message}\"\n {error.StackTrace} \n");
+            string alertMessage = $"INTERNAL ERROR: {error.Message} " +
+                $"(see the logfile in {Settings.ApplicationPath}\\logs\\doocutor.log)";
             WidgetsMount.Mount(new AlertWidget(alertMessage, AlertLevel.ERROR));
         });
 
