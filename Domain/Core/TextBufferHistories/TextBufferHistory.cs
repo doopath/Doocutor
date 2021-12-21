@@ -112,7 +112,7 @@ public class TextBufferHistory : ITextBufferHistory
 
         _pointer--;
 
-        return _history[(int)_pointer + 1];
+        return _history[_pointer + 1];
     }
 
     public IEnumerator<ITextBufferChange> GetEnumerator()
@@ -127,7 +127,7 @@ public class TextBufferHistory : ITextBufferHistory
     private void RemoveOldest()
     {
         _history.RemoveAt(0);
-        _pointer -= (_pointer == -1 ? 0 : 1);
+        _pointer -= _pointer == -1 ? 0 : 1;
     }
 
     private bool IsNotFirstLine()

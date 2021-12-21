@@ -165,7 +165,7 @@ public class TextBuffer : ITextBuffer
         int prefixLengthDiff = initialPrefixLength - GetPrefixLength();
 
         SetCursorPositionFromLeftAt(CursorPositionFromLeft + prefixLengthDiff);
-        
+
         CursorPosition initialCursorPosition = new()
         {
             Left = initialCursorPositionFromLeft,
@@ -307,6 +307,13 @@ public class TextBuffer : ITextBuffer
         try
         {
             change = _history.Redo();
+
+            if (change.Type is TextBufferChangeType.ADAPT_TEXT)
+            {
+                RedoAdaptText(change);
+                Redo();
+                return;
+            }
         }
         catch (ValueOutOfRangeException)
         {
@@ -341,6 +348,16 @@ public class TextBuffer : ITextBuffer
 
         _sourceText.Clear();
         _sourceText.AddRange(change.OldState);
+    }
+
+    protected virtual void RedoAdaptText(ITextBufferChange change)
+    {
+        if (change.Type is not TextBufferChangeType.ADAPT_TEXT)
+            throw new InvalidOperationException(
+                $"change.Type is not {nameof(TextBufferChangeType.ADAPT_TEXT)}!");
+
+        _sourceText.Clear();
+        _sourceText.AddRange(change.NewChanges);
     }
 
     protected virtual void CheckIfLineExistsAt(int lineNumber)
