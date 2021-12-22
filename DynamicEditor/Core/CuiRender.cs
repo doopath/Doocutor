@@ -49,7 +49,6 @@ public static class CuiRender
         set => DeveloperMonitor.ColorScheme = value!;
     }
 
-    private static readonly object RenderLocker = new();
     private static DeveloperMonitor? _developerMonitor;
     private static List<string> _pureScene;
     private static int WindowWidth => OutBuffer!.Width;
@@ -97,12 +96,6 @@ public static class CuiRender
         _developerMonitor!.TurnOff();
     }
 
-    public static async void RenderAsync()
-        => await Task.Run(Render);
-
-    public static async void RenderAsync(IEnumerable<string> scene)
-        => await Task.Run(() => Render(scene));
-
     public static void Render()
     {
         SetScene();
@@ -122,19 +115,16 @@ public static class CuiRender
     /// </param>
     public static void Render(IEnumerable<string> scene)
     {
-        lock (RenderLocker)
-        {
-            if (IsDeveloperMonitorShown)
-                StartWatching();
+        if (IsDeveloperMonitorShown)
+            StartWatching();
 
-            ShowScene(scene);
-            RenderCursor();
+        ShowScene(scene);
+        RenderCursor();
 
-            if (!IsDeveloperMonitorShown) return;
+        if (!IsDeveloperMonitorShown) return;
 
-            StopWatching();
-            UpdateDeveloperMonitorAsync();
-        }
+        StopWatching();
+        UpdateDeveloperMonitorAsync();
     }
 
     public static void Clear()
@@ -193,7 +183,7 @@ public static class CuiRender
         }
         finally
         {
-            RenderAsync();
+            Render();
         }
     }
 
@@ -272,12 +262,12 @@ public static class CuiRender
         if (internalCursorPositionFromTop >= BottomEdge)
         {
             TopOffset++;
-            RenderAsync();
+            Render();
         }
         else if (internalCursorPositionFromTop < TopEdge && isItNotFirstLine)
         {
             TopOffset--;
-            RenderAsync();
+            Render();
         }
     }
 
@@ -292,7 +282,7 @@ public static class CuiRender
 
             TextBuffer.SetCursorPositionFromLeftAt(targetPositionFromLeft);
             TextBuffer.IncCursorPositionFromTop();
-            RenderAsync();
+            Render();
         }
     }
 

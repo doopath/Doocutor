@@ -22,7 +22,7 @@ public class ErrorHandling
         {
             FileLogger.Debug($"Thrown an error: \"{error.Message}\"\n {error.StackTrace} \n");
             string alertMessage = $"INTERNAL ERROR: {error.Message} " +
-                $"(see the logfile in {Settings.ApplicationPath}\\logs\\doocutor.log)";
+                $"(see the logfile in {Settings.ApplicationPath.Replace(@"\", "/")}/logs/doocutor.log)";
             WidgetsMount.Mount(new AlertWidget(alertMessage, AlertLevel.ERROR));
         });
 

@@ -1,6 +1,6 @@
-using Domain.Core.Cursors;
 using System;
 using System.Collections.Generic;
+using Domain.Core.Cursors;
 
 namespace Domain.Core.OutBuffers
 {
@@ -32,7 +32,7 @@ namespace Domain.Core.OutBuffers
             => Console.ReadKey(true);
 
         public void Write(string line)
-            => Console.Write(line);
+            => Console.Out.WriteAsync(line);
 
         public void Fill(IEnumerable<string> scene)
         {
@@ -41,7 +41,7 @@ namespace Domain.Core.OutBuffers
         }
 
         public void WriteLine(string line)
-            => Console.WriteLine(line);
+            => Console.Out.WriteLineAsync(line);
     }
 
 }

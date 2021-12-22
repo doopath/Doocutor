@@ -26,7 +26,7 @@ namespace DynamicEditor.Core
 
         static DeveloperMonitor()
         {
-             ColorScheme = Settings.ColorScheme;
+            ColorScheme = Settings.ColorScheme;
         }
 
         public DeveloperMonitor(int topOffset, int positionFromTop,

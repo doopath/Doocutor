@@ -35,7 +35,7 @@ namespace DynamicEditor.Core.FlowHandlers
                 ConsoleKeyInfo input = _inputFlowIterator.Next();
                 string keyCombination = input.ToKeyCombination();
                 string keySymbol = input.KeyChar.ToString();
-                
+
                 string command = _keyCombinationTranslating.GetCommandFor(keyCombination);
                 command = command is "" ? keySymbol : command;
                 command = IsMatchedWithAPattern(keyCombination) ? GetCommand(keyCombination) : command;
@@ -56,7 +56,7 @@ namespace DynamicEditor.Core.FlowHandlers
                 else
                 {
                     _commandHandler.Handle(command);
-                    CuiRender.RenderAsync();
+                    CuiRender.Render();
                 }
             }
 
