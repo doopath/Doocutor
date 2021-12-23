@@ -65,7 +65,7 @@ public abstract class Widget : IWidget
         }
     }
 
-    public virtual void OnMounted([NotNull] Action unmount, [NotNull] Action render)
+    public virtual void OnMounted(Action unmount, Action render)
     {
         while (true)
         {
@@ -77,7 +77,7 @@ public abstract class Widget : IWidget
 
             try
             {
-                render.Invoke();
+                render();
             }
             catch (ArgumentOutOfRangeException exc)
             {
@@ -180,7 +180,7 @@ public abstract class Widget : IWidget
     protected virtual void AddBorder()
     {
         for (int i = 0; i < Width; i++)
-            
+
             (Items![0][i], Items[^1][i]) = (_horizontalSymbol!, _horizontalSymbol!);
 
         for (int i = 0; i < Height; i++)

@@ -38,7 +38,7 @@ namespace DynamicEditor.Core.Scenes
 
             for (var i = 0; i < bottomEdge; i++)
                 buffer[i] = output[i];
-
+            
             return buffer.ToList();
         }
 
@@ -60,6 +60,7 @@ namespace DynamicEditor.Core.Scenes
         private List<string> GetOutput(string code, int topOffset)
             => code
                 .Split("\n")[topOffset..]
+                .AsParallel()
                 .Select(l => l + (l.Length < TargetWidth
                     ? new string(' ', TargetWidth!.Value - l.Length)
                     : string.Empty))

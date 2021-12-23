@@ -240,6 +240,14 @@ public class TextBuffer : ITextBuffer
 
     #endregion
 
+    public virtual void PasteText(string text)
+    {
+        string[] lines = text.Split("\n");
+
+        foreach (string line in lines.Reverse())
+            _sourceText.Insert(CursorPositionFromTop, line);
+    }
+
     public virtual void AppendLine(string newPart)
     {
         int initialCursorPositionFromLeft = CursorPositionFromLeft;

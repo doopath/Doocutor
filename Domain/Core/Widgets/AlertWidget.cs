@@ -4,7 +4,7 @@ using Pastel;
 
 namespace Domain.Core.Widgets;
 
-public class AlertWidget : Widget, IWidget
+public sealed class AlertWidget : Widget
 {
     public AlertWidget(string text, AlertLevel level = AlertLevel.NOTICE)
     {

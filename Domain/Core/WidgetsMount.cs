@@ -17,15 +17,15 @@ public static class WidgetsMount
         OutBuffer = new StandardConsoleOutBuffer();
     }
 
-    public static void Mount(IWidget renderableObject)
+    public static void Mount(IWidget widget)
     {
-        var mounted = OnSceneUpdated(renderableObject.OnSceneUpdated);
+        var mounted = OnSceneUpdated(widget.OnSceneUpdated);
         Scene!.SceneUpdated += mounted;
         Refresh!.Invoke();
-        renderableObject.OnMounted(() => Unmount(mounted), Refresh!);
+        widget.OnMounted(() => Unmount(mounted), Refresh!);
     }
 
-    public static void Unmount(EventHandler<SceneUpdatedEventArgs> mounted)
+    private static void Unmount(EventHandler<SceneUpdatedEventArgs> mounted)
     {
         Scene!.SceneUpdated -= mounted;
         Refresh!.Invoke();

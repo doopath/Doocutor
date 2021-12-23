@@ -2,6 +2,7 @@
 using CommandLine;
 using Domain.Core;
 using Domain.Core.Exceptions;
+using Domain.Core.Widgets;
 using Domain.Options;
 using DynamicEditor;
 using NLog;
@@ -21,8 +22,10 @@ namespace Doocutor
         {
             try
             {
+                Console.CancelKeyPress += (sender, ea)
+                    => ErrorHandling.HandleInterruptedExecutionException(
+                           new("You have came out of the Doocutor! Good bye!"), End);
                 Start();
-
                 new DynamicEditorSetup().Run(ParseCommandLineArguments(args));
             }
             catch (InterruptedExecutionException error)

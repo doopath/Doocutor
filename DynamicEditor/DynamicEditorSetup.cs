@@ -90,7 +90,6 @@ public class DynamicEditorSetup : IEditorSetup
         {
             OutBufferSizeHandler.Stop();
             OutBuffer.CursorVisible = true;
-
             throw;
         }
     }

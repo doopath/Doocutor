@@ -2,20 +2,23 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text.RegularExpressions;
+using System.Threading;
+using Domain.Core;
 using Domain.Core.CommandHandlers;
 using Domain.Core.Exceptions;
 using Domain.Core.FlowHandlers;
 using Domain.Core.Iterators;
+using Domain.Core.Widgets;
 
 namespace DynamicEditor.Core.FlowHandlers
 {
-    internal sealed class DynamicKeyFlowHandler : IInputFlowHandler
+    internal class DynamicKeyFlowHandler : IInputFlowHandler
     {
-        private readonly IInputFlowIterator _inputFlowIterator;
-        private readonly ICommandHandler _commandHandler;
-        private readonly KeyCombinationTranslating _keyCombinationTranslating;
+        protected readonly IInputFlowIterator _inputFlowIterator;
+        protected readonly ICommandHandler _commandHandler;
+        protected readonly KeyCombinationTranslating _keyCombinationTranslating;
 
-        public bool IsClosed { get; private set; }
+        public virtual bool IsClosed { get; private set; }
 
         public DynamicKeyFlowHandler(
             IInputFlowIterator iterator,
@@ -28,9 +31,9 @@ namespace DynamicEditor.Core.FlowHandlers
             IsClosed = false;
         }
 
-        public void StartHandling()
+        public virtual void StartHandling()
         {
-            while (_inputFlowIterator.HasNext())
+            while (_inputFlowIterator.HasNext() && IsClosed is false)
             {
                 ConsoleKeyInfo input = _inputFlowIterator.Next();
                 string keyCombination = input.ToKeyCombination();
@@ -52,7 +55,12 @@ namespace DynamicEditor.Core.FlowHandlers
                     catch (OutOfCodeBufferSizeException) { }
                 }
                 else if (command == ":quit")
-                    _commandHandler.Handle(command);
+                {
+                    WidgetsMount.Mount(new DialogWidget(
+                        text: "Are you sure you want to quit from the Doocutor?",
+                        onCancel: () => { },
+                        onOk: () => _commandHandler.Handle(command)));
+                }
                 else
                 {
                     _commandHandler.Handle(command);
@@ -60,25 +68,36 @@ namespace DynamicEditor.Core.FlowHandlers
                 }
             }
 
-            IsClosed = true;
+            Close();
         }
 
-        private bool IsMatchedWithAPattern(string input)
+        public virtual void StopHandling()
+            => IsClosed = true;
+
+        public virtual void Open()
+            => IsClosed = false;
+
+        protected virtual void Close()
+            => IsClosed = true;
+
+        protected virtual bool IsMatchedWithAPattern(string input)
             => KeyCombinationsMap.Map.Keys
                 .Any(key => Regex.IsMatch(input, key, RegexOptions.IgnoreCase));
 
-        private string GetCommand(string input)
+        protected virtual string GetCommand(string input)
         {
-            foreach (var key in KeyCombinationsMap.Map.Keys)
-            {
-                if (Regex.Match(input, key).Success)
-                    return KeyCombinationsMap.Map[key];
-            }
+            IEnumerable<string> matchedKeys = KeyCombinationsMap
+                .Map
+                .Keys
+                .Where(key => Regex.Match(input, key).Success);
+            
+            foreach (var key in matchedKeys)
+                return KeyCombinationsMap.Map[key];
 
             return string.Empty;
         }
 
-        private bool IsTheAppendLineCommand(string command)
+        protected virtual bool IsTheAppendLineCommand(string command)
             => command == ":appendLine ";
     }
 }

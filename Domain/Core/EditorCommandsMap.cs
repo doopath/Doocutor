@@ -14,6 +14,7 @@ public static class EditorCommandsMap
                 new(":write", EditorCommands.ExecuteWriteCommand),
                 new(":writeAfter", EditorCommands.ExecuteWriteAfterCommand),
                 new(":appendLine", EditorCommands.ExecuteAppendLineCommand),
+                new(":pasteClipboardContent", EditorCommands.ExecutePasteTextCommand),
                 new(":enter", EditorCommands.ExecuteEnterCommand),
                 new(":backspace", EditorCommands.ExecuteBackspaceCommand),
                 new(":using", EditorCommands.ExecuteUsingCommand),

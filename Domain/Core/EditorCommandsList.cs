@@ -11,11 +11,11 @@ namespace Domain.Core;
 
 public static class EditorCommands
 {
-    public static ITextBuffer? SourceCodeBuffer { get; set; }
+    public static ITextBuffer? SourceTextBuffer { get; set; }
 
     public static void InitializeCodeBuffer(ref ITextBuffer buffer)
     {
-        SourceCodeBuffer = buffer;
+        SourceTextBuffer = buffer;
     }
 
     #region Commands
@@ -28,63 +28,63 @@ public static class EditorCommands
     public static void ExecuteViewCommand(EditorCommand command)
     {
         Console.Clear();
-        Console.WriteLine(SourceCodeBuffer!.CodeWithLineNumbers + "\n");
+        Console.WriteLine(SourceTextBuffer!.CodeWithLineNumbers + "\n");
     }
 
     public static void ExecuteWriteAfterCommand(EditorCommand command)
-        => SourceCodeBuffer!.WriteAfter(command.GetFirstArgumentAsAnInteger(), command.GetArgumentsSinceSecondAsALine());
+        => SourceTextBuffer!.WriteAfter(command.GetFirstArgumentAsAnInteger(), command.GetArgumentsSinceSecondAsALine());
 
     public static void ExecuteClearCommand(EditorCommand command)
         => Console.Clear();
 
     public static void ExecuteUsingCommand(EditorCommand command)
     {
-        if (SourceCodeBuffer!.Code.Trim().StartsWith("namespace"))
-            SourceCodeBuffer.WriteBefore(1, "");
+        if (SourceTextBuffer!.Code.Trim().StartsWith("namespace"))
+            SourceTextBuffer.WriteBefore(1, "");
 
-        SourceCodeBuffer.WriteBefore(1, $"using {command.GetArguments()[0]};");
+        SourceTextBuffer.WriteBefore(1, $"using {command.GetArguments()[0]};");
     }
 
     public static void ExecuteCopyCommand(EditorCommand command)
-        => CopyText(SourceCodeBuffer!.GetLineAt(command.GetFirstArgumentAsAnInteger()));
+        => CopyText(SourceTextBuffer!.GetLineAt(command.GetFirstArgumentAsAnInteger()));
 
     public static void ExecuteCopyAllCommand(EditorCommand command)
-        => CopyText(SourceCodeBuffer!.Code);
+        => CopyText(SourceTextBuffer!.Code);
 
     public static void ExecuteCopyBlockCommand(EditorCommand command)
-        => CopyText(string.Join("\n", SourceCodeBuffer!.GetCodeBlock(
+        => CopyText(string.Join("\n", SourceTextBuffer!.GetCodeBlock(
             new TextBlockPointer(int.Parse(command.GetArguments()[0]), int.Parse(command.GetArguments()[1])))));
 
     public static void ExecuteRemoveCommand(EditorCommand command)
     {
-        CopyText(SourceCodeBuffer!.GetLineAt(command.GetFirstArgumentAsAnInteger()));
-        SourceCodeBuffer.RemoveLineAt(command.GetFirstArgumentAsAnInteger());
+        CopyText(SourceTextBuffer!.GetLineAt(command.GetFirstArgumentAsAnInteger()));
+        SourceTextBuffer.RemoveLineAt(command.GetFirstArgumentAsAnInteger());
     }
 
     public static void ExecuteRemoveBlockCommand(EditorCommand command)
     {
         var arguments = command.GetArguments();
         var pointer = new TextBlockPointer(int.Parse(arguments[0]), int.Parse(arguments[1]));
-        SourceCodeBuffer!.RemoveTextBlock(pointer);
+        SourceTextBuffer!.RemoveTextBlock(pointer);
     }
 
     public static void ExecuteReplaceCommand(EditorCommand command)
     {
         var arguments = command.GetArguments();
-        SourceCodeBuffer!.ReplaceLineAt(int.Parse(arguments[0]), command.GetArgumentsSinceSecondAsALine());
+        SourceTextBuffer!.ReplaceLineAt(int.Parse(arguments[0]), command.GetArgumentsSinceSecondAsALine());
     }
 
     public static void ExecuteWriteCommand(EditorCommand command)
-        => SourceCodeBuffer!.Write(command.GetArgumentsAsALine());
+        => SourceTextBuffer!.Write(command.GetArgumentsAsALine());
 
     public static void ExecuteSetCommand(EditorCommand command)
-        => SourceCodeBuffer!.SetCursorPositionFromTopAt(int.Parse(command.GetArguments()[0]));
+        => SourceTextBuffer!.SetCursorPositionFromTopAt(int.Parse(command.GetArguments()[0]));
 
     public static void ExecuteShowPosCommand(EditorCommand command)
     {
         Console.Write("Current cursor position: ");
         OutputColorizing.ColorizeForeground(ConsoleColor.Cyan,
-           () => Console.Write(SourceCodeBuffer!.CursorPositionFromTop + "\n"));
+           () => Console.Write(SourceTextBuffer!.CursorPositionFromTop + "\n"));
     }
 
     public static void ExecuteHelpCommand(EditorCommand command)
@@ -94,24 +94,31 @@ public static class EditorCommands
         => Console.WriteLine(Info.Description);
 
     public static void ExecuteAppendLineCommand(EditorCommand command)
-        => SourceCodeBuffer!.AppendLine(string.Join(" ", command.Content.Split(" ")[1..]));
+        => SourceTextBuffer!.AppendLine(string.Join(" ", command.Content.Split(" ")[1..]));
 
     public static void ExecuteEnterCommand(EditorCommand command)
-        => SourceCodeBuffer!.Enter();
+        => SourceTextBuffer!.Enter();
 
     public static void ExecuteBackspaceCommand(EditorCommand command)
-        => SourceCodeBuffer!.Backspace();
+        => SourceTextBuffer!.Backspace();
 
     public static void ExecuteTabCommand(EditorCommand command)
-        => SourceCodeBuffer!.AppendLine("    ");
+        => SourceTextBuffer!.AppendLine("    ");
 
     public static void ExecuteDoNothingCommand(EditorCommand command) { }
 
     public static void ExecuteUndoCommand(EditorCommand command)
-        => SourceCodeBuffer!.Undo();
+        => SourceTextBuffer!.Undo();
 
     public static void ExecuteRedoCommand(EditorCommand command)
-        => SourceCodeBuffer!.Redo();
+        => SourceTextBuffer!.Redo();
+
+    public static void ExecutePasteTextCommand(EditorCommand command)
+    {
+        string clipboardContent = new Clipboard().GetText() ?? "";
+
+        SourceTextBuffer!.PasteText(clipboardContent);
+    }
 
     #endregion
 
