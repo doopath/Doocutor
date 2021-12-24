@@ -14,4 +14,8 @@
         <ProjectReference Include="../Domain/Domain.csproj" />
     </ItemGroup>
 
+    <ItemGroup>
+      <None Remove="C:\Users\doopath\.nuget\packages\fsharp.core\6.0.1\contentFiles\any\netstandard2.1\FSharp.Core.xml" />
+    </ItemGroup>
+
 </Project>
