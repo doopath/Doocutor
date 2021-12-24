@@ -11,7 +11,7 @@ using Domain.Core.Widgets;
 
 namespace DynamicEditor.Core.FlowHandlers
 {
-    internal class DynamicKeyFlowHandler : IInputFlowHandler
+    public class DynamicKeyFlowHandler : IInputFlowHandler
     {
         protected readonly IInputFlowIterator _inputFlowIterator;
         protected readonly ICommandHandler _commandHandler;

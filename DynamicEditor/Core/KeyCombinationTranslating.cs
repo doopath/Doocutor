@@ -4,7 +4,7 @@ using DynamicEditor.Core.Exceptions;
 
 namespace DynamicEditor.Core
 {
-    internal class KeyCombinationTranslating
+    public class KeyCombinationTranslating
     {
         private readonly Dictionary<string, string> _keyCombinationsMap;
 
