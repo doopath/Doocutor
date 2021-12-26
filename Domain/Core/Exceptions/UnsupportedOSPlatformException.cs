@@ -1,6 +1,6 @@
 using System;
 
-namespace Domain.Core.Exceptions
+namespace Domain.Core.Exceptions.NotExitExceptions
 {
     public class UnsupportedOSPlatformException : Exception
     {

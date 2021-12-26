@@ -6,6 +6,8 @@
 
         string TextForeground { get; init; }
         string TextBackground { get; init; }
+        string TextSelectionForeground { get; init; }
+        string TextSelectionBackground { get; init; }
 
         string CursorForeground { get; init; }
         string CursorBackground { get; init; }

@@ -2,12 +2,14 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text.RegularExpressions;
+using CommandLine;
 using Domain.Core;
 using Domain.Core.CommandHandlers;
-using Domain.Core.Exceptions;
+using Domain.Core.Exceptions.NotExitExceptions;
 using Domain.Core.FlowHandlers;
 using Domain.Core.Iterators;
 using Domain.Core.Widgets;
+using Spectre.Console.Rendering;
 
 namespace DynamicEditor.Core.FlowHandlers
 {
@@ -51,14 +53,7 @@ namespace DynamicEditor.Core.FlowHandlers
                     {
                         MovementKeysMap.Map[keyCombination]();
                     }
-                    catch (OutOfCodeBufferSizeException) { }
-                }
-                else if (command == ":quit")
-                {
-                    WidgetsMount.Mount(new DialogWidget(
-                        text: "Are you sure you want to quit from the Doocutor?",
-                        onCancel: () => { },
-                        onOk: () => _commandHandler.Handle(command)));
+                    catch (OutOfTextBufferSizeException) { }
                 }
                 else
                 {

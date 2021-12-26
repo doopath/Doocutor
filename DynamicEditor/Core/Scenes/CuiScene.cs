@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using Domain.Core.Exceptions;
+using Domain.Core.Exceptions.NotExitExceptions;
 using Domain.Core.Scenes;
 
 namespace DynamicEditor.Core.Scenes

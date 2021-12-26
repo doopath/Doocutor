@@ -1,6 +1,6 @@
 using System;
 using System.Diagnostics.CodeAnalysis;
-using Domain.Core.Exceptions;
+using Domain.Core.Exceptions.NotExitExceptions;
 using Domain.Core.Widgets;
 using NLog;
 
@@ -17,11 +17,20 @@ public class ErrorHandling
         ConsoleLogger = LogManager.GetLogger("ErrorHandlerConsoleLogger");
     }
 
-    public static void ShowError([NotNull] Exception error)
+    public static void ShowError(Exception error)
         => OutputColorizing.ColorizeForeground(ConsoleColor.Red, () =>
         {
             FileLogger.Debug($"Thrown an error: \"{error.Message}\"\n {error.StackTrace} \n");
             string alertMessage = $"INTERNAL ERROR: {error.Message} " +
+                $"(see the logfile in {Settings.ApplicationPath.Replace(@"\", "/")}/logs/doocutor.log)";
+            WidgetsMount.Mount(new AlertWidget(alertMessage, AlertLevel.ERROR));
+        });
+    
+    public static void ShowError(string errorMessage)
+        => OutputColorizing.ColorizeForeground(ConsoleColor.Red, () =>
+        {
+            FileLogger.Debug($"Thrown an error: \"{errorMessage}\"\n");
+            string alertMessage = $"INTERNAL ERROR: {errorMessage} " + 
                 $"(see the logfile in {Settings.ApplicationPath.Replace(@"\", "/")}/logs/doocutor.log)";
             WidgetsMount.Mount(new AlertWidget(alertMessage, AlertLevel.ERROR));
         });

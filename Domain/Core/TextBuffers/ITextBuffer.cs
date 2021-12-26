@@ -26,10 +26,10 @@ public interface ITextBuffer
     void Undo();
     void Redo();
     string GetLineAt(int lineNumber);
-    string[] GetCodeBlock(ITextBlockPointer pointer);
+    string[] GetTextBlock(ITextBlockPointer pointer);
     uint HistoryLimit { get; set; }
     string CodeWithLineNumbers { get; }
-    string Code { get; }
+    string Text { get; }
     string CurrentLine { get; }
     string[] Lines { get; }
     int Size { get; }

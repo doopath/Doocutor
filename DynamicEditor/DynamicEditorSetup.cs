@@ -1,12 +1,13 @@
 ﻿using Domain.Core;
 using Domain.Core.ColorSchemes;
 using Domain.Core.CommandHandlers;
-using Domain.Core.Exceptions;
+using Domain.Core.Exceptions.NotExitExceptions;
 using Domain.Core.FlowHandlers;
 using Domain.Core.Iterators;
 using Domain.Core.OutBuffers;
 using Domain.Core.Scenes;
 using Domain.Core.TextBuffers;
+using Domain.Core.Widgets;
 using Domain.Options;
 using DynamicEditor.Core;
 using DynamicEditor.Core.CommandHandlers;
@@ -19,16 +20,16 @@ namespace DynamicEditor;
 public class DynamicEditorSetup : IEditorSetup
 {
     public int? BufferSizeUpdateRate { get; set; }
-    public uint? SourceCodeBufferHistoryLimit { get; set; }
-    public ITextBuffer? TextBuffer { get; set; }
-    public IInputFlowIterator? Iterator { get; set; }
-    public ICommandHandler? CommandHandler { get; set; }
-    public IOutBuffer? OutBuffer { get; set; }
-    public IScene? CuiScene { get; set; }
-    public OutBufferSizeHandler? OutBufferSizeHandler { get; set; }
-    public IInputFlowHandler? InputFlowHandler { get; set; }
-    public IColorScheme? ColorScheme { get; set; }
-    public ColorSchemesRepository? ColorSchemesRepository { get; set; }
+    public uint SourceCodeBufferHistoryLimit { get; set; }
+    public ITextBuffer TextBuffer { get; set; }
+    public IInputFlowIterator Iterator { get; set; }
+    public ICommandHandler CommandHandler { get; set; }
+    public IOutBuffer OutBuffer { get; set; }
+    public IScene CuiScene { get; set; }
+    public OutBufferSizeHandler OutBufferSizeHandler { get; set; }
+    public IInputFlowHandler InputFlowHandler { get; set; }
+    public IColorScheme ColorScheme { get; set; }
+    public ColorSchemesRepository ColorSchemesRepository { get; set; }
 
     public DynamicEditorSetup()
     {
@@ -40,9 +41,8 @@ public class DynamicEditorSetup : IEditorSetup
 
         BufferSizeUpdateRate = 300;
         SourceCodeBufferHistoryLimit = 10000;
-        TextBuffer = new TextBuffer(SourceCodeBufferHistoryLimit!.Value);
-        ITextBuffer sourceCodeBuffer = TextBuffer;
-        EditorCommands.InitializeCodeBuffer(ref sourceCodeBuffer);
+        TextBuffer = new TextBuffer(SourceCodeBufferHistoryLimit);
+        EditorCommands.InitializeCodeBuffer(TextBuffer);
         Iterator = new DynamicConsoleInputFlowIterator();
         CommandHandler = new DynamicCommandHandler();
         OutBuffer = new StandardConsoleOutBuffer();
@@ -90,6 +90,7 @@ public class DynamicEditorSetup : IEditorSetup
         {
             OutBufferSizeHandler.Stop();
             OutBuffer.CursorVisible = true;
+            CuiRender.Clear();
             throw;
         }
     }

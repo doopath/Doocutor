@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using Domain.Core.Commands;
-using Domain.Core.Exceptions;
+using Domain.Core.Exceptions.NotExitExceptions;
 
 namespace Domain.Core;
 
@@ -13,7 +13,6 @@ public class EditorCommandExecutionProvider
     /// <summary>
     /// Get a function (as an action) for a given command to execute that.
     /// </summary>
-    /// <exception cref="UnsupportedCommandException">
     /// Throws that if a given command is not included in the list of supported commands.
     /// </exception>
     public static Action GetExecutingFunction(EditorCommand command)

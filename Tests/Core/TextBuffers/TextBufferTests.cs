@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
-using Domain.Core.Exceptions;
+using Domain.Core.Exceptions.NotExitExceptions;
 using Domain.Core.TextBufferContents;
 using Domain.Core.TextBuffers;
 using Domain.Core.TextBuffers.TextPointers;
@@ -117,7 +117,7 @@ namespace Tests.Core.TextBuffers
         [Test]
         public void CodeTest()
         {
-            var code = _codeBuffer!.Code;
+            var code = _codeBuffer!.Text;
             var supposedCode = string.Join("\n", _codeBufferContent!.SourceCode);
 
             var isTheCodeCorrect = code == supposedCode;
@@ -163,7 +163,7 @@ namespace Tests.Core.TextBuffers
                     .SourceCode
                     .Skip(pointer.StartLineNumber - 1)
                     .Take(pointer.EndLineNumber - pointer.StartLineNumber));
-                var codeBlock = string.Join("", _codeBuffer!.GetCodeBlock(pointer));
+                var codeBlock = string.Join("", _codeBuffer!.GetTextBlock(pointer));
 
                 var isCodeBlockCorrect = codeBlock == supposedCodeBlock;
 
@@ -189,10 +189,10 @@ namespace Tests.Core.TextBuffers
 
                 _codeBuffer!.RemoveTextBlock(pointer);
 
-                var isTheCodeCorrect = _codeBuffer.Code == supposedCode;
+                var isTheCodeCorrect = _codeBuffer.Text == supposedCode;
 
                 Assert.True(isTheCodeCorrect,
-                    $"The gotten code after removing line since {start} to {end} isn't correct! \n{_codeBuffer.Code}\n!=\n{supposedCode}");
+                    $"The gotten code after removing line since {start} to {end} isn't correct! \n{_codeBuffer.Text}\n!=\n{supposedCode}");
 
                 Setup();
             }
@@ -216,7 +216,7 @@ namespace Tests.Core.TextBuffers
                 _codeBuffer!.RemoveLineAt(lineNumber);
                 supposedCodeLines.RemoveAt(targetIndex);
 
-                var code = _codeBuffer.Code;
+                var code = _codeBuffer.Text;
                 var supposedCode = string.Join("\n", supposedCodeLines);
 
                 var isTheCodeCorrect = code == supposedCode;
@@ -241,7 +241,7 @@ namespace Tests.Core.TextBuffers
                 {
                     _codeBuffer!.RemoveLineAt(lineNumber);
                 }
-                catch (OutOfCodeBufferSizeException)
+                catch (OutOfTextBufferSizeException)
                 {
                     Checkbox.TurnOn();
                 }
@@ -318,7 +318,7 @@ namespace Tests.Core.TextBuffers
                 _codeBuffer!.ReplaceLineAt(lineNumber, newLine);
 
                 var supposedCode = string.Join("\n", supposedLines);
-                var code = _codeBuffer.Code;
+                var code = _codeBuffer.Text;
 
                 var isTheCodeCorrect = code == supposedCode;
 
@@ -345,7 +345,7 @@ namespace Tests.Core.TextBuffers
                 _codeBuffer!.Write(line);
 
                 var supposedCode = string.Join("\n", supposedLines);
-                var code = _codeBuffer.Code;
+                var code = _codeBuffer.Text;
 
                 var isTheCodeCorrect = code == supposedCode;
 
@@ -371,7 +371,7 @@ namespace Tests.Core.TextBuffers
                 _codeBuffer!.WriteAfter(lineNumber, line);
 
                 var supposedCode = string.Join("\n", supposedLines);
-                var code = _codeBuffer.Code;
+                var code = _codeBuffer.Text;
 
                 var isTheCodeCorrect = code == supposedCode;
 
@@ -398,7 +398,7 @@ namespace Tests.Core.TextBuffers
                 _codeBuffer!.WriteBefore(lineNumber, line);
 
                 var supposedCode = string.Join("\n", supposedLines);
-                var code = _codeBuffer.Code;
+                var code = _codeBuffer.Text;
 
                 var isTheCodeCorrect = code == supposedCode;
 

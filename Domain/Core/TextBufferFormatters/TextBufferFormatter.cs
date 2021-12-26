@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using Domain.Core.Exceptions;
+using Domain.Core.Exceptions.NotExitExceptions;
 
 namespace Domain.Core.TextBufferFormatters;
 
@@ -99,6 +99,6 @@ public class TextBufferFormatter : ITextBufferFormatter
     private void CheckIfLineExistsAt(int lineNumber)
     {
         if (SourceCode.Count < lineNumber || lineNumber < 1)
-            throw new OutOfCodeBufferSizeException($"Line number {lineNumber} does not exist!");
+            throw new OutOfTextBufferSizeException($"Line number {lineNumber} does not exist!");
     }
 }

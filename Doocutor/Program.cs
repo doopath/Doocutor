@@ -1,7 +1,7 @@
 ﻿using System;
 using CommandLine;
 using Domain.Core;
-using Domain.Core.Exceptions;
+using Domain.Core.Exceptions.NotExitExceptions;
 using Domain.Core.Widgets;
 using Domain.Options;
 using DynamicEditor;

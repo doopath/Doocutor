@@ -8,6 +8,9 @@
         #region Text
         public string TextForeground { get; init; }
         public string TextBackground { get; init; }
+        public string TextSelectionForeground { get; init; }        
+        public string TextSelectionBackground { get; init; }
+
         #endregion
 
         #region Cursor
@@ -41,6 +44,8 @@
 
             TextForeground = "#555555";
             TextBackground = "";
+            TextSelectionForeground = "#EEEEEE";
+            TextSelectionBackground = "#555555";
 
             CursorForeground = "#EEEEEE";
             CursorBackground = "#555555";

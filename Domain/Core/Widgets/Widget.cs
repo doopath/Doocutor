@@ -22,15 +22,17 @@ public abstract class Widget : IWidget
     [Range(5, int.MaxValue)]
     public virtual int Height { get; protected set; }
 
-    public virtual string? Text { get; init; }
-    public event Action<WidgetAction>? KeyPressed;
+    public virtual string? Text { get; set; }
+    public virtual event Action<WidgetAction>? KeyPressed;
     public virtual CursorPosition CursorPosition { get; protected set; }
     #endregion
 
     #region Protected fields and properties
     protected virtual float RelativeWidgetWidth { get; set; } = 0.5f;
     protected virtual float RelativeWidgetHeight { get; set; } = 0.5f;
-    protected virtual List<string> Lines => Items!.Select(sublist => string.Join("", sublist)).ToList();
+    protected virtual List<string> Lines => Items!
+        .Select(sublist => string.Join("", sublist))
+        .ToList();
     protected virtual List<List<string>>? Items { get; set; }
     protected int _activeButtonIndex;
 
@@ -38,6 +40,10 @@ public abstract class Widget : IWidget
     {
         new KeyValuePair<string, WidgetAction>("OK", WidgetAction.OK),
     });
+
+    protected int? _textRightEdge;
+    protected int? _textLeftEdge;
+    protected int? _textBottomEdge;
 
     protected string? _textForegroundColor;
     protected string? _horizontalSymbol;
@@ -50,7 +56,7 @@ public abstract class Widget : IWidget
     #endregion
 
     #region Public methods
-    public virtual void OnSceneUpdated([NotNull] List<string> scene)
+    public virtual void OnSceneUpdated(List<string> scene)
     {
         Refresh();
 
@@ -67,6 +73,8 @@ public abstract class Widget : IWidget
 
     public virtual void OnMounted(Action unmount, Action render)
     {
+        render();
+        
         while (true)
         {
             if (ControlButtons())
@@ -111,7 +119,7 @@ public abstract class Widget : IWidget
         Items!.Clear();
         UpdateWidth();
         UpdateHeight();
-        FillItems();
+        FillByEmptyItems();
         AddBorder();
         AddButtons();
         AddText();
@@ -123,7 +131,7 @@ public abstract class Widget : IWidget
     protected virtual void UpdateHeight()
         => Height = (int)(Settings.OutBuffer!.Height * RelativeWidgetHeight);
 
-    protected virtual void FillItems()
+    protected virtual void FillByEmptyItems()
     {
         for (int i = 0; i < Height; i++)
         {
@@ -140,9 +148,9 @@ public abstract class Widget : IWidget
             .ToCharArray()
             .Select(c => c.ToString().Pastel(_textForegroundColor))
             .ToArray();
-        int leftEdge = 2;
-        int rightEdge = Width - 2;
-        int bottomEdge = Height - 3;
+        int leftEdge = _textLeftEdge!.Value;
+        int rightEdge = Width - _textRightEdge!.Value;
+        int bottomEdge = Height - _textBottomEdge!.Value;
         int widgetItemsTopPointer = 1;
         int maxLineLength = rightEdge - leftEdge;
 

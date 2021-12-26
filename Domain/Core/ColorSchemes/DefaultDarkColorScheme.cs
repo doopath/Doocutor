@@ -7,6 +7,8 @@ public record DefaultDarkColorScheme : IColorScheme
     #region Text
     public string TextForeground { get; init; }
     public string TextBackground { get; init; }
+    public string TextSelectionForeground { get; init; }        
+    public string TextSelectionBackground { get; init; }
     #endregion
 
     #region Cursor
@@ -40,6 +42,8 @@ public record DefaultDarkColorScheme : IColorScheme
 
         TextForeground = "#A9B7C6";
         TextBackground = "";
+        TextSelectionForeground = "#2B2B2B";
+        TextSelectionBackground = "#A9B7C6";
 
         CursorForeground = "#2B2B2B";
         CursorBackground = "#A9B7C6";

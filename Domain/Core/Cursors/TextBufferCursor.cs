@@ -1,5 +1,5 @@
 ﻿using System.Collections.Generic;
-using Domain.Core.Exceptions;
+using Domain.Core.Exceptions.NotExitExceptions;
 using Domain.Core.TextBufferFormatters;
 
 namespace Domain.Core.Cursors;
@@ -97,7 +97,7 @@ public sealed class TextBufferCursor : ICursor
     private void CheckIfLineExistsAt(int lineNumber)
     {
         if (_sourceText.Count < lineNumber || lineNumber < 1)
-            throw new OutOfCodeBufferSizeException($"Line number {lineNumber} does not exist!");
+            throw new OutOfTextBufferSizeException($"Line number {lineNumber} does not exist!");
     }
 
 

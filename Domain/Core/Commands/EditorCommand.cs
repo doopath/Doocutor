@@ -1,5 +1,5 @@
 ﻿using System;
-using Domain.Core.Exceptions;
+using Domain.Core.Exceptions.NotExitExceptions;
 
 namespace Domain.Core.Commands;
 

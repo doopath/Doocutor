@@ -1,10 +1,10 @@
 using System;
 using Domain.Core.Cache;
 using Domain.Core.Commands;
-using Domain.Core.Exceptions;
+using Domain.Core.Exceptions.NotExitExceptions;
 using Domain.Core.TextBuffers;
 using Domain.Core.TextBuffers.TextPointers;
-
+using Domain.Core.Widgets;
 using TextCopy;
 
 namespace Domain.Core;
@@ -13,7 +13,7 @@ public static class EditorCommands
 {
     public static ITextBuffer? SourceTextBuffer { get; set; }
 
-    public static void InitializeCodeBuffer(ref ITextBuffer buffer)
+    public static void InitializeCodeBuffer(ITextBuffer buffer)
     {
         SourceTextBuffer = buffer;
     }
@@ -22,7 +22,11 @@ public static class EditorCommands
     public static void ExecuteQuitCommand(EditorCommand command)
     {
         ExecuteClearCommand(command);
-        throw new InterruptedExecutionException("You have came out of the doocutor! Good bye!");
+        WidgetsMount.Mount(new DialogWidget(
+            text: "Are you sure you want to quit from the Doocutor?",
+            onCancel: () => { },
+            onOk: () => throw new InterruptedExecutionException(
+                "You have came out of the doocutor! Good bye!")));
     }
 
     public static void ExecuteViewCommand(EditorCommand command)
@@ -39,7 +43,7 @@ public static class EditorCommands
 
     public static void ExecuteUsingCommand(EditorCommand command)
     {
-        if (SourceTextBuffer!.Code.Trim().StartsWith("namespace"))
+        if (SourceTextBuffer!.Text.Trim().StartsWith("namespace"))
             SourceTextBuffer.WriteBefore(1, "");
 
         SourceTextBuffer.WriteBefore(1, $"using {command.GetArguments()[0]};");
@@ -49,10 +53,10 @@ public static class EditorCommands
         => CopyText(SourceTextBuffer!.GetLineAt(command.GetFirstArgumentAsAnInteger()));
 
     public static void ExecuteCopyAllCommand(EditorCommand command)
-        => CopyText(SourceTextBuffer!.Code);
+        => CopyText(SourceTextBuffer!.Text);
 
     public static void ExecuteCopyBlockCommand(EditorCommand command)
-        => CopyText(string.Join("\n", SourceTextBuffer!.GetCodeBlock(
+        => CopyText(string.Join("\n", SourceTextBuffer!.GetTextBlock(
             new TextBlockPointer(int.Parse(command.GetArguments()[0]), int.Parse(command.GetArguments()[1])))));
 
     public static void ExecuteRemoveCommand(EditorCommand command)

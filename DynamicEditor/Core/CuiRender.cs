@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Runtime.Versioning;
 using System.Threading.Tasks;
 using Domain.Core;
 using Domain.Core.ColorSchemes;
@@ -97,7 +98,7 @@ public static class CuiRender
     }
 
     public static void Render()
-    {
+    {   
         SetScene();
         Render(Scene!.CurrentScene!);
     }

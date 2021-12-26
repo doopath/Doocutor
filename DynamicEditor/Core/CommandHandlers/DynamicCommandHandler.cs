@@ -2,7 +2,7 @@
 using Domain.Core.CommandHandlers;
 using Domain.Core.CommandRecognizers;
 using Domain.Core.Commands;
-using Domain.Core.Exceptions;
+using Domain.Core.Exceptions.NotExitExceptions;
 using Domain.Core.Executors;
 
 
@@ -55,7 +55,7 @@ namespace DynamicEditor.Core.CommandHandlers
 
             if (recognizedCommand is null)
             {
-                ErrorHandling.ShowError(new CommandRecognizingException(exceptionMessage));
+                ErrorHandling.ShowError(exceptionMessage);
                 return;
             }
 

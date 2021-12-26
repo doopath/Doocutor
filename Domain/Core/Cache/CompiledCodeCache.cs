@@ -2,7 +2,7 @@
 using System.Linq;
 using System.Security.Cryptography;
 using System.Text;
-using Domain.Core.Exceptions;
+using Domain.Core.Exceptions.NotExitExceptions;
 
 namespace Domain.Core.Cache
 {

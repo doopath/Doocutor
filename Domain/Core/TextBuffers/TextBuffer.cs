@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using Domain.Core.Cursors;
-using Domain.Core.Exceptions;
+using Domain.Core.Exceptions.NotExitExceptions;
 using Domain.Core.TextBufferContents;
 using Domain.Core.TextBufferFormatters;
 using Domain.Core.TextBufferHistories;
@@ -92,7 +92,7 @@ public class TextBuffer : ITextBuffer
     /// <summary>
     /// Get bare code. Without line numbers and '\n' symbols.
     /// </summary>
-    public virtual string Code => _codeFormatter.GetSourceCode();
+    public virtual string Text => _codeFormatter.GetSourceCode();
 
     /// <summary>
     /// Get bare code split by line ends.
@@ -105,7 +105,7 @@ public class TextBuffer : ITextBuffer
     public virtual string GetLineAt(int lineNumber)
         => _codeFormatter.GetLineAt(lineNumber);
 
-    public virtual string[] GetCodeBlock(ITextBlockPointer pointer)
+    public virtual string[] GetTextBlock(ITextBlockPointer pointer)
         => Lines
             .Skip(pointer.StartLineNumber - 1)
             .Take(pointer.EndLineNumber - pointer.StartLineNumber)
@@ -135,7 +135,7 @@ public class TextBuffer : ITextBuffer
         CheckIfLineExistsAt(lineNumber);
 
         if (lineNumber == 1 && _sourceText.Count == 1)
-            throw new OutOfCodeBufferSizeException($"Cannot remove the first line when the buffer's size is 1!");
+            throw new OutOfTextBufferSizeException($"Cannot remove the first line when the buffer's size is 1!");
 
         _sourceText.RemoveAt(_codeFormatter.LineNumberToIndex(lineNumber));
         SetPointerAtLastLineIfNecessary();
@@ -234,7 +234,7 @@ public class TextBuffer : ITextBuffer
         if (_codeFormatter.LineNumberToIndex(lineNumber) > -1 && lineNumber <= _sourceText.Count)
             _sourceText.Insert(_codeFormatter.LineNumberToIndex(lineNumber), line);
         else
-            throw new OutOfCodeBufferSizeException(
+            throw new OutOfTextBufferSizeException(
                 $"You cannot write line before the line with line number = {lineNumber}!");
     }
 
@@ -242,10 +242,17 @@ public class TextBuffer : ITextBuffer
 
     public virtual void PasteText(string text)
     {
-        string[] lines = text.Split("\n");
+        int initialPrefixLength = GetPrefixLength();
+        IEnumerable<string> lines = text
+            .Split("\n")
+            .Reverse()
+            .Select(line => line.Replace("\r", ""));
 
-        foreach (string line in lines.Reverse())
+        foreach (string line in lines)
             _sourceText.Insert(CursorPositionFromTop, line);
+        
+        SetCursorPositionFromTopAt(CursorPositionFromTop + lines.Count());
+        SetCursorPositionFromLeftAt(CursorPositionFromLeft + GetPrefixLength() - initialPrefixLength);
     }
 
     public virtual void AppendLine(string newPart)
@@ -371,7 +378,7 @@ public class TextBuffer : ITextBuffer
     protected virtual void CheckIfLineExistsAt(int lineNumber)
     {
         if (_sourceText.Count < lineNumber || lineNumber < 1)
-            throw new OutOfCodeBufferSizeException($"Line number {lineNumber} does not exist!");
+            throw new OutOfTextBufferSizeException($"Line number {lineNumber} does not exist!");
     }
 
     protected virtual void SetPointerAtLastLineIfNecessary()

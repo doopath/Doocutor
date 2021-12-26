@@ -1,7 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using Domain.Core.Exceptions;
+using Domain.Core.Exceptions.NotExitExceptions;
 
 namespace Domain.Core.TextBufferHistories;
 

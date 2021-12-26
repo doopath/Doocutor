@@ -1,7 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using Domain.Core.Exceptions;
+using Domain.Core.Exceptions.NotExitExceptions;
 using Pastel;
 
 namespace Domain.Core.Widgets;
@@ -13,6 +13,9 @@ public sealed class DialogWidget : Widget
 
     public DialogWidget(string text, Action onCancel, Action onOk)
     {
+        _textLeftEdge = 2;
+        _textRightEdge = 2;
+        _textBottomEdge = 3;
         _textForegroundColor = ColorScheme!.TextForeground;
         _horizontalSymbol = "─".Pastel(ColorScheme.WidgetBorderForeground);
         _verticalSymbol = "│".Pastel(ColorScheme.WidgetBorderForeground);
@@ -20,7 +23,7 @@ public sealed class DialogWidget : Widget
         _topRightCorner = "╮".Pastel(ColorScheme.WidgetBorderForeground);
         _bottomLeftCorner = "╰".Pastel(ColorScheme.WidgetBorderForeground);
         _bottomRightCorner = "╯".Pastel(ColorScheme.WidgetBorderForeground);
-        _activeButtonIndex = 0;
+        _activeButtonIndex = ButtonsMap.Keys.ToList().IndexOf(WidgetAction.CANCEL.ToString());
 
         OnCancel = onCancel;
         OnOk = onOk;

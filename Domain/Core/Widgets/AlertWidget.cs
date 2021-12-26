@@ -15,6 +15,9 @@ public sealed class AlertWidget : Widget
             AlertLevel.ERROR => ColorScheme!.AlertErrorForeground,
             _ => throw new ArgumentException($"{nameof(level)} is unknown!")
         };
+        _textLeftEdge = 2;
+        _textRightEdge = 2;
+        _textBottomEdge = 3;
         _horizontalSymbol = "─".Pastel(ColorScheme.WidgetBorderForeground);
         _verticalSymbol = "│".Pastel(ColorScheme.WidgetBorderForeground);
         _topLeftCorner = "╭".Pastel(ColorScheme.WidgetBorderForeground);

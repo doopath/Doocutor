@@ -1,6 +1,6 @@
 ﻿using System;
 using Domain.Core.Commands;
-using Domain.Core.Exceptions;
+using Domain.Core.Exceptions.NotExitExceptions;
 using NLog;
 
 namespace Domain.Core.Executors;
@@ -20,6 +20,10 @@ public class EditorCommandExecutor : ICommandExecutor<EditorCommand>
         catch (SourceCodeCompilationException error)
         {
             Logger.Debug(error);
+        }
+        catch (NotExitException error)
+        {
+            ErrorHandling.ShowError(error);
         }
         catch (Exception error) when (error.GetType() != typeof(InterruptedExecutionException))
         {

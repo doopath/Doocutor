@@ -1,6 +1,6 @@
 using System.Collections.Generic;
 using Domain.Core.Cursors;
-using Domain.Core.Exceptions;
+using Domain.Core.Exceptions.NotExitExceptions;
 using Domain.Core.TextBufferFormatters;
 using NUnit.Framework;
 
@@ -84,7 +84,7 @@ public class TextBufferCursorTests
         {
             _cursor!.SetCursorPositionFromTopAt(-1);
         }
-        catch (OutOfCodeBufferSizeException)
+        catch (OutOfTextBufferSizeException)
         {
             var isTheCursorPositionFromTopCorrect = _cursor!.CursorPositionFromTop == 0;
             var isTheCursorPositionFromLeftCorrect = _cursor.CursorPositionFromLeft == _initialPositionFromLeft;
@@ -110,7 +110,7 @@ public class TextBufferCursorTests
             // _code.Count value is greater than the index of the last line.
             _cursor!.SetCursorPositionFromTopAt(_text!.Count);
         }
-        catch (OutOfCodeBufferSizeException)
+        catch (OutOfTextBufferSizeException)
         {
             var isTheCursorPositionFromTopCorrect = _cursor!.CursorPositionFromTop == 0;
             var isTheCursorPositionFromLeftCorrect = _cursor.CursorPositionFromLeft == _initialPositionFromLeft;

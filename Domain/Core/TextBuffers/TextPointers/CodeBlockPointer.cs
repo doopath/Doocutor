@@ -1,4 +1,4 @@
-﻿using Domain.Core.Exceptions;
+﻿using Domain.Core.Exceptions.NotExitExceptions;
 
 namespace Domain.Core.TextBuffers.TextPointers;
 
