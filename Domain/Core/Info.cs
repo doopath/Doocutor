@@ -11,16 +11,16 @@ namespace Domain.Core
         /// B - build,
         /// DDMMYY - DayMonthYear datetime
         /// </summary>
-        public const string BuildInfo = "UCB-271221";
-        public const string Updated = "27th of December 2021";
+        public const string BuildInfo = "UCB-020122";
+        public const string Updated = "2nd of January 2022";
         public const string Company = "Doopath";
-        public const string Version = "0.5.20.0";
+        public const string Version = "0.5.22.0";
         public const string ProductName = "Doocutor";
         public const string BuildType = "Debug";
 
         public static string DoocutorInfo
             => $"Doocutor v{Version}. Build: {BuildInfo}\n" +
-               "Copyright (C) Doocutor 2021\n" +
+               "Copyright (C) Doocutor 2022\n" +
                "Try :help command for help list, :info for a description of the Doocutor or :quit for quitting.";
 
         public static string Description

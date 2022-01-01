@@ -7,12 +7,12 @@ namespace Domain.Core.TextBufferFormatters;
 
 public class TextBufferFormatter : ITextBufferFormatter
 {
-    public List<string> SourceCode { get; }
+    public List<string> SourceText { get; }
     public int? MaxLineLength { get; private set; }
 
-    public TextBufferFormatter(List<string> sourceCode)
+    public TextBufferFormatter(List<string> sourceText)
     {
-        SourceCode = sourceCode;
+        SourceText = sourceText;
     }
 
     public bool AdaptCodeForBufferSize(int windowWidth)
@@ -20,7 +20,7 @@ public class TextBufferFormatter : ITextBufferFormatter
         MaxLineLength = windowWidth;
         bool isModified = false;
 
-        for (var i = 0; i < SourceCode.Count; i++)
+        for (var i = 0; i < SourceText.Count; i++)
         {
             var lineNumber = i + 1;
             var line = GetLineAt(lineNumber);
@@ -28,12 +28,12 @@ public class TextBufferFormatter : ITextBufferFormatter
 
             if (line.Length + prefixLength > windowWidth)
             {
-                SourceCode[i] = line[..(windowWidth - prefixLength)];
+                SourceText[i] = line[..(windowWidth - prefixLength)];
 
-                if (SourceCode.Count - 1 < i + 1)
-                    SourceCode.Insert(i + 1, "");
+                if (SourceText.Count - 1 < i + 1)
+                    SourceText.Insert(i + 1, "");
 
-                SourceCode[i + 1] = line[(windowWidth - prefixLength)..] + SourceCode[i + 1];
+                SourceText[i + 1] = line[(windowWidth - prefixLength)..] + SourceText[i + 1];
 
                 isModified = true;
             }
@@ -54,22 +54,22 @@ public class TextBufferFormatter : ITextBufferFormatter
     {
         CheckIfLineExistsAt(lineNumber);
 
-        return $"  {lineNumber}{GetOutputSpacesForLineAt(lineNumber)}|{SourceCode[LineNumberToIndex(lineNumber)]}\n";
+        return $"  {lineNumber}{GetOutputSpacesForLineAt(lineNumber)}|{SourceText[LineNumberToIndex(lineNumber)]}\n";
     }
     public string SeparateLineFromLineNumber(string line)
         => string.Join("|", line.Split("|")[1..]);
 
     public string GetSourceCodeWithLineNumbers()
-        => string.Join("", SourceCode.Select((_, i) => GroupOutputLineAt(IndexToLineNumber(i))))[..^1];
+        => string.Join("", SourceText.Select((_, i) => GroupOutputLineAt(IndexToLineNumber(i))))[..^1];
 
     public string GetLineAt(int lineNumber)
     {
         CheckIfLineExistsAt(lineNumber);
-        return SourceCode[LineNumberToIndex(lineNumber)];
+        return SourceText[LineNumberToIndex(lineNumber)];
     }
 
     public string GetSourceCode()
-        => string.Join("\n", SourceCode);
+        => string.Join("\n", SourceText);
 
     public int IndexToLineNumber(int index)
         => index + 1;
@@ -81,8 +81,8 @@ public class TextBufferFormatter : ITextBufferFormatter
     {
         CheckIfLineExistsAt(currentLineNumber);
 
-        var lastLineNumber = SourceCode.Count;
-        var lastLineContent = SourceCode[LineNumberToIndex(lastLineNumber)];
+        var lastLineNumber = SourceText.Count;
+        var lastLineContent = SourceText[LineNumberToIndex(lastLineNumber)];
         var lastLineContentLength = lastLineContent.Length;
         var lineNumberLength = (int)Math.Log10(lastLineNumber) + 1; // +1 because of log10(n) where n < 10 is a number < 1.
         var lastLineLength = 4 + lastLineContentLength + lineNumberLength;
@@ -94,11 +94,11 @@ public class TextBufferFormatter : ITextBufferFormatter
         => ' ' + new string(' ', GetTimesOfSpacesRepeationForLineAt(lineNumber));
 
     private int GetTimesOfSpacesRepeationForLineAt(int lineNumber)
-        => SourceCode.Count.ToString().Length - lineNumber.ToString().Length;
+        => SourceText.Count.ToString().Length - lineNumber.ToString().Length;
 
     private void CheckIfLineExistsAt(int lineNumber)
     {
-        if (SourceCode.Count < lineNumber || lineNumber < 1)
+        if (SourceText.Count < lineNumber || lineNumber < 1)
             throw new OutOfTextBufferSizeException($"Line number {lineNumber} does not exist!");
     }
 }

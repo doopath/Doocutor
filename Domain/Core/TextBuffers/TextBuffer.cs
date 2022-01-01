@@ -14,8 +14,9 @@ namespace Domain.Core.TextBuffers;
 public class TextBuffer : ITextBuffer
 {
     #region Protected fields
+
     protected readonly List<string> _sourceText;
-    protected readonly ITextBufferFormatter _codeFormatter;
+    protected readonly ITextBufferFormatter _textFormatter;
     protected readonly ICursor _cursor;
     protected readonly ITextBufferHistory _history;
     protected readonly KeyboardCommandsProvider _keyboardCommandsProvider;
@@ -23,49 +24,51 @@ public class TextBuffer : ITextBuffer
     #endregion
 
     #region Constructors
+
     public TextBuffer(uint historyLimit = 10000)
     {
         var initialContentOfTheBuffer = new DefaultTextBufferContent();
         _sourceText = initialContentOfTheBuffer.SourceCode;
-        _codeFormatter = new TextBufferFormatter(_sourceText);
+        _textFormatter = new TextBufferFormatter(_sourceText);
         _history = new TextBufferHistory(historyLimit);
         _cursor = new TextBufferCursor(
             _sourceText,
-            _codeFormatter,
+            _textFormatter,
             initialContentOfTheBuffer.CursorPositionFromTop,
             initialContentOfTheBuffer.CursorPositionFromLeft);
-        _keyboardCommandsProvider = new(_sourceText, _codeFormatter, _cursor);
+        _keyboardCommandsProvider = new(_sourceText, _textFormatter, _cursor);
     }
 
     public TextBuffer(ITextBuffer buffer)
     {
         _sourceText = buffer.Lines.ToList();
-        _codeFormatter = new TextBufferFormatter(_sourceText);
+        _textFormatter = new TextBufferFormatter(_sourceText);
         _history = new TextBufferHistory(buffer.HistoryLimit);
         _cursor = new TextBufferCursor(
             _sourceText,
-            _codeFormatter,
+            _textFormatter,
             buffer.CursorPositionFromTop,
             buffer.CursorPositionFromLeft);
-        _keyboardCommandsProvider = new(_sourceText, _codeFormatter, _cursor);
+        _keyboardCommandsProvider = new(_sourceText, _textFormatter, _cursor);
     }
 
     public TextBuffer(ITextBufferContent initialContentOfTheBuffer, uint historyLimit = 100)
     {
         _sourceText = initialContentOfTheBuffer.SourceCode;
-        _codeFormatter = new TextBufferFormatter(_sourceText);
+        _textFormatter = new TextBufferFormatter(_sourceText);
         _history = new TextBufferHistory(historyLimit);
         _cursor = new TextBufferCursor(
             _sourceText,
-            _codeFormatter,
+            _textFormatter,
             initialContentOfTheBuffer.CursorPositionFromTop,
             initialContentOfTheBuffer.CursorPositionFromLeft);
-        _keyboardCommandsProvider = new(_sourceText, _codeFormatter, _cursor);
+        _keyboardCommandsProvider = new(_sourceText, _textFormatter, _cursor);
     }
 
     #endregion
 
     #region Public properties
+
     /// <summary>
     /// Max count of elements in the history.
     /// </summary>
@@ -87,12 +90,12 @@ public class TextBuffer : ITextBuffer
     /// For example then you do code in a text editor or and IDE you
     /// want to know numbers of lines for easier navigating.
     /// </summary>
-    public virtual string CodeWithLineNumbers => _codeFormatter.GetSourceCodeWithLineNumbers();
+    public virtual string CodeWithLineNumbers => _textFormatter.GetSourceCodeWithLineNumbers();
 
     /// <summary>
     /// Get bare code. Without line numbers and '\n' symbols.
     /// </summary>
-    public virtual string Text => _codeFormatter.GetSourceCode();
+    public virtual string Text => _textFormatter.GetSourceCode();
 
     /// <summary>
     /// Get bare code split by line ends.
@@ -102,8 +105,9 @@ public class TextBuffer : ITextBuffer
     #endregion
 
     #region Public get methods
+
     public virtual string GetLineAt(int lineNumber)
-        => _codeFormatter.GetLineAt(lineNumber);
+        => _textFormatter.GetLineAt(lineNumber);
 
     public virtual string[] GetTextBlock(ITextBlockPointer pointer)
         => Lines
@@ -112,22 +116,38 @@ public class TextBuffer : ITextBuffer
             .ToArray();
 
     public virtual int GetPrefixLength()
-        => _codeFormatter.GetPrefixLength(_codeFormatter.IndexToLineNumber(CursorPositionFromTop));
+        => _textFormatter.GetPrefixLength(_textFormatter.IndexToLineNumber(CursorPositionFromTop));
 
     #endregion
 
     #region Public remove methods
+
     public virtual void RemoveTextBlock(ITextBlockPointer pointer)
     {
-        CheckIfLineExistsAt(_codeFormatter.LineNumberToIndex(pointer.EndLineNumber));
+        CheckIfLineExistsAt(pointer.StartLineNumber);
+        CheckIfLineExistsAt(pointer.EndLineNumber - 1);
 
-        for (var i = 0; i < pointer.EndLineNumber - pointer.StartLineNumber; i++)
+        int startIndex = _textFormatter.LineNumberToIndex(pointer.StartLineNumber);
+        int linesToRemove = pointer.EndLineNumber - pointer.StartLineNumber;
+        
+        if (linesToRemove != Size)
         {
-            _sourceText.RemoveAt(_codeFormatter.LineNumberToIndex(pointer.StartLineNumber));
+            SetCursorPositionFromLeftAt(_textFormatter.GetPrefixLength(_textFormatter.IndexToLineNumber(startIndex)));
+            SetCursorPositionFromTopAt(startIndex > 0 ? startIndex - 1 : 0);
+            _sourceText.RemoveRange(startIndex, linesToRemove);
+        }
+        else
+        {
+            int firstLineIndex = 0;
+            int firstLineNumber = _textFormatter.IndexToLineNumber(firstLineIndex);
+            
+            _sourceText.Insert(firstLineIndex, string.Empty);
+            _sourceText.RemoveRange(startIndex + 1, linesToRemove);
+            _cursor.CursorPositionFromLeft = _textFormatter.GetPrefixLength(firstLineNumber);
+            _cursor.CursorPositionFromTop = firstLineIndex;
         }
 
-        AddLineIfBufferIsEmpty();
-        SetPointerAtLastLineIfNecessary();
+        _ = 0;
     }
 
     public virtual void RemoveLineAt(int lineNumber)
@@ -137,9 +157,10 @@ public class TextBuffer : ITextBuffer
         if (lineNumber == 1 && _sourceText.Count == 1)
             throw new OutOfTextBufferSizeException($"Cannot remove the first line when the buffer's size is 1!");
 
-        _sourceText.RemoveAt(_codeFormatter.LineNumberToIndex(lineNumber));
-        SetPointerAtLastLineIfNecessary();
+        _sourceText.RemoveAt(_textFormatter.LineNumberToIndex(lineNumber));
+        SetCursorAtLastLineIfNecessary();
     }
+
     #endregion
 
     public virtual void IncreaseBufferSize()
@@ -155,8 +176,8 @@ public class TextBuffer : ITextBuffer
         int initialCursorPositionFromTop = CursorPositionFromTop;
         int initialPrefixLength = GetPrefixLength();
 
-        if (_codeFormatter.AdaptCodeForBufferSize(maxLineLength))
-            while (_codeFormatter.AdaptCodeForBufferSize(maxLineLength))
+        if (_textFormatter.AdaptCodeForBufferSize(maxLineLength))
+            while (_textFormatter.AdaptCodeForBufferSize(maxLineLength))
                 continue;
         else
             return;
@@ -190,6 +211,7 @@ public class TextBuffer : ITextBuffer
 
 
     #region Cursor movements
+
     public virtual void SetCursorPositionFromTopAt(int position)
         => _cursor.SetCursorPositionFromTopAt(position);
 
@@ -213,10 +235,11 @@ public class TextBuffer : ITextBuffer
     public virtual void ReplaceLineAt(int lineNumber, string newLine)
     {
         CheckIfLineExistsAt(lineNumber);
-        _sourceText[_codeFormatter.LineNumberToIndex(lineNumber)] = newLine;
+        _sourceText[_textFormatter.LineNumberToIndex(lineNumber)] = newLine;
     }
 
     #region Public write methods
+
     public virtual void Write(string line)
     {
         _sourceText.Insert(_cursor.CursorPositionFromTop, line);
@@ -231,8 +254,8 @@ public class TextBuffer : ITextBuffer
 
     public virtual void WriteBefore(int lineNumber, string line)
     {
-        if (_codeFormatter.LineNumberToIndex(lineNumber) > -1 && lineNumber <= _sourceText.Count)
-            _sourceText.Insert(_codeFormatter.LineNumberToIndex(lineNumber), line);
+        if (_textFormatter.LineNumberToIndex(lineNumber) > -1 && lineNumber <= _sourceText.Count)
+            _sourceText.Insert(_textFormatter.LineNumberToIndex(lineNumber), line);
         else
             throw new OutOfTextBufferSizeException(
                 $"You cannot write line before the line with line number = {lineNumber}!");
@@ -250,7 +273,7 @@ public class TextBuffer : ITextBuffer
 
         foreach (string line in lines)
             _sourceText.Insert(CursorPositionFromTop, line);
-        
+
         SetCursorPositionFromTopAt(CursorPositionFromTop + lines.Count());
         SetCursorPositionFromLeftAt(CursorPositionFromLeft + GetPrefixLength() - initialPrefixLength);
     }
@@ -260,8 +283,8 @@ public class TextBuffer : ITextBuffer
         int initialCursorPositionFromLeft = CursorPositionFromLeft;
         int initialCursorPositionFromTop = CursorPositionFromTop;
         string line = _sourceText[CursorPositionFromTop];
-        string newLine = _codeFormatter.SeparateLineFromLineNumber(
-            _codeFormatter.GroupNewLineOfACurrentOne(newPart, CursorPositionFromTop, CursorPositionFromLeft));
+        string newLine = _textFormatter.SeparateLineFromLineNumber(
+            _textFormatter.GroupNewLineOfACurrentOne(newPart, CursorPositionFromTop, CursorPositionFromLeft));
 
         _sourceText[CursorPositionFromTop] = newLine;
         SetCursorPositionFromLeftAt(CursorPositionFromLeft + newPart.Length);
@@ -279,8 +302,8 @@ public class TextBuffer : ITextBuffer
                 Left = CursorPositionFromLeft,
                 Top = CursorPositionFromTop
             },
-            NewChanges = new[] { newLine },
-            OldState = new[] { line },
+            NewChanges = new[] {newLine},
+            OldState = new[] {line},
             Type = TextBufferChangeType.APPEND_LINE
         });
     }
@@ -346,6 +369,7 @@ public class TextBuffer : ITextBuffer
     }
 
     #region Keyboard action
+
     public virtual void Enter()
         => _keyboardCommandsProvider.Enter();
 
@@ -355,6 +379,7 @@ public class TextBuffer : ITextBuffer
     #endregion
 
     #region Protected Methods
+
     protected virtual void UndoAdaptText(ITextBufferChange change)
     {
         if (change.Type is not TextBufferChangeType.ADAPT_TEXT)
@@ -381,10 +406,13 @@ public class TextBuffer : ITextBuffer
             throw new OutOfTextBufferSizeException($"Line number {lineNumber} does not exist!");
     }
 
-    protected virtual void SetPointerAtLastLineIfNecessary()
-        => _cursor.CursorPositionFromTop = _cursor.CursorPositionFromTop <= _sourceText.Count
-            ? _cursor.CursorPositionFromTop
-            : _sourceText.Count;
+    protected virtual void SetCursorAtLastLineIfNecessary()
+    {
+        _cursor.CursorPositionFromLeft = _textFormatter.GetPrefixLength(Size);
+        _cursor.CursorPositionFromTop = CursorPositionFromTop <= Size
+            ? Size - 1
+            : CursorPositionFromTop;
+    }
 
     protected virtual void AddLineIfBufferIsEmpty()
     {

@@ -11,6 +11,10 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DynamicEditor", "DynamicEdi
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Domain", "Domain\Domain.csproj", "{47D84A3F-25DF-4AC2-AC3E-DB8F182CAA69}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "source", "source", "{F2E84BD8-9D51-46E7-9DC6-D205E39D0F32}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "test", "test", "{1AB389CE-BDAA-4A15-850E-6B52E6BF3EF4}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -39,5 +43,11 @@ Global
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {182302C5-C477-4C32-9F21-6F7C4C03667F}
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{47D84A3F-25DF-4AC2-AC3E-DB8F182CAA69} = {F2E84BD8-9D51-46E7-9DC6-D205E39D0F32}
+		{4479B78E-F6D6-4679-AFED-06E46B3E6588} = {F2E84BD8-9D51-46E7-9DC6-D205E39D0F32}
+		{593D81ED-4960-436F-8E5F-5BA8814736E2} = {F2E84BD8-9D51-46E7-9DC6-D205E39D0F32}
+		{4452FC2D-D8F9-49AD-8460-759979B09E1B} = {1AB389CE-BDAA-4A15-850E-6B52E6BF3EF4}
 	EndGlobalSection
 EndGlobal

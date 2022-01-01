@@ -73,11 +73,12 @@ public abstract class Widget : IWidget
 
     public virtual void OnMounted(Action unmount, Action render)
     {
+        CuiRender.DisableVirtualCursor();
         render();
         
         while (true)
         {
-            if (ControlButtons())
+            if (HandleInput())
             {
                 HandleSelectedOption();
                 break;
@@ -93,8 +94,9 @@ public abstract class Widget : IWidget
             }
         }
 
-        render();
+        CuiRender.EnableVirtualCursor();
         unmount();
+        render();
     }
 
     public virtual IEnumerator<string> GetEnumerator()
@@ -233,7 +235,7 @@ public abstract class Widget : IWidget
         }
     }
 
-    protected virtual bool ControlButtons()
+    protected virtual bool HandleInput()
     {
         ConsoleKeyInfo key = Settings.OutBuffer!.ReadKey();
 

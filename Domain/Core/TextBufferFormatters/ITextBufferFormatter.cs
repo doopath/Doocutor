@@ -4,7 +4,7 @@ namespace Domain.Core.TextBufferFormatters
 {
     public interface ITextBufferFormatter
     {
-        List<string> SourceCode { get; }
+        List<string> SourceText { get; }
         int? MaxLineLength { get; }
         string GroupNewLineOfACurrentOne(string newPart,
                 int cursorPositionFromTop, int cursorPositionFromLeft);

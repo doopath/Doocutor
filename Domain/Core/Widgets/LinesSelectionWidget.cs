@@ -1,13 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using Domain.Core.TextBuffers;
+using Domain.Core.TextBuffers.TextPointers;
 using Pastel;
 using TextCopy;
 
 namespace Domain.Core.Widgets;
-
-public delegate int GetAnIntegerDelegate();
 
 public sealed class LinesSelectionWidget : Widget
 {
@@ -16,16 +14,15 @@ public sealed class LinesSelectionWidget : Widget
     private ITextBuffer TextBuffer { get; init; }
 
     private readonly string _textBackgroundColor;
-
+    private ConsoleKey? _lastPressedKey;
     private ChangingRange _linesSelectionRange;
-    private int _longestLineLength;
 
     public LinesSelectionWidget(ITextBuffer textBuffer)
     {
         _textLeftEdge = 1;
         _textRightEdge = 1;
         _textBottomEdge = 1;
-        _textForegroundColor = ColorScheme.TextSelectionForeground;
+        _textForegroundColor = ColorScheme!.TextSelectionForeground;
         _textBackgroundColor = ColorScheme.TextSelectionBackground;
         _horizontalSymbol = "─".Pastel(ColorScheme.WidgetBorderForeground);
         _verticalSymbol = "│".Pastel(ColorScheme.WidgetBorderForeground);
@@ -38,13 +35,12 @@ public sealed class LinesSelectionWidget : Widget
         TextBuffer = textBuffer;
 
         _linesSelectionRange = new() {
-            Start = TextBuffer.CursorPositionFromTop, 
-            End = TextBuffer.CursorPositionFromTop + 1
+            Start = TextBuffer.CursorPositionFromTop,
+            End = TextBuffer.CursorPositionFromTop
         };
 
-        UpdateWidth();
-        UpdateHeight();
-
+        Width = 0;
+        Height = 0;
         Text = string.Empty;
         Items = new();
 
@@ -52,114 +48,111 @@ public sealed class LinesSelectionWidget : Widget
     }
     
     protected override void Refresh()
-    {
-        CursorPosition = new()
+        => CursorPosition = new()
         {
             Left = TextBuffer.GetPrefixLength(),
             Top = Math.Min(_linesSelectionRange.Start, _linesSelectionRange.End)
         };
-        Text = string.Join("", TextBuffer.Lines[_linesSelectionRange.Start.._linesSelectionRange.End]);
 
-        Items!.Clear();
-        UpdateWidth();
-        UpdateHeight();
-        FillByEmptyItems();
-        AddText();
-    }
-    
-    protected override void UpdateWidth()
-        => Width = _longestLineLength;
-
-    protected override void UpdateHeight()
-        => Height = Math.Abs(_linesSelectionRange.Start - _linesSelectionRange.End);
-    
     public override void OnSceneUpdated(List<string> scene)
     {
         Refresh();
 
-        int topPos = CursorPosition.Top;
-        int leftPos = CursorPosition.Left;
+        int start = GetStartOfSelection();
+        int end = GetEndOfSelection();
+        
+        start = start >= 0 ? start : 0;
+        end = end >= scene.Count ? scene.Count - 1 : end;
 
-        foreach (var line in this)
+        AddToScene(start, end, scene);
+    }
+
+    private void AddToScene(int start, int end, List<string> scene)
+    {
+        int prefixLength = TextBuffer.GetPrefixLength();
+
+        for (int i = start; i <= end; i++)
         {
-            string sceneLine = scene[topPos];
-            scene[topPos] = sceneLine[..leftPos] + line + sceneLine[(leftPos + Width)..];
-            topPos++;
+            string sceneLine = scene[i];
+            string textBufferLine = TextBuffer.Size > i
+                ? TextBuffer.Lines[i + CuiRender.TopOffset]
+                : "";
+            scene[i] = sceneLine[..(prefixLength - 1)]
+                       + ("|" + textBufferLine)
+                           .Pastel(_textForegroundColor)
+                           .PastelBg(_textBackgroundColor)
+                       + sceneLine[(prefixLength + textBufferLine.Length)..];
         }
     }
+
+    private int GetStartOfSelection()
+        => Math.Min(_linesSelectionRange.Start, _linesSelectionRange.End) - CuiRender.TopOffset;
     
-    protected override void AddText()
+    private int GetEndOfSelection()
+        => Math.Max(_linesSelectionRange.Start, _linesSelectionRange.End) - CuiRender.TopOffset;
+
+    protected override bool HandleInput()
     {
-        string[] textItems = Text!
-            .ToCharArray()
-            .Select(c => c
-                .ToString()
-                .Pastel(_textForegroundColor)
-                .PastelBg(_textBackgroundColor))
-            .ToArray();
-        int leftEdge = _textLeftEdge!.Value;
-        int rightEdge = Width - _textRightEdge!.Value;
-        int bottomEdge = Height - _textBottomEdge!.Value;
-        int widgetItemsTopPointer = 1;
-        int maxLineLength = rightEdge - leftEdge;
+        _lastPressedKey = Settings.OutBuffer!.ReadKey().Key;
 
-        var IsAdded = () => widgetItemsTopPointer - 1 >= bottomEdge;
-        var RemoveAllFromCurrentLine = () => Items![widgetItemsTopPointer]
-            .RemoveRange(leftEdge, maxLineLength);
-        var InsertSlicedToIndex = (int index) => Items![widgetItemsTopPointer]
-            .InsertRange(leftEdge, textItems[..index]);
-
-        while (textItems.Length > 0)
+        if (_lastPressedKey == ConsoleKey.DownArrow)
         {
-            if (IsAdded())
-                return;
-
-            RemoveAllFromCurrentLine();
-
-            if (textItems.Length > maxLineLength)
+            if (_linesSelectionRange.End + 1 < TextBuffer.Size)
             {
-                InsertSlicedToIndex(maxLineLength);
-                textItems = textItems[maxLineLength..];
+                _linesSelectionRange.End++;  
+                TextBuffer.IncCursorPositionFromTop();
+                CuiRender.Render();
             }
-            else
-            {
-                InsertSlicedToIndex(textItems.Length);
-                Items![widgetItemsTopPointer].InsertRange(
-                    leftEdge + textItems.Length,
-                    new string(' ', maxLineLength - textItems.Length).Split(""));
-                textItems = textItems[textItems.Length..];
-            }
-
-            widgetItemsTopPointer++;
         }
-    }
-    
-    protected override bool ControlButtons()
-    {
-        ConsoleKeyInfo key = Settings.OutBuffer!.ReadKey();
-
-        if (key.Key == ConsoleKey.DownArrow)
-            _linesSelectionRange.End--;
-        else if (key.Key == ConsoleKey.UpArrow)
-            _linesSelectionRange.End++;
-        else if (key.Key == ConsoleKey.Enter)
+        else if (_lastPressedKey == ConsoleKey.UpArrow)
+        {
+            if (_linesSelectionRange.End > 0)
+            {
+                _linesSelectionRange.End--;
+                TextBuffer.DecCursorPositionFromTop();
+                CuiRender.Render();
+                
+            }
+        }
+        else if (_lastPressedKey is 
+                 ConsoleKey.Enter or
+                 ConsoleKey.Backspace or
+                 ConsoleKey.Escape)
+        {
             return true;
-
-        int buttonsCount = ButtonsMap.Keys.Count;
-        _activeButtonIndex = ((_activeButtonIndex % buttonsCount)
-                              + buttonsCount)
-                             % buttonsCount;
+        }
 
         return false;
     }
     
     protected override void HandleSelectedOption()
     {
+        if (_lastPressedKey == ConsoleKey.Enter)
+            CopySelectedText();
+        else if (_lastPressedKey == ConsoleKey.Backspace)
+            RemoveSelectedText();
+        else if (_lastPressedKey == ConsoleKey.Escape)
+            return;
+    }
+
+    private void CopySelectedText()
+    {
+        int start = Math.Min(_linesSelectionRange.Start, _linesSelectionRange.End);
+        int end = Math.Max(_linesSelectionRange.Start, _linesSelectionRange.End) + 1;
         string[] lines = TextBuffer.Lines;
-        string[] selectedLines = lines[_linesSelectionRange.Start.._linesSelectionRange.End];
-        string text = string.Join("", selectedLines);
+        string[] selectedLines = lines[start..end];
+        string text = string.Join("\n", selectedLines);
         
         new Clipboard().SetText(text);
+    }
+
+    private void RemoveSelectedText()
+    {
+        int start = Math.Min(_linesSelectionRange.Start, _linesSelectionRange.End) + 1;
+        int end = Math.Max(_linesSelectionRange.Start, _linesSelectionRange.End) + 2;
+
+        TextBuffer.RemoveTextBlock(new TextBlockPointer(start, end));
+        _ = 0;
     }
 }
 

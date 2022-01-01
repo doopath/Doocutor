@@ -9,7 +9,6 @@ using Domain.Core.Scenes;
 using Domain.Core.TextBufferContents;
 using Domain.Core.TextBuffers;
 using DynamicEditor.Core;
-using DynamicEditor.Core.Scenes;
 using NUnit.Framework;
 using Pastel;
 
