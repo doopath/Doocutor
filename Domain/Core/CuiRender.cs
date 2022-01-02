@@ -104,7 +104,7 @@ public static class CuiRender
     /// </summary>
     public static void DisableVirtualCursor()
         => _showCursor = false;
-    
+
     /// <summary>
     /// Enables the cursor which is rendered (virtual).
     /// </summary>
@@ -116,7 +116,7 @@ public static class CuiRender
         if (TopOffset > TextBuffer!.Size - BottomEdge)
             throw new ValueOutOfRangeException(
                 "It is already the last line of the text buffer! You cannot scroll down!");
-        
+
         TopOffset++;
     }
 
@@ -129,7 +129,7 @@ public static class CuiRender
     }
 
     public static void Render()
-    {   
+    {
         SetScene();
         Render(Scene!.CurrentScene!);
     }
@@ -225,16 +225,13 @@ public static class CuiRender
         {
             var top = TextBuffer!.CursorPositionFromTop - TopOffset;
             var left = TextBuffer.CursorPositionFromLeft;
-            var initialCursorPosition = (OutBuffer!.CursorLeft, OutBuffer.CursorTop);
             var symbol = _pureScene[top][left];
 
-            OutBuffer.SetCursorPosition(left, top);
+            OutBuffer!.SetCursorPosition(left, top);
             OutBuffer.Write(symbol
                 .ToString()
                 .Pastel(ColorScheme!.CursorForeground)
                 .PastelBg(ColorScheme.CursorBackground));
-
-            (OutBuffer.CursorLeft, OutBuffer.CursorTop) = initialCursorPosition;
         }
         catch (ArgumentOutOfRangeException) { }
     }
@@ -271,8 +268,8 @@ public static class CuiRender
         _lastFrameRenderTime = _watch.ElapsedMilliseconds;
         _watch = new Stopwatch();
     }
-    
-    private  static void RemoveVirtualCursor(int initialLeftPosition, int initialTopPosition)
+
+    private static void RemoveVirtualCursor(int initialLeftPosition, int initialTopPosition)
     {
         char initialCursorSymbol = Scene!
             .CurrentScene![initialTopPosition][initialLeftPosition];
