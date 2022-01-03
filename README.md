@@ -30,8 +30,8 @@ In our case the Main method does not require arguments, so just type :run and yo
 <br/>
 Hello world
 
-![no image](https://raw.githubusercontent.com/doopath/Doocutor/develop/Doocutor/Resources/img/Doocutor_DynamicEditor.png)
-![no image](https://raw.githubusercontent.com/doopath/Doocutor/develop/Doocutor/Resources/img/Doocutor_StaticEditor.png)
+![no image](https://raw.githubusercontent.com/doopath/Doocutor/develop/resources/img/Doocutor_DynamicEditor.png)
+![no image](https://raw.githubusercontent.com/doopath/Doocutor/develop/resources/img/Doocutor_StaticEditor.png)
 
 (On the pictures shown dynamic and static editors preview. If you want to use dynamic editor you should use *"--editor-mode dynamic"* launch option)
 <br/>

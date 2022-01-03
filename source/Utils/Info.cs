@@ -12,7 +12,7 @@
         public const string BuildInfo = "UCB-030122";
         public const string Updated = "3rd of January 2022";
         public const string Company = "Doopath";
-        public const string Version = "0.5.24.0";
+        public const string Version = "0.5.25.1";
         public const string ProductName = "Doocutor";
         public const string BuildType = "Debug";
 
