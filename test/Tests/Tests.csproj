@@ -14,8 +14,9 @@
     </ItemGroup>
 
     <ItemGroup>
-      <ProjectReference Include="../../source/Domain/Domain.csproj" />
-      <ProjectReference Include="../../source/DynamicEditor/DynamicEditor.csproj" />
+      <ProjectReference Include="..\..\source\CommandHandling\CommandHandling.csproj" />
+      <ProjectReference Include="..\..\source\CUI\CUI.csproj" />
+      <ProjectReference Include="..\..\source\TextBuffer\TextBuffer.csproj" />
     </ItemGroup>
-
+    
 </Project>

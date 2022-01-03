@@ -1,5 +1,5 @@
-using Domain.Core;
-using Domain.Core.Commands;
+using CommandHandling;
+using CommandHandling.Commands;
 using NUnit.Framework;
 
 namespace Tests.Core;

@@ -1,11 +1,11 @@
 ﻿using System;
 using CommandLine;
+using Common.Options;
+using Utils.Exceptions;
+using CUI;
 using Domain.Core;
-using Domain.Core.Exceptions.NotExitExceptions;
-using Domain.Core.Widgets;
-using Domain.Options;
-using DynamicEditor;
 using NLog;
+using Utils;
 
 namespace Doocutor
 {

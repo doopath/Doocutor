@@ -1,8 +1,8 @@
 using System.Collections.Generic;
-using Domain.Core;
-using Domain.Core.Cursors;
-using Domain.Core.TextBufferFormatters;
 using NUnit.Framework;
+using TextBuffer;
+using TextBuffer.Cursors;
+using TextBuffer.TextBufferFormatters;
 
 namespace Tests.Core;
 

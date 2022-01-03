@@ -28,6 +28,6 @@
     </ItemGroup>
 
     <ItemGroup>
-        <ProjectReference Include="../DynamicEditor/DynamicEditor.csproj" />
+        <ProjectReference Include="..\InputHandling\InputHandling.csproj" />
     </ItemGroup>
 </Project>

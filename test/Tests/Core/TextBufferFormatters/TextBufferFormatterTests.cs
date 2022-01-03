@@ -1,7 +1,7 @@
 using System;
 using System.Collections.Generic;
-using Domain.Core.TextBufferFormatters;
 using NUnit.Framework;
+using TextBuffer.TextBufferFormatters;
 
 namespace Tests.Core.TextBufferFormatters;
 

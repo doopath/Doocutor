@@ -1,16 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using Domain.Core;
-using Domain.Core.ColorSchemes;
-using Domain.Core.Cursors;
-using Domain.Core.OutBuffers;
-using Domain.Core.Scenes;
-using Domain.Core.TextBufferContents;
-using Domain.Core.TextBuffers;
-using DynamicEditor.Core;
+using Common;
+using CUI;
+using CUI.ColorSchemes;
+using CUI.OutBuffers;
+using CUI.Scenes;
 using NUnit.Framework;
 using Pastel;
+using TextBuffer.TextBufferContents;
 
 namespace Tests.Core
 {
@@ -28,7 +26,7 @@ namespace Tests.Core
         {
             _colorScheme = new DefaultDarkColorScheme();
             _outBuffer = new MockConsole();
-            _textBuffer = new TextBuffer(new MockCodeBufferContent());
+            _textBuffer = new TextBuffer.TextBuffers.TextBuffer(new MockCodeBufferContent());
             _scene = new CuiScene();
             Settings.OutBuffer = _outBuffer;
             Settings.ColorScheme = _colorScheme;

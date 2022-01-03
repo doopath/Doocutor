@@ -1,10 +1,9 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
-using Domain.Core.Exceptions.NotExitExceptions;
-using Domain.Core.TextBufferContents;
-using Domain.Core.TextBuffers;
-using Domain.Core.TextBuffers.TextPointers;
+using Common;
+using Utils.Exceptions.NotExitExceptions;
 using NUnit.Framework;
+using TextBuffer.TextBufferContents;
 
 namespace Tests.Core.TextBuffers
 {
@@ -18,7 +17,7 @@ namespace Tests.Core.TextBuffers
         public void Setup()
         {
             _codeBufferContent = new MockSourceCodeBufferContent();
-            _codeBuffer = new TextBuffer(_codeBufferContent);
+            _codeBuffer = new TextBuffer.TextBuffers.TextBuffer(_codeBufferContent);
             Checkbox.TurnOff();
         }
 

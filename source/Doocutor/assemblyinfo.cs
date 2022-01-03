@@ -1,6 +1,7 @@
 using System.Reflection;
 using Domain.Core;
-    
+using Utils;
+
 [assembly: AssemblyCompany(Info.ProductName)]
 [assembly: AssemblyProduct(Info.ProductName)]
 [assembly: AssemblyTitle(Info.ProductName)]

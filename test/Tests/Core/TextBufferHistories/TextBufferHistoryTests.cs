@@ -1,9 +1,9 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using Domain.Core.Cursors;
-using Domain.Core.TextBufferHistories;
+using Common;
 using NUnit.Framework;
+using TextBuffer.TextBufferHistories;
 
 namespace Tests.Core.TextBufferHistories;
 

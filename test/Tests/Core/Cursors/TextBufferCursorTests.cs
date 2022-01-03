@@ -1,8 +1,8 @@
 using System.Collections.Generic;
-using Domain.Core.Cursors;
-using Domain.Core.Exceptions.NotExitExceptions;
-using Domain.Core.TextBufferFormatters;
+using Utils.Exceptions.NotExitExceptions;
 using NUnit.Framework;
+using TextBuffer.Cursors;
+using TextBuffer.TextBufferFormatters;
 
 namespace Tests.Core.Cursors;
 
