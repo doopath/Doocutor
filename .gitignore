@@ -1,43 +1,20 @@
 # Doocutor gitignore file
 
 # User settings
-Doocutor.sln.DotSettings.user
-Doocutor/Properties
+*.user
+*/Properties
+publish
 
-# bin
-Doocutor/bin
-Tests/bin
-Libraries/bin
-DynamicEditor/bin
-StaticEditor/bin
-Domain/bin
-
-# Publish
-Publish
-
-# obj
-Doocutor/obj
-Tests/obj
-Libraries/obj
-DynamicEditor/obj
-StaticEditor/obj
-Domain/obj
+# build dirs
+*/obj
+*/bin
 
 # IDES
 .idea
 .vs
 .vscode
 
-# Local deploy script. Helps me update my local version of doocutor.
-install_local.py
-
-# Built version of Doocutor (aka the binary branch).
-Build
-
-# SN keys for Doocutor
-Doocutor.PublicKey
-
-# Wow, what is these?
+# Dev tools dirs
 .fake
 .ionide
 

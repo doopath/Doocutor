@@ -1,0 +1,4 @@
+F:\Files\code\CSharp\Doocutor\publish\Doocutor.pdb
+F:\Files\code\CSharp\Doocutor\publish\DynamicEditor.pdb
+F:\Files\code\CSharp\Doocutor\publish\Domain.pdb
+F:\Files\code\CSharp\Doocutor\publish\Doocutor.exe

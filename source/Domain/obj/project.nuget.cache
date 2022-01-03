@@ -1,0 +1,30 @@
+{
+  "version": 2,
+  "dgSpecHash": "C2anhx1LOYly4nc+czVQLQF5gC+TPBIKc9UL7B7veZHXzjIL3LKRjKdvxTaYT3eywvV1GrUVEqGIes3RkOmfdA==",
+  "success": true,
+  "projectFilePath": "F:\\Files\\code\\CSharp\\Doocutor\\source\\Domain\\Domain.csproj",
+  "expectedPackageFiles": [
+    "C:\\Users\\doopath\\.nuget\\packages\\commandlineparser\\2.8.0\\commandlineparser.2.8.0.nupkg.sha512",
+    "C:\\Users\\doopath\\.nuget\\packages\\microsoft.codeanalysis.analyzers\\3.3.2\\microsoft.codeanalysis.analyzers.3.3.2.nupkg.sha512",
+    "C:\\Users\\doopath\\.nuget\\packages\\microsoft.codeanalysis.common\\3.11.0\\microsoft.codeanalysis.common.3.11.0.nupkg.sha512",
+    "C:\\Users\\doopath\\.nuget\\packages\\microsoft.codeanalysis.csharp\\3.11.0\\microsoft.codeanalysis.csharp.3.11.0.nupkg.sha512",
+    "C:\\Users\\doopath\\.nuget\\packages\\microsoft.extensions.dependencyinjection.abstractions\\5.0.0\\microsoft.extensions.dependencyinjection.abstractions.5.0.0.nupkg.sha512",
+    "C:\\Users\\doopath\\.nuget\\packages\\microsoft.extensions.dependencymodel\\5.0.0\\microsoft.extensions.dependencymodel.5.0.0.nupkg.sha512",
+    "C:\\Users\\doopath\\.nuget\\packages\\microsoft.netcore.platforms\\2.1.2\\microsoft.netcore.platforms.2.1.2.nupkg.sha512",
+    "C:\\Users\\doopath\\.nuget\\packages\\nlog\\4.7.11\\nlog.4.7.11.nupkg.sha512",
+    "C:\\Users\\doopath\\.nuget\\packages\\pastel\\3.0.0\\pastel.3.0.0.nupkg.sha512",
+    "C:\\Users\\doopath\\.nuget\\packages\\spectre.console\\0.41.0\\spectre.console.0.41.0.nupkg.sha512",
+    "C:\\Users\\doopath\\.nuget\\packages\\system.collections.immutable\\5.0.0\\system.collections.immutable.5.0.0.nupkg.sha512",
+    "C:\\Users\\doopath\\.nuget\\packages\\system.memory\\4.5.4\\system.memory.4.5.4.nupkg.sha512",
+    "C:\\Users\\doopath\\.nuget\\packages\\system.reflection.metadata\\5.0.0\\system.reflection.metadata.5.0.0.nupkg.sha512",
+    "C:\\Users\\doopath\\.nuget\\packages\\system.runtime.compilerservices.unsafe\\5.0.0\\system.runtime.compilerservices.unsafe.5.0.0.nupkg.sha512",
+    "C:\\Users\\doopath\\.nuget\\packages\\system.text.encoding.codepages\\4.5.1\\system.text.encoding.codepages.4.5.1.nupkg.sha512",
+    "C:\\Users\\doopath\\.nuget\\packages\\system.threading.tasks.extensions\\4.5.4\\system.threading.tasks.extensions.4.5.4.nupkg.sha512",
+    "C:\\Users\\doopath\\.nuget\\packages\\textcopy\\4.3.1\\textcopy.4.3.1.nupkg.sha512",
+    "C:\\Users\\doopath\\.nuget\\packages\\wcwidth\\0.2.0\\wcwidth.0.2.0.nupkg.sha512",
+    "C:\\Users\\doopath\\.nuget\\packages\\microsoft.netcore.app.runtime.win-x64\\6.0.1\\microsoft.netcore.app.runtime.win-x64.6.0.1.nupkg.sha512",
+    "C:\\Users\\doopath\\.nuget\\packages\\microsoft.windowsdesktop.app.runtime.win-x64\\6.0.1\\microsoft.windowsdesktop.app.runtime.win-x64.6.0.1.nupkg.sha512",
+    "C:\\Users\\doopath\\.nuget\\packages\\microsoft.aspnetcore.app.runtime.win-x64\\6.0.1\\microsoft.aspnetcore.app.runtime.win-x64.6.0.1.nupkg.sha512"
+  ],
+  "logs": []
+}
