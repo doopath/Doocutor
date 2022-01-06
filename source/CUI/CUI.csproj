@@ -7,14 +7,14 @@
     </PropertyGroup>
 
     <ItemGroup>
-      <PackageReference Include="NLog" Version="4.7.11" />
-      <PackageReference Include="Pastel" Version="3.0.0" />
-      <PackageReference Include="TextCopy" Version="4.3.1" />
+      <ProjectReference Include="..\Common\Common.csproj" />
+      <ProjectReference Include="..\Utils\Utils.csproj" />
     </ItemGroup>
 
     <ItemGroup>
-      <ProjectReference Include="..\Common\Common.csproj" />
-      <ProjectReference Include="..\Utils\Utils.csproj" />
+      <PackageReference Include="NLog" Version="4.7.13" />
+      <PackageReference Include="Pastel" Version="3.0.0" />
+      <PackageReference Include="TextCopy" Version="4.3.1" />
     </ItemGroup>
 
 </Project>

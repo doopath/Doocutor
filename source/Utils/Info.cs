@@ -9,10 +9,10 @@
         /// B - build,
         /// DDMMYY - DayMonthYear datetime
         /// </summary>
-        public const string BuildInfo = "UCB-030122";
-        public const string Updated = "3rd of January 2022";
+        public const string BuildInfo = "UCB-060122";
+        public const string Updated = "6th of January 2022";
         public const string Company = "Doopath";
-        public const string Version = "0.5.25.1";
+        public const string Version = "0.5.26.0";
         public const string ProductName = "Doocutor";
         public const string BuildType = "Debug";
 

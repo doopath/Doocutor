@@ -1,11 +1,11 @@
 ﻿using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
 using Common;
-using Utils.Exceptions.NotExitExceptions;
 using CUI.ColorSchemes;
 using CUI.OutBuffers;
 using CUI.Scenes;
 using Pastel;
+using Utils.Exceptions.NotExitExceptions;
 
 namespace CUI;
 
@@ -122,8 +122,18 @@ public static class CuiRender
         if (TopOffset <= 0)
             throw new ValueOutOfRangeException(
                 "It is already the first line of the text buffer! You cannot scroll down!");
+        
         TopOffset--;
     }
+
+    /// <summary>
+    /// Now it works not stable so it is not used.
+    /// You can call this method if you want to increase the performance,
+    /// but if you will asynchronously render too fast you'll probably get
+    /// some errors like 'IndexOutOfRangeException' or something like that.
+    /// </summary>
+    public static async void RenderAsync()
+        => await Task.Run(Render);
 
     public static void Render()
     {
@@ -144,12 +154,11 @@ public static class CuiRender
     /// </param>
     public static void Render(IEnumerable<string> scene)
     {
-        if (IsDeveloperMonitorShown)
-            StartWatching();
+        if (IsDeveloperMonitorShown) StartWatching();
 
         ShowScene(scene);
+        
         if (_showCursor) RenderCursor();
-
         if (!IsDeveloperMonitorShown) return;
 
         StopWatching();
@@ -179,7 +188,7 @@ public static class CuiRender
         => DoVerticalCursorMovement(TextBuffer!.IncCursorPositionFromLeft);
 #else
     // These two methods don't update the screen.
-    // It enhances performance, but is not comfy for debugging.
+    // It enhances performance, but it's not comfy for debugging.
     public static void MoveCursorLeft()
         => DoHorizontalCursorMovement(TextBuffer!.DecCursorPositionFromLeft);
 
