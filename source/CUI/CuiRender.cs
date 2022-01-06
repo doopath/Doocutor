@@ -28,35 +28,27 @@ public static class CuiRender
     public static IScene? Scene { get; set; }
     public static IOutBuffer? OutBuffer { get; set; }
 
-
-    /// <summary>
-    /// Enable/disable developer monitor
-    /// (a panel that's displayed at the right top corner
-    /// of the out buffer and shows render time, position, etc).
-    /// Usually disabled in 'release' version.
-    /// </summary>
-    public static bool IsDeveloperMonitorShown { get; set; }
-
     /// <summary>
     /// Set color scheme for the rendered text and the
     /// developer monitor.
     /// </summary>
-    public static IColorScheme? ColorScheme
+    public static IColorScheme ColorScheme
     {
-        get => Settings.ColorScheme;
-        set => DeveloperMonitor.ColorScheme = value!;
+        get => _colorScheme ?? Settings.ColorScheme;
+        set => _colorScheme = value;
     }
+    
+    public const int TopEdge = 0;
+    public static int WindowWidth => OutBuffer!.Width;
+    public static int WindowHeight => OutBuffer!.Height;
+    public static int RightEdge => OutBuffer!.Width - 2;
+    public static int BottomEdge => OutBuffer!.Height - 1;
+    public static long LastFrameRenderTime { get; private set; }
 
-    private static DeveloperMonitor? _developerMonitor;
+    private static IColorScheme? _colorScheme;
     private static List<string> _pureScene;
-    private static int WindowWidth => OutBuffer!.Width;
-    private static int WindowHeight => OutBuffer!.Height;
-    private static int RightEdge => OutBuffer!.Width - 2;
-    private static int BottomEdge => OutBuffer!.Height - 1;
     private static Stopwatch _watch;
-    private static long _lastFrameRenderTime;
     private static bool _showCursor;
-    private const int TopEdge = 0;
 
     static CuiRender()
     {
@@ -64,36 +56,6 @@ public static class CuiRender
         _pureScene = new();
         _showCursor = true;
         TopOffset = 0;
-    }
-
-    /// <summary>
-    /// TextBuffer, Scene and ColorScheme must be set
-    /// before the developer monitor initializing.
-    /// </summary>
-    public static void InitializeDeveloperMonitor()
-        => _developerMonitor = new DeveloperMonitor(
-            TopOffset,
-            TextBuffer!.CursorPositionFromTop,
-            TextBuffer.CursorPositionFromLeft,
-            Scene!,
-            ColorScheme!);
-
-    /// <summary>
-    /// The DeveloperMonitor must be set before enabling it.
-    /// </summary>
-    public static void EnableDeveloperMonitor()
-    {
-        IsDeveloperMonitorShown = true;
-        _developerMonitor!.TurnOn();
-    }
-
-    /// <summary>
-    /// The DeveloperMonitor must be set before disabling it.
-    /// </summary>
-    public static void DisableDeveloperMonitor()
-    {
-        IsDeveloperMonitorShown = false;
-        _developerMonitor!.TurnOff();
     }
 
     /// <summary>
@@ -153,15 +115,10 @@ public static class CuiRender
     /// </param>
     public static void Render(IEnumerable<string> scene)
     {
-        if (IsDeveloperMonitorShown) StartWatching();
-
+        StartWatching();
         ShowScene(scene);
-        
         if (_showCursor) RenderCursor();
-        if (!IsDeveloperMonitorShown) return;
-
         StopWatching();
-        UpdateDeveloperMonitorAsync();
     }
 
     public static void Clear()
@@ -244,9 +201,6 @@ public static class CuiRender
     [SuppressMessage("ReSharper.DPA", "DPA0003: Excessive memory allocations in LOH")]
     private static void SetScene()
     {
-        if (IsDeveloperMonitorShown)
-            UpdateDeveloperMonitorAsync();
-
         TextBuffer!.AdaptTextForBufferSize(RightEdge);
         Scene!.TargetWidth = WindowWidth;
 
@@ -270,7 +224,7 @@ public static class CuiRender
     private static void StopWatching()
     {
         _watch.Stop();
-        _lastFrameRenderTime = _watch.ElapsedMilliseconds;
+        LastFrameRenderTime = _watch.ElapsedMilliseconds;
         _watch = new Stopwatch();
     }
 
@@ -320,14 +274,4 @@ public static class CuiRender
             Render();
         }
     }
-
-    private static async void UpdateDeveloperMonitorAsync()
-        => await Task.Run(UpdateDeveloperMonitor);
-
-    private static void UpdateDeveloperMonitor()
-        => _developerMonitor!.Update(
-               TopOffset,
-               TextBuffer!.CursorPositionFromTop,
-               TextBuffer.CursorPositionFromLeft,
-               (ulong)_lastFrameRenderTime);
 }

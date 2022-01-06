@@ -5,6 +5,7 @@ using CUI;
 using CUI.ColorSchemes;
 using CUI.OutBuffers;
 using CUI.Scenes;
+using CUI.Widgets;
 using InputHandling;
 using InputHandling.CommandHandlers;
 using InputHandling.FlowHandlers;
@@ -48,7 +49,6 @@ public class App : IApplication
         CuiRender.Scene = CuiScene;
         CuiRender.OutBuffer = OutBuffer;
         CuiRender.TextBuffer = TextBuffer;
-        CuiRender.InitializeDeveloperMonitor();
 
         WidgetsMount.Scene = CuiScene;
         WidgetsMount.OutBuffer = OutBuffer;
@@ -93,7 +93,7 @@ public class App : IApplication
         OutBuffer!.CursorVisible = false;
 
         if (options.IsDeveloperMonitorEnabled)
-            CuiRender.EnableDeveloperMonitor();
+            WidgetsMount.Mount(new DeveloperMonitorWidget());
 
         OutBufferSizeHandler.UpdateRate = options.OutBufferSizeHandlerUpdateRate;
         TextBuffer.HistoryLimit = options.TextBufferHistoryLimit;

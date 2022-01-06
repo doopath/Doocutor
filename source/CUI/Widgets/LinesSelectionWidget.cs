@@ -21,12 +21,6 @@ public sealed class LinesSelectionWidget : Widget
         _textBottomEdge = 1;
         _textForegroundColor = ColorScheme!.TextSelectionForeground;
         _textBackgroundColor = ColorScheme.TextSelectionBackground;
-        _horizontalSymbol = "─".Pastel(ColorScheme.WidgetBorderForeground);
-        _verticalSymbol = "│".Pastel(ColorScheme.WidgetBorderForeground);
-        _topLeftCorner = "╭".Pastel(ColorScheme.WidgetBorderForeground);
-        _topRightCorner = "╮".Pastel(ColorScheme.WidgetBorderForeground);
-        _bottomLeftCorner = "╰".Pastel(ColorScheme.WidgetBorderForeground);
-        _bottomRightCorner = "╯".Pastel(ColorScheme.WidgetBorderForeground);
         _activeButtonIndex = 0;
 
         TextBuffer = textBuffer;
