@@ -10,7 +10,7 @@ namespace Tests.Core.TextBufferHistories;
 [TestFixture]
 internal class TextBufferHistoryTests
 {
-    private uint _maxLength;
+    private int _maxLength;
     private List<string>? _buffer;
     private CursorPosition? _oldCursorPosition;
     private CursorPosition? _newCursorPosition;
@@ -199,7 +199,7 @@ internal class TextBufferHistoryTests
     [Test]
     public void LimitOverflowTest()
     {
-        void Test(uint limit, int overflowValue)
+        void Test(int limit, int overflowValue)
         {
             _history!.Limit = limit;
 

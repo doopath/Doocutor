@@ -26,7 +26,7 @@ namespace Doocutor
                     => ErrorHandling.HandleInterruptedExecutionException(
                            new("You have came out of the Doocutor! Good bye!"), End);
                 Start();
-                new DynamicEditorSetup().Run(ParseCommandLineArguments(args));
+                new App().Run(ParseCommandLineArguments(args));
             }
             catch (InterruptedExecutionException error)
             {
@@ -58,13 +58,13 @@ namespace Doocutor
                        () => Console.WriteLine("\nGood bye!\n"));
                 });
 
-        private static ProgramOptions ParseCommandLineArguments(string[] args)
+        private static AppOptions ParseCommandLineArguments(string[] args)
         {
-            var result = new ProgramOptions();
+            var result = new AppOptions();
 
             Parser
                 .Default
-                .ParseArguments<ProgramOptions>(args)
+                .ParseArguments<AppOptions>(args)
                 .WithParsed(ops => result = ops);
 
             return result;

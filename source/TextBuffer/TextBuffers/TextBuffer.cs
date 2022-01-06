@@ -23,7 +23,7 @@ public class TextBuffer : ITextBuffer
 
     #region Constructors
 
-    public TextBuffer(uint historyLimit = 10000)
+    public TextBuffer(int historyLimit = 10000)
     {
         var initialContentOfTheBuffer = new DefaultTextBufferContent();
         _sourceText = initialContentOfTheBuffer.SourceCode;
@@ -50,7 +50,7 @@ public class TextBuffer : ITextBuffer
         _keyboardCommandsProvider = new(_sourceText, _textFormatter, _cursor);
     }
 
-    public TextBuffer(ITextBufferContent initialContentOfTheBuffer, uint historyLimit = 100)
+    public TextBuffer(ITextBufferContent initialContentOfTheBuffer, int historyLimit = 100)
     {
         _sourceText = initialContentOfTheBuffer.SourceCode;
         _textFormatter = new TextBufferFormatter(_sourceText);
@@ -70,7 +70,7 @@ public class TextBuffer : ITextBuffer
     /// <summary>
     /// Max count of elements in the history.
     /// </summary>
-    public virtual uint HistoryLimit { get; set; }
+    public virtual int HistoryLimit { get; set; }
 
     /// <summary>
     /// Count of lines in the buffer

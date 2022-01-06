@@ -1,12 +1,10 @@
-﻿using System;
-using CommandHandling;
+﻿using CommandHandling;
 using Common;
 using Common.Options;
 using CUI;
 using CUI.ColorSchemes;
 using CUI.OutBuffers;
 using CUI.Scenes;
-using Domain.Core;
 using InputHandling;
 using InputHandling.CommandHandlers;
 using InputHandling.FlowHandlers;
@@ -15,10 +13,10 @@ using Utils.Exceptions;
 
 namespace Doocutor;
 
-public class DynamicEditorSetup : IEditorSetup
+public class App : IApplication
 {
-    public int? BufferSizeUpdateRate { get; set; }
-    public uint SourceCodeBufferHistoryLimit { get; set; }
+    public int BufferSizeUpdateRate { get; set; }
+    public int SourceTextBufferHistoryLimit { get; set; }
     public ITextBuffer TextBuffer { get; set; }
     public DynamicConsoleInputFlowIterator Iterator { get; set; }
     public DynamicCommandHandler CommandHandler { get; set; }
@@ -29,18 +27,18 @@ public class DynamicEditorSetup : IEditorSetup
     public IColorScheme ColorScheme { get; set; }
     public ColorSchemesRepository ColorSchemesRepository { get; set; }
 
-    public DynamicEditorSetup()
+    public App()
     {
-        Settings.ColorScheme = new DefaultLightColorScheme();
-
         ColorSchemesRepository = new();
         ColorSchemesRepository.Add(Settings.ColorScheme);
         ColorSchemesRepository.Add(new DefaultDarkColorScheme());
 
-        BufferSizeUpdateRate = 300;
-        SourceCodeBufferHistoryLimit = 10000;
-        TextBuffer = new TextBuffer.TextBuffers.TextBuffer(SourceCodeBufferHistoryLimit);
+        BufferSizeUpdateRate = 100;
+        SourceTextBufferHistoryLimit = 10000;
+        TextBuffer = new TextBuffer.TextBuffers.TextBuffer(SourceTextBufferHistoryLimit);
+
         EditorCommands.InitializeCodeBuffer(TextBuffer);
+
         Iterator = new DynamicConsoleInputFlowIterator();
         CommandHandler = new DynamicCommandHandler();
         OutBuffer = new StandardConsoleOutBuffer();
@@ -56,26 +54,21 @@ public class DynamicEditorSetup : IEditorSetup
         WidgetsMount.Refresh = CuiRender.Render;
 
         OutBufferSizeHandler = new OutBufferSizeHandler(
-                OutBuffer,
-                BufferSizeUpdateRate!.Value);
+            OutBuffer,
+            BufferSizeUpdateRate);
 
         InputFlowHandler = new DynamicKeyFlowHandler(
-                Iterator,
-                CommandHandler,
-                KeyCombinationsMap.Map);
+            Iterator,
+            CommandHandler,
+            KeyCombinationsMap.Map);
 
+        Settings.ColorScheme = new DefaultLightColorScheme();
         Settings.OutBuffer = OutBuffer;
     }
 
-    public void Run(ProgramOptions options)
+    public void Run(AppOptions options)
     {
-        Settings.ColorScheme = ColorSchemesRepository!
-            .Get(options.ColorScheme ?? "DoocutorDark");
-        OutBuffer!.CursorVisible = false;
-
-#if DEBUG
-        CuiRender.EnableDeveloperMonitor();
-#endif
+        Configure(options);
 
         CuiRender.Render();
         OutBufferSizeHandler!.Start();
@@ -91,5 +84,17 @@ public class DynamicEditorSetup : IEditorSetup
             CuiRender.Clear();
             throw;
         }
+    }
+
+    private void Configure(AppOptions options)
+    {
+        Settings.ColorScheme = ColorSchemesRepository.Get(options.ColorScheme);
+        OutBuffer!.CursorVisible = false;
+
+        if (options.IsDeveloperMonitorEnabled)
+            CuiRender.EnableDeveloperMonitor();
+        
+        OutBufferSizeHandler.UpdateRate = options.OutBufferSizeHandlerUpdateRate;
+        TextBuffer.HistoryLimit = options.TextBufferHistoryLimit;
     }
 }

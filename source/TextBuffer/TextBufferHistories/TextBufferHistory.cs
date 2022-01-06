@@ -17,7 +17,7 @@ public class TextBufferHistory : ITextBufferHistory
     /// Changes those older than MaxLength will
     /// be removed.
     /// </summary>
-    public uint Limit
+    public int Limit
     {
         get => _limit;
         set
@@ -33,14 +33,14 @@ public class TextBufferHistory : ITextBufferHistory
 
     private readonly List<ITextBufferChange> _history;
     private int _pointer;
-    private uint _limit;
+    private int _limit;
 
     /// <param name="limit">
     /// Max length of the history.
     /// Changes those older than MaxLength will
     /// be removed.
     /// </param>
-    public TextBufferHistory(uint limit)
+    public TextBufferHistory(int limit)
     {
         Limit = limit;
         _history = new();
