@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using CommandLine;
 using Common.Options;
 using Utils.Exceptions;
@@ -22,11 +23,13 @@ namespace Doocutor
         {
             try
             {
-                Console.CancelKeyPress += (sender, ea)
-                    => ErrorHandling.HandleInterruptedExecutionException(
-                           new("You have came out of the Doocutor! Good bye!"), End);
+                AppOptions? options = ParseCommandLineArguments(args);
+
+                if (HasHelpOption(args)) return;
+
                 Start();
-                new App().Run(ParseCommandLineArguments(args));
+                new App().Run(options);
+
             }
             catch (InterruptedExecutionException error)
             {
@@ -44,18 +47,19 @@ namespace Doocutor
 
         private static void Start()
             => OutputColorizing.ColorizeForeground(ConsoleColor.Cyan, () =>
-           {
+            {
                Logger.Debug("Start of the program");
                Info.ShowDoocutorInfo();
-           });
+            });
 
         private static void End()
             => OutputColorizing.ColorizeForeground(ConsoleColor.Cyan,
                 () =>
                 {
-                    Logger.Debug("End of the program\n\n");
+                    string endMessage = "End of the program\n";
+                    Logger.Debug($"{endMessage}\n");
                     OutputColorizing.ColorizeForeground(ConsoleColor.Cyan,
-                       () => Console.WriteLine("\nGood bye!\n"));
+                       () => Console.WriteLine($"\n{endMessage}"));
                 });
 
         private static AppOptions ParseCommandLineArguments(string[] args)
@@ -69,5 +73,8 @@ namespace Doocutor
 
             return result;
         }
+
+        private static bool HasHelpOption(string[] args)
+            => args.Contains("--help");
     }
 }

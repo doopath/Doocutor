@@ -29,6 +29,7 @@ public class App : IApplication
 
     public App()
     {
+        ColorScheme = new DefaultDarkColorScheme();
         ColorSchemesRepository = new();
         ColorSchemesRepository.Add(Settings.ColorScheme);
         ColorSchemesRepository.Add(new DefaultDarkColorScheme());
@@ -93,7 +94,7 @@ public class App : IApplication
 
         if (options.IsDeveloperMonitorEnabled)
             CuiRender.EnableDeveloperMonitor();
-        
+
         OutBufferSizeHandler.UpdateRate = options.OutBufferSizeHandlerUpdateRate;
         TextBuffer.HistoryLimit = options.TextBufferHistoryLimit;
     }

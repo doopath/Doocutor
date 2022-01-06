@@ -122,7 +122,6 @@ public static class CuiRender
         if (TopOffset <= 0)
             throw new ValueOutOfRangeException(
                 "It is already the first line of the text buffer! You cannot scroll down!");
-        
         TopOffset--;
     }
 

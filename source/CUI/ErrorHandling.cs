@@ -1,4 +1,3 @@
-using System.Diagnostics.CodeAnalysis;
 using Utils.Exceptions;
 using CUI.Widgets;
 using Domain.Core;
@@ -6,7 +5,7 @@ using NLog;
 
 namespace CUI;
 
-public class ErrorHandling
+public static class ErrorHandling
 {
     public static Logger FileLogger { get; }
     public static Logger ConsoleLogger { get; }
@@ -36,8 +35,8 @@ public class ErrorHandling
         });
 
     public static void HandleInterruptedExecutionException(
-        [NotNull] InterruptedExecutionException error,
-        [NotNull] Action action)
+        InterruptedExecutionException error,
+        Action action)
     {
         OutputColorizing.ColorizeForeground(ConsoleColor.Cyan, () => FileLogger.Debug(error.Message));
         action.Invoke();
