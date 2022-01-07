@@ -19,7 +19,6 @@ public static class EditorCommandsMap
                 new(":copy", EditorCommands.ExecuteCopyCommand),
                 new(":copyAll", EditorCommands.ExecuteCopyAllCommand),
                 new(":copyBlock", EditorCommands.ExecuteCopyBlockCommand),
-                new(":clear", EditorCommands.ExecuteClearCommand),
                 new(":remove", EditorCommands.ExecuteRemoveCommand),
                 new(":removeBlock", EditorCommands.ExecuteRemoveBlockCommand),
                 new(":replace", EditorCommands.ExecuteReplaceCommand),

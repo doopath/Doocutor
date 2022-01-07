@@ -48,7 +48,6 @@ namespace InputHandling
                 {
                     if (width != _outBuffer.Width || height != _outBuffer.Height)
                     {
-                        CuiRender.Clear();
                         CuiRender.Render();
                         CuiRender.DisableOutBufferCursor();
                     }

@@ -49,17 +49,17 @@ public sealed class DeveloperMonitorWidget : Widget
 
     public override IEnumerator<string> GetEnumerator()
         => new DeveloperMonitorWidgetEnumerator(Lines);
-    
-    public override void OnMounted(Action unmount, Action render)
-        => render();
-    
+
+    public override void OnMounted(Action unmount)
+        => CuiRender.Render();
+
     protected override void Refresh()
     {
         Update();
         _monitor = GetMonitor().ToList();
         Text = string.Join("", _monitor);
         Items!.Clear();
-        
+
         CursorPosition = new()
         {
             Left = CuiRender.RightEdge - _monitor[0].Length - 3,
@@ -72,7 +72,7 @@ public sealed class DeveloperMonitorWidget : Widget
         AddBorder();
         AddText();
     }
-    
+
     protected override void UpdateWidth()
         => Width = _monitor[0].Length + 4;
 
@@ -96,14 +96,14 @@ public sealed class DeveloperMonitorWidget : Widget
             .ToArray()[0];
 
         string GetSpacesForShorterLine(string longestLine, string line)
-            => new(' ', longestLine.Length - line.Length + 1);
+            => new(' ', longestLine.Length - line.Length);
 
         string GroupLine(string line)
             => line + GetSpacesForShorterLine(_longestMonitorLine, line);
 
         return monitor.Select(GroupLine);
     }
-    
+
     public void Update()
     {
         _renderTimeAcc += RenderTime;

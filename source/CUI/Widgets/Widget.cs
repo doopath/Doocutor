@@ -67,10 +67,10 @@ public abstract class Widget : IWidget
         }
     }
 
-    public virtual void OnMounted(Action unmount, Action render)
+    public virtual void OnMounted(Action unmount)
     {
         CuiRender.DisableVirtualCursor();
-        render();
+        CuiRender.Render();
         
         while (true)
         {
@@ -82,7 +82,8 @@ public abstract class Widget : IWidget
 
             try
             {
-                render();
+                CuiRender.Render();
+
             }
             catch (ArgumentOutOfRangeException exc)
             {
@@ -92,7 +93,7 @@ public abstract class Widget : IWidget
 
         CuiRender.EnableVirtualCursor();
         unmount();
-        render();
+        CuiRender.Render();
     }
 
     public virtual IEnumerator<string> GetEnumerator()

@@ -22,7 +22,6 @@ public static class EditorCommands
     #region Commands
     public static void ExecuteQuitCommand(EditorCommand command)
     {
-        ExecuteClearCommand(command);
         WidgetsMount.Mount(new DialogWidget(
             text: "Are you sure you want to quit from the Doocutor?",
             onCancel: () => { },
@@ -38,9 +37,6 @@ public static class EditorCommands
 
     public static void ExecuteWriteAfterCommand(EditorCommand command)
         => TextBuffer!.WriteAfter(command.GetFirstArgumentAsAnInteger(), command.GetArgumentsSinceSecondAsALine());
-
-    public static void ExecuteClearCommand(EditorCommand command)
-        => Console.Clear();
 
     public static void ExecuteUsingCommand(EditorCommand command)
     {

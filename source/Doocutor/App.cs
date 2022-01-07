@@ -1,4 +1,5 @@
-﻿using CommandHandling;
+﻿using System;
+using CommandHandling;
 using Common;
 using Common.Options;
 using CUI;
@@ -52,7 +53,6 @@ public class App : IApplication
 
         WidgetsMount.Scene = CuiScene;
         WidgetsMount.OutBuffer = OutBuffer;
-        WidgetsMount.Refresh = CuiRender.Render;
 
         OutBufferSizeHandler = new OutBufferSizeHandler(
             OutBuffer,
@@ -71,6 +71,7 @@ public class App : IApplication
     {
         Configure(options);
 
+        CuiRender.Clear();
         CuiRender.Render();
         OutBufferSizeHandler!.Start();
 

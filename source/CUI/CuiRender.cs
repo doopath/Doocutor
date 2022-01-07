@@ -122,7 +122,14 @@ public static class CuiRender
     }
 
     public static void Clear()
-        => OutBuffer!.Clear();
+    {
+        List<string> emptyScene = new();
+        
+        for (int i = 0; i < WindowHeight - 1; i++)
+            emptyScene.Add(new string(' ', WindowWidth));
+        
+        Render(emptyScene);
+    }
 
     /// <summary>
     /// Disable real (not virtual) cursor of the out buffer.

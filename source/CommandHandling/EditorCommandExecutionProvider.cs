@@ -11,8 +11,6 @@ public class EditorCommandExecutionProvider
     /// <summary>
     /// Get a function (as an action) for a given command to execute that.
     /// </summary>
-    /// Throws that if a given command is not included in the list of supported commands.
-    /// </exception>
     public static Action GetExecutingFunction(EditorCommand command)
     {
         var content = command.Content.Split(" ")[0];
