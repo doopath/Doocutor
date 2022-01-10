@@ -4,13 +4,13 @@
     {
         public static Dictionary<string, string> Map { get; } = new(
             new[] {
-                new KeyValuePair<string, string>(@"Control\+Q", ":quit"),
+                new KeyValuePair<string, string>(@"Alt\+Q", ":quit"),
                 
-                new KeyValuePair<string, string>(@"Control\+U", ":undo"),
-                new KeyValuePair<string, string>(@"Control\+R", ":redo"),
+                new KeyValuePair<string, string>(@"Alt\+U", ":undo"),
+                new KeyValuePair<string, string>(@"Alt\+R", ":redo"),
                 
-                new KeyValuePair<string, string>(@"Control\+P", ":pasteClipboardContent"),
-                new KeyValuePair<string, string>(@"Control\+S", ":selectLines"),
+                new KeyValuePair<string, string>(@"Alt\+P", ":pasteClipboardContent"),
+                new KeyValuePair<string, string>(@"Alt\+S", ":selectLines"),
                 
                 new KeyValuePair<string, string>(@"Enter", ":enter"),
                 new KeyValuePair<string, string>(@"(Divide|Add|Subtract|Multiply)", ":appendLine "),

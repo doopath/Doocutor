@@ -11,8 +11,4 @@
       <ProjectReference Include="..\CUI\CUI.csproj" />
     </ItemGroup>
 
-    <ItemGroup>
-      <Folder Include="TextBuffers\TextPointers" />
-    </ItemGroup>
-
 </Project>

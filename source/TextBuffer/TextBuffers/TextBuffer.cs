@@ -181,9 +181,18 @@ public class TextBuffer : ITextBuffer
             return;
 
         string[] newSourceCode = _sourceText.ToArray();
-        int prefixLengthDiff = initialPrefixLength - GetPrefixLength();
+        int prefixLengthDiff = GetPrefixLength() - initialPrefixLength;
 
-        SetCursorPositionFromLeftAt(CursorPositionFromLeft + prefixLengthDiff);
+        if (prefixLengthDiff > 0)
+        {
+            // Don't know exactly why, but +2 is ok and it works fine with that.
+            // Otherwise the CursorPositionFromLeft will be incorrect (but only when
+            // the AdaptTextForBufferSize makes more lines, than were before; for example:
+            // There were 99 lines, but after adapting there are 100 lines. Prefix of the lines
+            // was increased '  100 |' with length=7 instead of '  99 |' with length=6.)
+            for (int i = prefixLengthDiff + 2; i > 0; i--)
+                IncCursorPositionFromLeft();
+        }
 
         CursorPosition initialCursorPosition = new()
         {

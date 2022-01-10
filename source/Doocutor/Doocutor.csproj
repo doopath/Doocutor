@@ -11,7 +11,7 @@
         <SignAssembly>False</SignAssembly>
         <Nullable>enable</Nullable>
         <IncludeAllContentForSelfExtract>true</IncludeAllContentForSelfExtract>
-        <PublishTrimmed>true</PublishTrimmed>
+        <PublishTrimmed>false</PublishTrimmed>
     </PropertyGroup>
 
     <ItemGroup>

@@ -98,27 +98,16 @@ public static class CuiRender
 
     public static void Render()
     {
+        StartWatching();
         SetScene();
         Render(Scene!.CurrentScene!);
+        StopWatching();
     }
-
-    /// <summary>
-    /// Render the scene.
-    /// This method uses the monitor, so you can call
-    /// it only in single-thread mode.
-    /// If the IsDeveloperMonitorShown property equals True,
-    /// than the developer monitor also will be rendered.
-    /// </summary>
-    /// 
-    /// <param name="scene">
-    /// A list of lines to be rendered.
-    /// </param>
-    public static void Render(IEnumerable<string> scene)
+    
+    private static void Render(IEnumerable<string> scene)
     {
-        StartWatching();
         ShowScene(scene);
         if (_showCursor) RenderCursor();
-        StopWatching();
     }
 
     public static void Clear()
