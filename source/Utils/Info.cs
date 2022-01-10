@@ -11,7 +11,7 @@ public static class Info
     /// </summary>
     public const string BuildInfo = "UCB-100122";
     public const string Updated = "10th of January 2022";
-    public const string Version = "0.5.29.0";
+    public const string Version = "0.5.30.1";
     public const string ProductName = "Doocutor";
     public const string BuildType = "Debug";
 

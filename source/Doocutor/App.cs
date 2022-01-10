@@ -1,5 +1,4 @@
-﻿using System;
-using CommandHandling;
+﻿using CommandHandling;
 using Common;
 using Common.Options;
 using CUI;
@@ -46,6 +45,9 @@ public class App : IApplication
         CommandHandler = new DynamicCommandHandler();
         OutBuffer = new StandardConsoleOutBuffer();
         CuiScene = new CuiScene();
+        
+        Settings.ColorScheme = new DefaultLightColorScheme();
+        Settings.OutBuffer = OutBuffer;
 
         CuiRender.Scene = CuiScene;
         CuiRender.OutBuffer = OutBuffer;
@@ -62,9 +64,6 @@ public class App : IApplication
             Iterator,
             CommandHandler,
             KeyCombinationsMap.Map);
-
-        Settings.ColorScheme = new DefaultLightColorScheme();
-        Settings.OutBuffer = OutBuffer;
     }
 
     public void Run(AppOptions options)

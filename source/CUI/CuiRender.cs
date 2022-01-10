@@ -118,7 +118,11 @@ public static class CuiRender
             emptyScene.Add(new string(' ', WindowWidth));
         
         Render(emptyScene);
+        ResetOutBufferCursor();
     }
+
+    public static void ResetOutBufferCursor()
+        => OutBuffer!.SetCursorPosition(0, 0);
 
     /// <summary>
     /// Disable real (not virtual) cursor of the out buffer.
