@@ -50,8 +50,8 @@
             CursorForeground = "#EEEEEE";
             CursorBackground = "#555555";
 
-            DeveloperMonitorForeground = "#EEEEEE";
-            DeveloperMonitorBackground = "#AE8ABE";
+            DeveloperMonitorForeground = "#555555";
+            DeveloperMonitorBackground = "";
 
             WidgetBorderForeground = "#555555";
             WidgetBorderBackground = "";

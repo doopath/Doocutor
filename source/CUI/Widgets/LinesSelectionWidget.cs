@@ -1,4 +1,5 @@
-﻿using Common;
+﻿using System.Text.RegularExpressions;
+using Common;
 using Pastel;
 using TextCopy;
 
@@ -68,13 +69,29 @@ public sealed class LinesSelectionWidget : Widget
             string textBufferLine = TextBuffer.Size > i
                 ? TextBuffer.Lines[i + CuiRender.TopOffset]
                 : "";
+            string pureLine = RemoveAsciiColors(sceneLine);
+            string spaces = new string(' ',
+                pureLine.Length - prefixLength - textBufferLine.Length);
             scene[i] = sceneLine[..(prefixLength - 1)]
                        + ("|" + textBufferLine)
-                           .Pastel(_textForegroundColor)
-                           .PastelBg(_textBackgroundColor)
-                       + sceneLine[(prefixLength + textBufferLine.Length)..];
+                       .Pastel(_textForegroundColor)
+                       .PastelBg(_textBackgroundColor)
+                       + spaces;
         }
     }
+
+    private string GetSpacesForLine(string sceneLine, string textBufferLine, int prefixLength)
+    {
+        string pureLine = RemoveAsciiColors(sceneLine);
+        string spaces = new string(' ',
+            pureLine.Length - prefixLength - textBufferLine.Length);
+
+        return spaces;
+    }
+    
+    
+    private string RemoveAsciiColors(string line)
+        => Regex.Replace(line, "\u001B\\[[;\\d]*m", "");
 
     private int GetStartOfSelection()
         => Math.Min(_linesSelectionRange.Start, _linesSelectionRange.End) - CuiRender.TopOffset;

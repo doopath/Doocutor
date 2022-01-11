@@ -42,6 +42,7 @@ public abstract class Widget : IWidget
     protected int? _textBottomEdge;
 
     protected string? _textForegroundColor;
+    protected string? _textBackgroundColor;
     protected string? _horizontalSymbol;
     protected string? _verticalSymbol;
     protected string? _topLeftCorner;
@@ -145,7 +146,7 @@ public abstract class Widget : IWidget
     {
         string[] textItems = Text!
             .ToCharArray()
-            .Select(c => c.ToString().Pastel(_textForegroundColor))
+            .Select(ColorizeCharacter)
             .ToArray();
         int leftEdge = _textLeftEdge!.Value;
         int rightEdge = Width - _textRightEdge!.Value;
@@ -182,6 +183,19 @@ public abstract class Widget : IWidget
 
             widgetItemsTopPointer++;
         }
+    }
+    
+    protected virtual string ColorizeCharacter(char symbol)
+    {
+        string result = symbol.ToString();
+
+        if (_textForegroundColor is not null && _textForegroundColor != "")
+            result = result.Pastel(_textForegroundColor);
+
+        if (_textBackgroundColor is not null && _textBackgroundColor != "")
+            result = result.PastelBg(_textBackgroundColor);
+
+        return result;
     }
 
     protected virtual void AddBorder()

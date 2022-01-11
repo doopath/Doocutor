@@ -213,7 +213,7 @@ public static class CuiRender
     private static void ShowScene(IEnumerable<string> scene)
     {
         OutBuffer!.SetCursorPosition(0, 0);
-        OutBuffer.WriteLine(string.Join("", scene));
+        OutBuffer.Fill(scene);
 
         FixCursorPosition();
     }
