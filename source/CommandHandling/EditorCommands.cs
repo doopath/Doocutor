@@ -24,7 +24,7 @@ public static class EditorCommands
     {
         WidgetsMount.Mount(new DialogWidget(
             text: "Are you sure you want to quit from the Doocutor?",
-            onCancel: () => { },
+            onCancel: null,
             onOk: () => throw new InterruptedExecutionException(
                 "You have came out of the doocutor! Good bye!")));
     }

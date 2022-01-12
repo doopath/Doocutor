@@ -11,6 +11,7 @@ using InputHandling.CommandHandlers;
 using InputHandling.FlowHandlers;
 using InputHandling.Iterators;
 using Utils.Exceptions;
+using Utils.Exceptions.NotExitExceptions;
 
 namespace Doocutor;
 
@@ -89,7 +90,16 @@ public class App : IApplication
 
     private void Configure(AppOptions options)
     {
-        Settings.ColorScheme = ColorSchemesRepository.Get(options.ColorScheme);
+        try
+        {
+            Settings.ColorScheme = ColorSchemesRepository.Get(options.ColorScheme);
+        }
+        catch (ColorSchemeWasNotFoundException error)
+        {
+            Settings.ColorScheme = ColorScheme;
+            WidgetsMount.Mount(new AlertWidget(error.Message, AlertLevel.ERROR));
+        }
+        
         OutBuffer!.CursorVisible = false;
 
         if (options.IsDeveloperMonitorEnabled)

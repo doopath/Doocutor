@@ -1,4 +1,5 @@
 ﻿using CUI.ColorSchemes;
+using Utils.Exceptions.NotExitExceptions;
 
 namespace CUI
 {
@@ -15,6 +16,15 @@ namespace CUI
             => _repository.Add(scheme.Name, scheme);
 
         public IColorScheme Get(string schemeName)
-            => _repository[schemeName];
+        {
+            try
+            {
+                return _repository[schemeName];
+            }
+            catch (ArgumentNullException error)
+            {
+                throw new ColorSchemeWasNotFoundException($"Color scheme with name={schemeName} was not found!");
+            }
+        }
     }
 }

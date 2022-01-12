@@ -4,10 +4,10 @@ namespace CUI.Widgets;
 
 public sealed class DialogWidget : Widget
 {
-    private Action OnCancel { get; set; }
-    private Action OnOk { get; set; }
+    private Action? OnCancel { get; set; }
+    private Action? OnOk { get; set; }
 
-    public DialogWidget(string text, Action onCancel, Action onOk)
+    public DialogWidget(string text, Action? onCancel, Action? onOk)
     {
         _textLeftEdge = 2;
         _textRightEdge = 2;
@@ -44,9 +44,9 @@ public sealed class DialogWidget : Widget
         string activeButton = ButtonsMap.Keys.ToArray()[_activeButtonIndex];
 
         if (activeButton == "OK")
-            OnOk();
+            OnOk?.Invoke();
         else if (activeButton == "CANCEL")
-            OnCancel();
+            OnCancel?.Invoke();
     }
 
     public override IEnumerator<string> GetEnumerator()
