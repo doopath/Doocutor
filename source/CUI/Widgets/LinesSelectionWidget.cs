@@ -69,29 +69,38 @@ public sealed class LinesSelectionWidget : Widget
             string textBufferLine = TextBuffer.Size > i
                 ? TextBuffer.Lines[i + CuiRender.TopOffset]
                 : "";
-            string pureLine = RemoveAsciiColors(sceneLine);
-            string spaces = new string(' ',
-                pureLine.Length - prefixLength - textBufferLine.Length);
-            scene[i] = sceneLine[..(prefixLength - 1)]
-                       + ("|" + textBufferLine)
-                       .Pastel(_textForegroundColor)
-                       .PastelBg(_textBackgroundColor)
-                       + spaces;
+            int contentEndIndex = GetFirstColoredSymbolIndex(sceneLine);
+            
+            if (contentEndIndex > 0)
+            {
+                if (textBufferLine.Length < contentEndIndex - prefixLength)
+                    contentEndIndex = textBufferLine.Length + prefixLength;
+                
+                scene[i] = sceneLine[..(prefixLength - 1)]
+                           + ("|" + sceneLine[prefixLength..contentEndIndex])
+                           .Pastel(_textForegroundColor)
+                           .PastelBg(_textBackgroundColor)
+                           + sceneLine[contentEndIndex..];
+            }
+            else
+                scene[i] = sceneLine[..(prefixLength - 1)]
+                           + ("|" + textBufferLine)
+                           .Pastel(_textForegroundColor)
+                           .PastelBg(_textBackgroundColor)
+                           + GetSpacesForLine(sceneLine, textBufferLine, prefixLength);
         }
     }
+
+
 
     private string GetSpacesForLine(string sceneLine, string textBufferLine, int prefixLength)
     {
         string pureLine = RemoveAsciiColors(sceneLine);
-        string spaces = new string(' ',
+            string spaces = new string(' ',
             pureLine.Length - prefixLength - textBufferLine.Length);
 
         return spaces;
     }
-    
-    
-    private string RemoveAsciiColors(string line)
-        => Regex.Replace(line, "\u001B\\[[;\\d]*m", "");
 
     private int GetStartOfSelection()
         => Math.Min(_linesSelectionRange.Start, _linesSelectionRange.End) - CuiRender.TopOffset;

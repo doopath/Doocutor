@@ -1,5 +1,6 @@
 ﻿using System.Collections;
 using System.ComponentModel.DataAnnotations;
+using System.Text.RegularExpressions;
 using Common;
 using CUI.ColorSchemes;
 using Pastel;
@@ -184,6 +185,13 @@ public abstract class Widget : IWidget
             widgetItemsTopPointer++;
         }
     }
+    
+        
+    protected virtual int GetFirstColoredSymbolIndex(string line)
+        => Regex.Match(line, "\u001B\\[[;\\d]*m").Index;
+    
+    protected virtual string RemoveAsciiColors(string line)
+        => Regex.Replace(line, "\u001B\\[[;\\d]*m", "");
     
     protected virtual string ColorizeCharacter(char symbol)
     {

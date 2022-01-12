@@ -8,9 +8,8 @@
         <ApplicationIcon>../../resources/img/DoocutorIcon.ico</ApplicationIcon>
         <SatelliteResourceLanguages>en</SatelliteResourceLanguages>
         <StartupObject>Doocutor.Program</StartupObject>
-        <SignAssembly>False</SignAssembly>
         <Nullable>enable</Nullable>
-        <IncludeAllContentForSelfExtract>true</IncludeAllContentForSelfExtract>
+        <IncludeAllContentForSelfExtract>false</IncludeAllContentForSelfExtract>
         <PublishTrimmed>false</PublishTrimmed>
     </PropertyGroup>
 
