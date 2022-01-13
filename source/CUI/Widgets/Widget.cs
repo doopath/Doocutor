@@ -38,9 +38,9 @@ public abstract class Widget : IWidget
         new KeyValuePair<string, WidgetAction>("OK", WidgetAction.OK),
     });
 
-    protected int? _textRightEdge;
-    protected int? _textLeftEdge;
-    protected int? _textBottomEdge;
+    protected int _textRightEdge;
+    protected int _textLeftEdge;
+    protected int _textBottomEdge;
 
     protected string? _textForegroundColor;
     protected string? _textBackgroundColor;
@@ -149,9 +149,9 @@ public abstract class Widget : IWidget
             .ToCharArray()
             .Select(ColorizeCharacter)
             .ToArray();
-        int leftEdge = _textLeftEdge!.Value;
-        int rightEdge = Width - _textRightEdge!.Value;
-        int bottomEdge = Height - _textBottomEdge!.Value;
+        int leftEdge = _textLeftEdge;
+        int rightEdge = Width - _textRightEdge;
+        int bottomEdge = Height - _textBottomEdge;
         int widgetItemsTopPointer = 1;
         int maxLineLength = rightEdge - leftEdge;
 

@@ -38,6 +38,13 @@
         public string AlertErrorForeground { get; init; }
         #endregion
 
+        #region Input Field
+        public string InputFieldForeground { get; init; }
+        public string InputFieldBackground { get; init; }
+        public string InputFieldCursorForeground { get; init; }
+        public string InputFieldCursorBackground { get; init; }
+        #endregion
+        
         public DefaultLightColorScheme()
         {
             Name = "DoocutorLight";
@@ -63,6 +70,11 @@
             AlertNoticeForeground = TextForeground;
             AlertWarnForeground = "#AF3A03";
             AlertErrorForeground = "#9D0006";
+            
+            InputFieldForeground = "#EEEEEE";
+            InputFieldBackground = "#555555";
+            InputFieldCursorForeground = "#EEEEEE";
+            InputFieldCursorBackground = "#A9B7C6";
         }
     }
 }

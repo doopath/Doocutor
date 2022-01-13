@@ -10,6 +10,7 @@ using InputHandling;
 using InputHandling.CommandHandlers;
 using InputHandling.FlowHandlers;
 using InputHandling.Iterators;
+using TextBuffer;
 using Utils.Exceptions;
 using Utils.Exceptions.NotExitExceptions;
 

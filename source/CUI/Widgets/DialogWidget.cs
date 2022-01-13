@@ -2,12 +2,12 @@ using Pastel;
 
 namespace CUI.Widgets;
 
-public sealed class DialogWidget : Widget
+public class DialogWidget : Widget
 {
-    private Action? OnCancel { get; set; }
-    private Action? OnOk { get; set; }
+    protected virtual Action? OnCancel { get; set; }
+    protected virtual Action<object?>? OnOk { get; set; }
 
-    public DialogWidget(string text, Action? onCancel, Action? onOk)
+    public DialogWidget(string text, Action? onCancel, Action<object?>? onOk)
     {
         _textLeftEdge = 2;
         _textRightEdge = 2;
@@ -29,8 +29,6 @@ public sealed class DialogWidget : Widget
 
         Text = text;
         Items = new();
-
-        Refresh();
     }
 
     protected override Dictionary<string, WidgetAction> ButtonsMap { get; set; } = new(new[]
@@ -44,7 +42,7 @@ public sealed class DialogWidget : Widget
         string activeButton = ButtonsMap.Keys.ToArray()[_activeButtonIndex];
 
         if (activeButton == "OK")
-            OnOk?.Invoke();
+            OnOk?.Invoke(null);
         else if (activeButton == "CANCEL")
             OnCancel?.Invoke();
     }

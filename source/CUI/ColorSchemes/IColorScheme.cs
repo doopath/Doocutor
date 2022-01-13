@@ -25,5 +25,10 @@
         string AlertNoticeForeground { get; init; }
         string AlertWarnForeground { get; init; }
         string AlertErrorForeground { get; init; }
+
+        string InputFieldForeground { get; init; }
+        string InputFieldBackground { get; init; }
+        string InputFieldCursorForeground { get; init; }
+        string InputFieldCursorBackground { get; init; }
     }
 }

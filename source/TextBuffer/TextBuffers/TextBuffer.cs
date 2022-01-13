@@ -1,6 +1,7 @@
 ﻿using Common;
 using CUI;
 using CUI.Widgets;
+using NLog.Targets;
 using Utils.Exceptions.NotExitExceptions;
 using TextBuffer.Cursors;
 using TextBuffer.TextBufferContents;
@@ -23,9 +24,10 @@ public class TextBuffer : ITextBuffer
 
     #region Constructors
 
-    public TextBuffer(int historyLimit = 10000)
+    public TextBuffer(int historyLimit = 10000, string? filePath = null)
     {
         var initialContentOfTheBuffer = new DefaultTextBufferContent();
+        FilePath = filePath;
         _sourceText = initialContentOfTheBuffer.SourceCode;
         _textFormatter = new TextBufferFormatter(_sourceText);
         _history = new TextBufferHistory(historyLimit);
@@ -37,10 +39,11 @@ public class TextBuffer : ITextBuffer
         _keyboardCommandsProvider = new(_sourceText, _textFormatter, _cursor);
     }
 
-    public TextBuffer(ITextBuffer buffer)
+    public TextBuffer(ITextBuffer buffer, string? filePath = null)
     {
+        FilePath = filePath;
         _sourceText = buffer.Lines.ToList();
-        _textFormatter = new TextBufferFormatter(_sourceText);
+        _textFormatter = new TextBufferFormatter(_sourceText);       
         _history = new TextBufferHistory(buffer.HistoryLimit);
         _cursor = new TextBufferCursor(
             _sourceText,
@@ -50,8 +53,9 @@ public class TextBuffer : ITextBuffer
         _keyboardCommandsProvider = new(_sourceText, _textFormatter, _cursor);
     }
 
-    public TextBuffer(ITextBufferContent initialContentOfTheBuffer, int historyLimit = 100)
+    public TextBuffer(ITextBufferContent initialContentOfTheBuffer, int historyLimit = 10000, string? filePath = null)
     {
+        FilePath = filePath;
         _sourceText = initialContentOfTheBuffer.SourceCode;
         _textFormatter = new TextBufferFormatter(_sourceText);
         _history = new TextBufferHistory(historyLimit);
@@ -71,6 +75,8 @@ public class TextBuffer : ITextBuffer
     /// Max count of elements in the history.
     /// </summary>
     public virtual int HistoryLimit { get; set; }
+    
+    public virtual string? FilePath { get; }
 
     /// <summary>
     /// Count of lines in the buffer
@@ -144,8 +150,6 @@ public class TextBuffer : ITextBuffer
             _cursor.CursorPositionFromLeft = _textFormatter.GetPrefixLength(firstLineNumber);
             _cursor.CursorPositionFromTop = firstLineIndex;
         }
-
-        _ = 0;
     }
 
     public virtual void RemoveLineAt(int lineNumber)

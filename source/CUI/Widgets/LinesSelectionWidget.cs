@@ -11,7 +11,6 @@ public sealed class LinesSelectionWidget : Widget
         new(System.Array.Empty<KeyValuePair<string, WidgetAction>>());
     private ITextBuffer TextBuffer { get; init; }
 
-    private readonly string _textBackgroundColor;
     private ConsoleKey? _lastPressedKey;
     private ChangingRange _linesSelectionRange;
 
@@ -169,7 +168,7 @@ public sealed class LinesSelectionWidget : Widget
         int end = Math.Max(_linesSelectionRange.Start, _linesSelectionRange.End) + 2;
 
         TextBuffer.RemoveTextBlock(new TextBlockPointer(start, end));
-        _ = 0;
+        TextBuffer.SetCursorPositionFromLeftAt(TextBuffer.GetPrefixLength());
     }
 }
 

@@ -36,6 +36,13 @@ public record DefaultDarkColorScheme : IColorScheme
     public string AlertErrorForeground { get; init; }
     #endregion
 
+    #region Input Field
+    public string InputFieldForeground { get; init; }
+    public string InputFieldBackground { get; init; }
+    public string InputFieldCursorForeground { get; init; }
+    public string InputFieldCursorBackground { get; init; }
+    #endregion
+
     public DefaultDarkColorScheme()
     {
         Name = "DoocutorDark";
@@ -61,5 +68,10 @@ public record DefaultDarkColorScheme : IColorScheme
         AlertNoticeForeground = TextForeground;
         AlertWarnForeground = "#FE8019";
         AlertErrorForeground = "#FB4934";
+
+        InputFieldBackground = "#EEEEEE";
+        InputFieldForeground = "#2B2B2B";
+        InputFieldCursorForeground = "#EEEEEE";
+        InputFieldCursorBackground = "#A9B7C6";
     }
 }
