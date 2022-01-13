@@ -2,7 +2,6 @@
 using Utils.Exceptions;
 using Utils.Exceptions.NotExitExceptions;
 using CUI;
-using Domain.Core;
 using NLog;
 
 namespace CommandHandling.CommandExecutors;

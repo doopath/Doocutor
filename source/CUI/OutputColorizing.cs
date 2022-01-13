@@ -1,8 +1,6 @@
-using System;
 using System.Diagnostics.CodeAnalysis;
-using System.IO;
 
-namespace Domain.Core;
+namespace CUI;
 
 public class OutputColorizing
 {

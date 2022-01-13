@@ -2,7 +2,6 @@ using CommandHandling.Commands;
 using Common;
 using Utils.Exceptions;
 using CUI;
-using Domain.Core;
 using TextBuffer.TextBuffers;
 using CUI.Widgets;
 using TextCopy;

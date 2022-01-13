@@ -34,7 +34,13 @@ namespace CUI.OutBuffers
 
         public void Fill(IEnumerable<string> scene)
         {
-            foreach (var line in scene)
+            string[]? cutScene = null;
+            string[] enumerable = scene as string[] ?? scene.ToArray();
+            
+            if (enumerable.Count() > Height - 1)
+                cutScene = enumerable.ToArray()[..(Height - 1)];
+            
+            foreach (var line in cutScene ?? scene)
                 WriteLine(line);
         }
 

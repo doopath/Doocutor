@@ -1,10 +1,9 @@
 using System.ComponentModel.DataAnnotations;
-using CUI;
 using CUI.OutBuffers;
 
-namespace InputHandling
+namespace CUI
 {
-    public class OutBufferSizeHandler
+    public sealed class OutBufferSizeHandler
     {
         /// <summary>
         /// Update rate in milliseconds.
@@ -13,10 +12,10 @@ namespace InputHandling
         /// because the behavior becomes unstable.
         /// </summary>
         [Range(0, 1000)]
-        public virtual int UpdateRate { get; set; }
+        public int UpdateRate { get; set; }
 
-        protected readonly IOutBuffer _outBuffer;
-        protected bool _isActive = true;
+        private readonly IOutBuffer _outBuffer;
+        private bool _isActive = true;
 
         public OutBufferSizeHandler(IOutBuffer outBuffer, int updateRate)
         {
@@ -24,18 +23,18 @@ namespace InputHandling
             _outBuffer = outBuffer;
         }
 
-        public virtual Task Start()
+        public void Start()
         {
             if (!_isActive)
                 _isActive = true;
 
-            return Task.Run(AdaptOutBufferSize);
+            Task.Run(AdaptOutBufferSize);
         }
 
-        public virtual void Stop()
+        public void Stop()
             => _isActive = false;
 
-        protected virtual void AdaptOutBufferSize()
+        private void AdaptOutBufferSize()
         {
             while (_isActive)
             {
@@ -48,8 +47,8 @@ namespace InputHandling
                 {
                     if (width != _outBuffer.Width || height != _outBuffer.Height)
                     {
+                        CuiRender.Clear();
                         CuiRender.Render();
-                        CuiRender.DisableOutBufferCursor();
                     }
                 }
                 catch (ArgumentOutOfRangeException)

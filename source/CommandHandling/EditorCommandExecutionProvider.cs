@@ -1,6 +1,5 @@
 ﻿using CommandHandling.Commands;
 using Utils.Exceptions.NotExitExceptions;
-using Domain.Core;
 
 namespace CommandHandling;
 

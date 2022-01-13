@@ -1,6 +1,5 @@
 using Utils.Exceptions;
 using CUI.Widgets;
-using Domain.Core;
 using NLog;
 
 namespace CUI;
