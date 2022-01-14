@@ -76,7 +76,7 @@ public class TextBuffer : ITextBuffer
     /// </summary>
     public virtual int HistoryLimit { get; set; }
     
-    public virtual string? FilePath { get; }
+    public virtual string? FilePath { get; set; }
 
     /// <summary>
     /// Count of lines in the buffer

@@ -4,7 +4,6 @@ using CommandLine;
 using Common.Options;
 using Utils.Exceptions;
 using CUI;
-using Domain.Core;
 using NLog;
 using Utils;
 

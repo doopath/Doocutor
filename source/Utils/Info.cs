@@ -9,9 +9,9 @@ public static class Info
     /// B - build,
     /// DDMMYY - DayMonthYear datetime
     /// </summary>
-    public const string BuildInfo = "UCB-130122";
-    public const string Updated = "13th of January 2022";
-    public const string Version = "0.5.34.1";
+    public const string BuildInfo = "UCB-150122";
+    public const string Updated = "15th of January 2022";
+    public const string Version = "0.5.35.0";
     public const string ProductName = "Doocutor";
     public const string BuildType = "Debug";
 

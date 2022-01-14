@@ -4,6 +4,7 @@ using Utils.Exceptions;
 using CUI;
 using TextBuffer.TextBuffers;
 using CUI.Widgets;
+using TextBuffer;
 using TextCopy;
 using Utils;
 
@@ -123,6 +124,30 @@ public static class EditorCommands
     public static void ExecuteSelectLinesCommand(EditorCommand command)
     {
         WidgetsMount.Mount(new LinesSelectionWidget(TextBuffer!));
+    }
+
+    public static void ExecuteSaveCurrentBufferCommand(EditorCommand command)
+    {
+        if (TextBuffer!.FilePath is null)
+        {
+            TextInputDialogWidget textInputWidget = new(
+                text: "Your current buffer is untitled! Please enter a path to save it:",
+                onCancel: () => { },
+                onOk: path => TextBuffer.FilePath = TextBufferManager.ModifyPath((string) path!));
+            
+            WidgetsMount.Mount(textInputWidget);
+
+            if (TextBuffer.FilePath is not null && !TextBufferManager.IsPathCorrect(TextBuffer.FilePath))
+            {
+                TextBuffer.FilePath = null;
+                WidgetsMount.Mount(new AlertWidget("Entered path is incorrect! Cannot save the buffer D:"));
+            }
+        }
+        
+        if (TextBuffer.FilePath is not null)
+            TextBufferManager.SaveTextBufferAsFile(TextBuffer);
+        else
+            WidgetsMount.Mount(new AlertWidget("Cannot save untitled buffer! D:"));
     }
 
     #endregion

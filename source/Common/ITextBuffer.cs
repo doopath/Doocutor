@@ -25,7 +25,7 @@ public interface ITextBuffer
     void Redo();
     string GetLineAt(int lineNumber);
     string[] GetTextBlock(ITextBlockPointer pointer);
-    string? FilePath { get; }
+    string? FilePath { get; set; }
     int HistoryLimit { get; set; }
     string CodeWithLineNumbers { get; }
     string Text { get; }

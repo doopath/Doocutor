@@ -1,4 +1,5 @@
 using Common;
+using Microsoft.VisualBasic;
 using TextBuffer.TextBufferContents;
 using Utils.Exceptions.NotExitExceptions;
 
@@ -30,5 +31,26 @@ public static class TextBufferManager
         string[] textBufferContent = textBuffer.Lines;
 
         File.WriteAllLinesAsync(path ?? textBuffer.FilePath!, textBufferContent);
+    }
+
+    public static bool IsPathCorrect(string path)
+    {
+        char separator = Path.DirectorySeparatorChar;
+        string dirPath = string
+            .Join(separator, ModifyPath(path).Split(separator)[..^1]);
+
+        return Directory.Exists(dirPath);
+    }
+
+    public static string ModifyPath(string path)
+    {
+        char separator = Path.DirectorySeparatorChar;
+        string homeDir = (Environment.GetEnvironmentVariable("userdir")
+                          ?? Environment.GetEnvironmentVariable("HOME"))!
+                         + separator;
+
+        return path
+            .Replace("~/", homeDir)
+            .Replace("~\\", homeDir);
     }
 }

@@ -9,6 +9,8 @@
                 new KeyValuePair<string, string>(@"Alt\+U", ":undo"),
                 new KeyValuePair<string, string>(@"Alt\+R", ":redo"),
                 
+                new KeyValuePair<string, string>(@"Alt\+W", ":saveCurrentBuffer"),
+                
                 new KeyValuePair<string, string>(@"Alt\+P", ":pasteClipboardContent"),
                 new KeyValuePair<string, string>(@"Alt\+S", ":selectLines"),
                 

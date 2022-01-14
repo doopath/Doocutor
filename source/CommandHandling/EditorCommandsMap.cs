@@ -29,6 +29,7 @@ public static class EditorCommandsMap
                 new(":tab", EditorCommands.ExecuteTabCommand),
                 new(":undo", EditorCommands.ExecuteUndoCommand),
                 new(":redo", EditorCommands.ExecuteRedoCommand),
+                new(":saveCurrentBuffer", EditorCommands.ExecuteSaveCurrentBufferCommand),
                 new(":doNothing", EditorCommands.ExecuteDoNothingCommand)
             }.ToList()
         );
