@@ -14,8 +14,6 @@ public static class TextBufferManager
         
         textBuffer.ClearHistory();
         textBuffer.ReplaceCurrentContentBy(fileContentLines);
-        textBuffer.SetCursorPositionFromTopAt(0);
-        textBuffer.SetCursorPositionFromLeftAt(textBuffer.GetPrefixLength());
         textBuffer.FilePath = path;
     }
 

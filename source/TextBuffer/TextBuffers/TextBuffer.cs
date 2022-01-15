@@ -257,6 +257,9 @@ public class TextBuffer : ITextBuffer
     {
         _sourceText.Clear();
         _sourceText.InsertRange(0, content);
+        _cursor.CursorPositionFromTop = 0;
+        _cursor.CursorPositionFromLeft = 0;
+        SetCursorPositionFromLeftAt(GetPrefixLength());
     }
 
     #region Public write methods
