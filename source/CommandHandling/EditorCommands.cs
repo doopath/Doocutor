@@ -130,14 +130,16 @@ public static class EditorCommands
     {
         if (TextBuffer!.FilePath is null)
         {
-            TextInputDialogWidget textInputWidget = new(
-                text: "Your current buffer is untitled! Please enter a path to save it:",
-                onCancel: () => { },
-                onOk: path => TextBuffer.FilePath = TextBufferManager.ModifyPath((string) path!));
+            bool terminate = false;
             
-            WidgetsMount.Mount(textInputWidget);
+            WidgetsMount.Mount(new TextInputDialogWidget(
+                text: "Your current buffer is untitled! Please enter a path to save it:",
+                onCancel: () => terminate = true,
+                onOk: path => TextBuffer.FilePath = TextBufferManager.ModifyPath((string) path!)));
 
-            if (TextBuffer.FilePath is not null && !TextBufferManager.IsDirPathCorrect(TextBuffer.FilePath))
+            if (terminate) return;
+
+                if (TextBuffer.FilePath is not null && !TextBufferManager.IsDirPathCorrect(TextBuffer.FilePath))
             {
                 TextBuffer.FilePath = null;
                 WidgetsMount.Mount(new AlertWidget("Entered path is incorrect! Cannot save the buffer D:"));
@@ -152,18 +154,44 @@ public static class EditorCommands
 
     public static void ExecuteOpenTextBufferCommand(EditorCommand command)
     {
-        AlertWidget failedOpeningAlert = new("Path is incorrect! Cannot open a buffer D:", AlertLevel.ERROR);
-        string filePath = String.Empty;
+        string filePath = string.Empty;
+        bool terminate = false;
         
         WidgetsMount.Mount(new TextInputDialogWidget(
             text: "Enter file location:",
-            onCancel: () => { },
+            onCancel: () => terminate = true,
             onOk: path => filePath = (string) path!));
+
+        if (terminate) return;
         
-        if ( TextBufferManager.IsFilePathCorrect(filePath))
+        if (TextBufferManager.IsFilePathCorrect(filePath))
             TextBufferManager.OpenAsTextBuffer(filePath, TextBuffer!);
         else
-            WidgetsMount.Mount(failedOpeningAlert);
+            WidgetsMount.Mount(new AlertWidget(
+                "Path is incorrect! Cannot open a buffer D:",
+                AlertLevel.ERROR));
+    }
+
+    public static void ExecuteChangeCurrentFilePathCommand(EditorCommand command)
+    {
+        string filePath = string.Empty;
+        bool terminate = false;
+        
+        WidgetsMount.Mount(new TextInputDialogWidget(
+            text: "Enter new file path:",
+            onCancel: () => terminate = true,
+            onOk: path => filePath = (string) path!));
+
+        if (terminate) return;
+        
+        filePath = TextBufferManager.ModifyPath(filePath);
+        
+        if (TextBufferManager.IsDirPathCorrect(filePath))
+            TextBuffer!.FilePath = filePath;
+        else
+            WidgetsMount.Mount(new AlertWidget(
+                $"Path is incorrect! Directory {TextBufferManager.GetDirectory(filePath)} doesn't exists!",
+                AlertLevel.ERROR));
     }
 
     #endregion

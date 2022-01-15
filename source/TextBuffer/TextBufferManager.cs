@@ -30,13 +30,7 @@ public static class TextBufferManager
     }
 
     public static bool IsDirPathCorrect(string path)
-    {
-        char separator = Path.DirectorySeparatorChar;
-        string dirPath = string
-            .Join(separator, ModifyPath(path).Split(separator)[..^1]);
-
-        return Directory.Exists(dirPath);
-    }
+        => Directory.Exists(GetDirectory(path));
 
     public static bool IsFilePathCorrect(string path)
         => File.Exists(ModifyPath(path));
@@ -51,5 +45,21 @@ public static class TextBufferManager
         return path
             .Replace("~/", homeDir)
             .Replace("~\\", homeDir);
+    }
+
+    public static string GetDirectory(string path)
+    {
+        char separator = Path.DirectorySeparatorChar;
+        path = ModifyPath(path);
+
+        if (Directory.Exists(path))
+            return path;
+
+        string cutPath = string.Join(separator, path.Split(separator)[..^1]);
+
+        if (Directory.Exists(cutPath))
+            return cutPath;
+
+        return string.Empty;
     }
 }

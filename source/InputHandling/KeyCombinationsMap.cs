@@ -11,6 +11,7 @@
                 
                 new KeyValuePair<string, string>(@"Alt\+W", ":saveCurrentBuffer"),
                 new KeyValuePair<string, string>(@"Alt\+O", ":openTextBuffer"),
+                new KeyValuePair<string, string>(@"Alt\+C", ":changeCurrentFilePath"),
                 
                 new KeyValuePair<string, string>(@"Alt\+P", ":pasteClipboardContent"),
                 new KeyValuePair<string, string>(@"Alt\+S", ":selectLines"),

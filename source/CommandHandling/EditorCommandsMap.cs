@@ -31,6 +31,7 @@ public static class EditorCommandsMap
                 new(":redo", EditorCommands.ExecuteRedoCommand),
                 new(":saveCurrentBuffer", EditorCommands.ExecuteSaveCurrentBufferCommand),
                 new(":openTextBuffer", EditorCommands.ExecuteOpenTextBufferCommand),
+                new(":changeCurrentFilePath", EditorCommands.ExecuteChangeCurrentFilePathCommand),
                 new(":doNothing", EditorCommands.ExecuteDoNothingCommand)
             }.ToList()
         );
