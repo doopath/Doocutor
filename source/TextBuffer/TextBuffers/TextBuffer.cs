@@ -1,4 +1,5 @@
-﻿using Common;
+﻿using System.Net.Mime;
+using Common;
 using CUI;
 using CUI.Widgets;
 using NLog.Targets;
@@ -19,53 +20,6 @@ public class TextBuffer : ITextBuffer
     protected readonly ICursor _cursor;
     protected readonly ITextBufferHistory _history;
     protected readonly KeyboardCommandsProvider _keyboardCommandsProvider;
-
-    #endregion
-
-    #region Constructors
-
-    public TextBuffer(int historyLimit = 10000, string? filePath = null)
-    {
-        var initialContentOfTheBuffer = new DefaultTextBufferContent();
-        FilePath = filePath;
-        _sourceText = initialContentOfTheBuffer.SourceCode;
-        _textFormatter = new TextBufferFormatter(_sourceText);
-        _history = new TextBufferHistory(historyLimit);
-        _cursor = new TextBufferCursor(
-            _sourceText,
-            _textFormatter,
-            initialContentOfTheBuffer.CursorPositionFromTop,
-            initialContentOfTheBuffer.CursorPositionFromLeft);
-        _keyboardCommandsProvider = new(_sourceText, _textFormatter, _cursor);
-    }
-
-    public TextBuffer(ITextBuffer buffer, string? filePath = null)
-    {
-        FilePath = filePath;
-        _sourceText = buffer.Lines.ToList();
-        _textFormatter = new TextBufferFormatter(_sourceText);       
-        _history = new TextBufferHistory(buffer.HistoryLimit);
-        _cursor = new TextBufferCursor(
-            _sourceText,
-            _textFormatter,
-            buffer.CursorPositionFromTop,
-            buffer.CursorPositionFromLeft);
-        _keyboardCommandsProvider = new(_sourceText, _textFormatter, _cursor);
-    }
-
-    public TextBuffer(ITextBufferContent initialContentOfTheBuffer, int historyLimit = 10000, string? filePath = null)
-    {
-        FilePath = filePath;
-        _sourceText = initialContentOfTheBuffer.SourceCode;
-        _textFormatter = new TextBufferFormatter(_sourceText);
-        _history = new TextBufferHistory(historyLimit);
-        _cursor = new TextBufferCursor(
-            _sourceText,
-            _textFormatter,
-            initialContentOfTheBuffer.CursorPositionFromTop,
-            initialContentOfTheBuffer.CursorPositionFromLeft);
-        _keyboardCommandsProvider = new(_sourceText, _textFormatter, _cursor);
-    }
 
     #endregion
 
@@ -123,6 +77,53 @@ public class TextBuffer : ITextBuffer
         => _textFormatter.GetPrefixLength(_textFormatter.IndexToLineNumber(CursorPositionFromTop));
 
     #endregion
+    
+    #region Constructors
+
+    public TextBuffer(int historyLimit = 10000, string? filePath = null)
+    {
+        var initialContentOfTheBuffer = new DefaultTextBufferContent();
+        FilePath = filePath;
+        _sourceText = initialContentOfTheBuffer.SourceCode;
+        _textFormatter = new TextBufferFormatter(_sourceText);
+        _history = new TextBufferHistory(historyLimit);
+        _cursor = new TextBufferCursor(
+            _sourceText,
+            _textFormatter,
+            initialContentOfTheBuffer.CursorPositionFromTop,
+            initialContentOfTheBuffer.CursorPositionFromLeft);
+        _keyboardCommandsProvider = new(_sourceText, _textFormatter, _cursor);
+    }
+
+    public TextBuffer(ITextBuffer buffer, string? filePath = null)
+    {
+        FilePath = filePath;
+        _sourceText = buffer.Lines.ToList();
+        _textFormatter = new TextBufferFormatter(_sourceText);       
+        _history = new TextBufferHistory(buffer.HistoryLimit);
+        _cursor = new TextBufferCursor(
+            _sourceText,
+            _textFormatter,
+            buffer.CursorPositionFromTop,
+            buffer.CursorPositionFromLeft);
+        _keyboardCommandsProvider = new(_sourceText, _textFormatter, _cursor);
+    }
+
+    public TextBuffer(ITextBufferContent initialContentOfTheBuffer, int historyLimit = 10000, string? filePath = null)
+    {
+        FilePath = filePath;
+        _sourceText = initialContentOfTheBuffer.SourceCode;
+        _textFormatter = new TextBufferFormatter(_sourceText);
+        _history = new TextBufferHistory(historyLimit);
+        _cursor = new TextBufferCursor(
+            _sourceText,
+            _textFormatter,
+            initialContentOfTheBuffer.CursorPositionFromTop,
+            initialContentOfTheBuffer.CursorPositionFromLeft);
+        _keyboardCommandsProvider = new(_sourceText, _textFormatter, _cursor);
+    }
+
+    #endregion
 
     #region Public remove methods
 
@@ -162,6 +163,9 @@ public class TextBuffer : ITextBuffer
         _sourceText.RemoveAt(_textFormatter.LineNumberToIndex(lineNumber)); 
         SetCursorAtLastLineIfNecessary();
     }
+
+    public virtual void ClearHistory()
+        => _history.Clear();
 
     #endregion
 
@@ -247,6 +251,12 @@ public class TextBuffer : ITextBuffer
     {
         CheckIfLineExistsAt(lineNumber);
         _sourceText[_textFormatter.LineNumberToIndex(lineNumber)] = newLine;
+    }
+
+    public virtual void ReplaceCurrentContentBy(List<string> content)
+    {
+        _sourceText.Clear();
+        _sourceText.InsertRange(0, content);
     }
 
     #region Public write methods

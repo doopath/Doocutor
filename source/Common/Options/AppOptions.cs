@@ -6,7 +6,7 @@ public sealed record AppOptions
 {
     [Option('c', "color-scheme", Required = false,
         Default = "DoocutorDark", HelpText = "Color scheme name")]
-    public string ColorScheme { get; set; }
+    public string? ColorScheme { get; set; }
     
     
     [Option("dev-monitor", Required = false,
@@ -22,4 +22,9 @@ public sealed record AppOptions
     [Option("history-limit", Required = false, Default = 10000,
         HelpText = "How many done changes are stored in a history (for undo/redo options).")]
     public int TextBufferHistoryLimit { get; set; }
+    
+    
+    [Option('f', "file", Required = false, Default = null,
+        HelpText = "Open Doocutor with that file.")]
+    public string? TextBufferPath { get; set; }
 }

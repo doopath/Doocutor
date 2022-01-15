@@ -106,6 +106,18 @@ public class App : IApplication
         if (options.IsDeveloperMonitorEnabled)
             WidgetsMount.Mount(new DeveloperMonitorWidget());
 
+        if (options.TextBufferPath is not null)
+        {
+            string path = TextBufferManager.ModifyPath(options.TextBufferPath);
+            
+            if (TextBufferManager.IsFilePathCorrect(path))
+                TextBufferManager.OpenAsTextBuffer(path, TextBuffer);
+            else
+                WidgetsMount.Mount(new AlertWidget(
+                    "Path to a file is incorrect! Cannot open start buffer!",
+                    AlertLevel.ERROR));
+        }
+
         OutBufferSizeHandler.UpdateRate = options.OutBufferSizeHandlerUpdateRate;
         TextBuffer.HistoryLimit = options.TextBufferHistoryLimit;
     }

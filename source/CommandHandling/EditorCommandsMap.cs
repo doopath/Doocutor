@@ -30,6 +30,7 @@ public static class EditorCommandsMap
                 new(":undo", EditorCommands.ExecuteUndoCommand),
                 new(":redo", EditorCommands.ExecuteRedoCommand),
                 new(":saveCurrentBuffer", EditorCommands.ExecuteSaveCurrentBufferCommand),
+                new(":openTextBuffer", EditorCommands.ExecuteOpenTextBufferCommand),
                 new(":doNothing", EditorCommands.ExecuteDoNothingCommand)
             }.ToList()
         );

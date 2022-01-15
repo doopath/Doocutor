@@ -37,7 +37,7 @@ public static class CuiRender
         get => _colorScheme ?? Settings.ColorScheme;
         set => _colorScheme = value;
     }
-    
+
     public const int TopEdge = 0;
     public static int WindowWidth => OutBuffer!.Width;
     public static int WindowHeight => OutBuffer!.Height;
@@ -103,7 +103,7 @@ public static class CuiRender
         Render(Scene!.CurrentScene!);
         StopWatching();
     }
-    
+
     private static void Render(IEnumerable<string> scene)
     {
         ShowScene(scene);
@@ -113,10 +113,10 @@ public static class CuiRender
     public static void Clear()
     {
         List<string> emptyScene = new();
-        
+
         for (int i = 0; i < WindowHeight - 1; i++)
             emptyScene.Add(new string(' ', WindowWidth));
-        
+
         Render(emptyScene);
         ResetOutBufferCursor();
     }

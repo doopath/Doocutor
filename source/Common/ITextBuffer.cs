@@ -23,6 +23,8 @@ public interface ITextBuffer
     void DecCursorPositionFromTop();
     void Undo();
     void Redo();
+    void ClearHistory();
+    void ReplaceCurrentContentBy(List<string> content);
     string GetLineAt(int lineNumber);
     string[] GetTextBlock(ITextBlockPointer pointer);
     string? FilePath { get; set; }

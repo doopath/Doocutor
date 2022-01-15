@@ -137,7 +137,7 @@ public static class EditorCommands
             
             WidgetsMount.Mount(textInputWidget);
 
-            if (TextBuffer.FilePath is not null && !TextBufferManager.IsPathCorrect(TextBuffer.FilePath))
+            if (TextBuffer.FilePath is not null && !TextBufferManager.IsDirPathCorrect(TextBuffer.FilePath))
             {
                 TextBuffer.FilePath = null;
                 WidgetsMount.Mount(new AlertWidget("Entered path is incorrect! Cannot save the buffer D:"));
@@ -147,7 +147,23 @@ public static class EditorCommands
         if (TextBuffer.FilePath is not null)
             TextBufferManager.SaveTextBufferAsFile(TextBuffer);
         else
-            WidgetsMount.Mount(new AlertWidget("Cannot save untitled buffer! D:"));
+            WidgetsMount.Mount(new AlertWidget("Cannot save untitled buffer! D:", AlertLevel.ERROR));
+    }
+
+    public static void ExecuteOpenTextBufferCommand(EditorCommand command)
+    {
+        AlertWidget failedOpeningAlert = new("Path is incorrect! Cannot open a buffer D:", AlertLevel.ERROR);
+        string filePath = String.Empty;
+        
+        WidgetsMount.Mount(new TextInputDialogWidget(
+            text: "Enter file location:",
+            onCancel: () => { },
+            onOk: path => filePath = (string) path!));
+        
+        if ( TextBufferManager.IsFilePathCorrect(filePath))
+            TextBufferManager.OpenAsTextBuffer(filePath, TextBuffer!);
+        else
+            WidgetsMount.Mount(failedOpeningAlert);
     }
 
     #endregion
