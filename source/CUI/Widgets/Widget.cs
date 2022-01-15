@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.ComponentModel.DataAnnotations;
 using System.Text.RegularExpressions;
+using CommandLine;
 using Common;
 using CUI.ColorSchemes;
 using Pastel;
@@ -61,11 +62,18 @@ public abstract class Widget : IWidget
         int topPos = CursorPosition.Top;
         int leftPos = CursorPosition.Left;
 
-        foreach (var line in this)
+        try
         {
-            string sceneLine = scene[topPos];
-            scene[topPos] = sceneLine[..leftPos] + line + sceneLine[(leftPos + Width)..];
-            topPos++;
+            foreach (var line in this)
+            {
+                string sceneLine = RemoveAsciiColors(scene[topPos]);
+                scene[topPos] = sceneLine[..leftPos] + line + sceneLine[(leftPos + Width)..];
+                topPos++;
+            }
+        }
+        catch (IndexOutOfRangeException error)
+        {
+            ErrorHandling.FileLogger.Error(error);
         }
     }
 
@@ -87,9 +95,9 @@ public abstract class Widget : IWidget
                 CuiRender.Render();
 
             }
-            catch (ArgumentOutOfRangeException exc)
+            catch (IndexOutOfRangeException error)
             {
-                ErrorHandling.FileLogger.Error(exc);
+                ErrorHandling.FileLogger.Error(error);
             }
         }
 
@@ -121,9 +129,21 @@ public abstract class Widget : IWidget
         UpdateWidth();
         UpdateHeight();
         FillByEmptyItems();
-        AddBorder();
-        AddButtons();
-        AddText();
+
+        try
+        {
+            AddBorder();
+            AddButtons();
+            AddText();
+        }
+        catch (IndexOutOfRangeException error)
+        {
+            ErrorHandling.FileLogger.Error(error);
+        }
+        catch (ArgumentOutOfRangeException error)
+        {
+            ErrorHandling.FileLogger.Error(error);
+        }
     }
 
     protected virtual void UpdateWidth()

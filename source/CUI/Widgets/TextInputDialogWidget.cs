@@ -105,7 +105,7 @@ public class TextInputDialogWidget : DialogWidget
     protected override bool HandleInput()
     {
         ConsoleKeyInfo key = Settings.OutBuffer!.ReadKey();
-        string inputTextPattern = "[\\/a-zA-Z0-9_.\\s$%^&*-=\\u005c|\\[\\]{}()\\<\\>;:'\",?!@#`~]+";
+        string inputTextPattern = @"[\/a-zA-Z0-9_.\s$%^&*-=\u005c|\[\]{}()\<\>;:'"",?!@#`~]+";
         string keyString = key.KeyChar.ToString();
 
         if (key.Key == ConsoleKey.RightArrow)
