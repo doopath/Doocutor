@@ -36,9 +36,7 @@ public static class TextBufferManager
     public static string ModifyPath(string path)
     {
         char separator = Path.DirectorySeparatorChar;
-        string homeDir = (Environment.GetEnvironmentVariable("userdir")
-                          ?? Environment.GetEnvironmentVariable("HOME"))!
-                         + separator;
+        string homeDir = Environment.GetFolderPath(Environment.SpecialFolder.UserProfile) + separator;
 
         return path
             .Replace("~/", homeDir)
