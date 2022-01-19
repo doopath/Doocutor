@@ -104,7 +104,7 @@ public static class EditorCommands
         => TextBuffer!.Backspace();
 
     public static void ExecuteTabCommand(EditorCommand command)
-        => TextBuffer!.AppendLine("    ");
+        => TextBuffer!.AppendLine(TextBufferSettings.Tab);
 
     public static void ExecuteDoNothingCommand(EditorCommand command) { }
 
@@ -165,7 +165,10 @@ public static class EditorCommands
         if (terminate) return;
         
         if (TextBufferManager.IsFilePathCorrect(filePath))
+        {
             TextBufferManager.OpenAsTextBuffer(filePath, TextBuffer!);
+            CuiRender.ScrollToTheTop();
+        }
         else
             WidgetsMount.Mount(new AlertWidget(
                 "Path is incorrect! Cannot open a buffer D:",

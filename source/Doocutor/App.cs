@@ -93,7 +93,7 @@ public class App : IApplication
     {
         try
         {
-            Settings.ColorScheme = ColorSchemesRepository.Get(options.ColorScheme);
+            Settings.ColorScheme = ColorSchemesRepository.Get(options.ColorScheme!);
         }
         catch (ColorSchemeWasNotFoundException error)
         {
@@ -102,6 +102,9 @@ public class App : IApplication
         }
         
         OutBuffer!.CursorVisible = false;
+
+        TextBufferSettings.Tab = options.TabSymbol;
+        TextBufferSettings.TabWidth = options.TabWidth;
 
         if (options.IsDeveloperMonitorEnabled)
             WidgetsMount.Mount(new DeveloperMonitorWidget());

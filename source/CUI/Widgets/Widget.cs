@@ -1,7 +1,6 @@
 ﻿using System.Collections;
 using System.ComponentModel.DataAnnotations;
 using System.Text.RegularExpressions;
-using CommandLine;
 using Common;
 using CUI.ColorSchemes;
 using Pastel;

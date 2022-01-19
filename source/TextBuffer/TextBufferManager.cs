@@ -1,5 +1,5 @@
+using System.Text;
 using Common;
-using TextBuffer.TextBufferContents;
 using Utils.Exceptions.NotExitExceptions;
 
 namespace TextBuffer;
@@ -9,7 +9,7 @@ public static class TextBufferManager
     public static void OpenAsTextBuffer(string path, ITextBuffer textBuffer)
     {
         path = ModifyPath(path);
-        string fileContent = File.ReadAllText(path).Replace("\r", "");
+        string fileContent = File.ReadAllText(path, Encoding.UTF8).Replace("\r", "");
         List<string> fileContentLines = fileContent.Split("\n").ToList();
         
         textBuffer.ClearHistory();
@@ -24,7 +24,7 @@ public static class TextBufferManager
 
         string[] textBufferContent = textBuffer.Lines;
 
-        File.WriteAllLinesAsync(path ?? textBuffer.FilePath!, textBufferContent);
+        File.WriteAllLinesAsync(path ?? textBuffer.FilePath!, textBufferContent, Encoding.UTF8);
     }
 
     public static bool IsDirPathCorrect(string path)

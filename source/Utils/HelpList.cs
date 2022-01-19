@@ -39,7 +39,7 @@ namespace Utils
             foreach (var pair in ConvertCommands())
                 table.AddRow(pair.Item1, pair.Item2);
 
-            AnsiConsole.Render(table);
+            AnsiConsole.Write(table);
             AnsiConsole.WriteLine();
         }
 

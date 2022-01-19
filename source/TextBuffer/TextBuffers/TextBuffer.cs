@@ -1,8 +1,6 @@
-﻿using System.Net.Mime;
-using Common;
+﻿using Common;
 using CUI;
 using CUI.Widgets;
-using NLog.Targets;
 using Utils.Exceptions.NotExitExceptions;
 using TextBuffer.Cursors;
 using TextBuffer.TextBufferContents;
@@ -29,7 +27,7 @@ public class TextBuffer : ITextBuffer
     /// Max count of elements in the history.
     /// </summary>
     public virtual int HistoryLimit { get; set; }
-    
+
     public virtual string? FilePath { get; set; }
 
     /// <summary>
@@ -77,7 +75,7 @@ public class TextBuffer : ITextBuffer
         => _textFormatter.GetPrefixLength(_textFormatter.IndexToLineNumber(CursorPositionFromTop));
 
     #endregion
-    
+
     #region Constructors
 
     public TextBuffer(int historyLimit = 10000, string? filePath = null)
@@ -99,7 +97,7 @@ public class TextBuffer : ITextBuffer
     {
         FilePath = filePath;
         _sourceText = buffer.Lines.ToList();
-        _textFormatter = new TextBufferFormatter(_sourceText);       
+        _textFormatter = new TextBufferFormatter(_sourceText);
         _history = new TextBufferHistory(buffer.HistoryLimit);
         _cursor = new TextBufferCursor(
             _sourceText,
@@ -134,7 +132,7 @@ public class TextBuffer : ITextBuffer
 
         int startIndex = _textFormatter.LineNumberToIndex(pointer.StartLineNumber);
         int linesToRemove = pointer.EndLineNumber - pointer.StartLineNumber;
-        
+
         if (linesToRemove != Size)
         {
             SetCursorPositionFromLeftAt(_textFormatter.GetPrefixLength(_textFormatter.IndexToLineNumber(startIndex)));
@@ -145,7 +143,7 @@ public class TextBuffer : ITextBuffer
         {
             int firstLineIndex = 0;
             int firstLineNumber = _textFormatter.IndexToLineNumber(firstLineIndex);
-            
+
             _sourceText.Insert(firstLineIndex, string.Empty);
             _sourceText.RemoveRange(startIndex + 1, linesToRemove);
             _cursor.CursorPositionFromLeft = _textFormatter.GetPrefixLength(firstLineNumber);
@@ -160,7 +158,7 @@ public class TextBuffer : ITextBuffer
         if (lineNumber == 1 && _sourceText.Count == 1)
             throw new OutOfTextBufferSizeException($"Cannot remove the first line when the buffer's size is 1!");
 
-        _sourceText.RemoveAt(_textFormatter.LineNumberToIndex(lineNumber)); 
+        _sourceText.RemoveAt(_textFormatter.LineNumberToIndex(lineNumber));
         SetCursorAtLastLineIfNecessary();
     }
 
@@ -255,6 +253,11 @@ public class TextBuffer : ITextBuffer
 
     public virtual void ReplaceCurrentContentBy(List<string> content)
     {
+        content = content
+            .Select(line => line
+                .Replace("\t", TextBufferSettings.Tab)
+                .Replace("    ", TextBufferSettings.Tab))
+            .ToList();
         _sourceText.Clear();
         _sourceText.InsertRange(0, content);
         _cursor.CursorPositionFromTop = 0;
@@ -326,8 +329,8 @@ public class TextBuffer : ITextBuffer
                 Left = CursorPositionFromLeft,
                 Top = CursorPositionFromTop
             },
-            NewChanges = new[] {newLine},
-            OldState = new[] {line},
+            NewChanges = new[] { newLine },
+            OldState = new[] { line },
             Type = TextBufferChangeType.APPEND_LINE
         });
     }

@@ -87,6 +87,9 @@ public static class CuiRender
         TopOffset--;
     }
 
+    public static void ScrollToTheTop()
+        => TopOffset = 0;
+
     /// <summary>
     /// Now it works not stable so it is not used.
     /// You can call this method if you want to increase the performance,
