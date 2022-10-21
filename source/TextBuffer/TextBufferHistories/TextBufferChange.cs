@@ -41,4 +41,14 @@ public readonly struct TextBufferChange : ITextBufferChange
     /// Type of the committed change.
     /// </summary>
     public TextBufferChangeType Type { get; init; } = TextBufferChangeType.UNNAMED;
+
+    public TextBufferChange(Range range, CursorPosition oldCursorPosition, CursorPosition newCursorPosition, string[] newChanges, string[] oldState, TextBufferChangeType type)
+    {
+        Range = range;
+        OldCursorPosition = oldCursorPosition;
+        NewCursorPosition = newCursorPosition;
+        NewChanges = newChanges;
+        OldState = oldState;
+        Type = type;
+    }
 }
