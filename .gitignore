@@ -4,6 +4,7 @@
 *.user
 */Properties
 publish
+global.json
 
 # build dirs
 */*/obj

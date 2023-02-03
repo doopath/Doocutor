@@ -36,10 +36,10 @@ namespace CUI.OutBuffers
         {
             string[]? cutScene = null;
             string[] enumerable = scene as string[] ?? scene.ToArray();
-            
+
             if (enumerable.Count() > Height - 1)
                 cutScene = enumerable.ToArray()[..(Height - 1)];
-            
+
             foreach (var line in cutScene ?? scene)
                 WriteLine(line);
         }
