@@ -1,11 +1,11 @@
 ﻿using Common;
 using CUI;
 using CUI.Widgets;
-using Utils.Exceptions.NotExitExceptions;
 using TextBuffer.Cursors;
 using TextBuffer.TextBufferContents;
 using TextBuffer.TextBufferFormatters;
 using TextBuffer.TextBufferHistories;
+using Utils.Exceptions.NotExitExceptions;
 
 namespace TextBuffer.TextBuffers;
 

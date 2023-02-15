@@ -1,5 +1,5 @@
-using System.Collections.Generic;
 using NUnit.Framework;
+using System.Collections.Generic;
 using TextBuffer;
 using TextBuffer.Cursors;
 using TextBuffer.TextBufferFormatters;

@@ -2,6 +2,6 @@
 {
     public class OutOfTextBufferSizeException : NotExitException
     {
-        public OutOfTextBufferSizeException(string message) : base(message) {}
+        public OutOfTextBufferSizeException(string message) : base(message) { }
     }
 }

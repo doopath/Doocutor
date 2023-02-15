@@ -1,5 +1,5 @@
-using System.Text.RegularExpressions;
 using Pastel;
+using System.Text.RegularExpressions;
 
 namespace CUI.Widgets;
 
@@ -9,7 +9,7 @@ public class TextInputDialogWidget : DialogWidget
     protected int _inputFieldOffset;
     protected int _inputFieldCursorIndex;
     protected virtual int InputFieldWidth => Width - _textRightEdge - _textLeftEdge;
-    
+
     public TextInputDialogWidget(string text, Action? onCancel, Action<object?>? onOk) : base(text, onCancel, onOk)
     {
         _textLeftEdge = 2;
@@ -38,7 +38,7 @@ public class TextInputDialogWidget : DialogWidget
 
         Refresh();
     }
-    
+
     protected override void Refresh()
     {
         CursorPosition = new()
@@ -66,13 +66,13 @@ public class TextInputDialogWidget : DialogWidget
         AddInputFieldText(text, topPosition);
         AddInputFieldCursor(topPosition, cursorPosition);
     }
-    
+
     protected virtual void AddInputFieldCursor(int topPosition, int index)
     {
         string cursorSymbol = RemoveAsciiColors(Items![topPosition][index]);
         Items![topPosition][index] = ColorizeInputFieldCursor(cursorSymbol);
     }
-    
+
     protected virtual string ColorizeInputFieldCursor(string cursorSymbol)
         => cursorSymbol
             .Pastel(ColorScheme!.InputFieldCursorForeground)
@@ -101,7 +101,7 @@ public class TextInputDialogWidget : DialogWidget
     protected virtual string ColorizeInputFieldTextItem(string item)
         => item.Pastel(ColorScheme!.InputFieldForeground)
             .PastelBg(ColorScheme.InputFieldBackground);
-    
+
     protected override bool HandleInput()
     {
         ConsoleKeyInfo key = Settings.OutBuffer!.ReadKey();
@@ -126,7 +126,7 @@ public class TextInputDialogWidget : DialogWidget
 
         return false;
     }
-    
+
     protected override void HandleSelectedOption()
     {
         string activeButton = ButtonsMap.Keys.ToArray()[_activeButtonIndex];

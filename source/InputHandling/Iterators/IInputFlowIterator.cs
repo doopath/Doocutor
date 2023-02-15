@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace Domain.Core.Iterators
+﻿namespace Domain.Core.Iterators
 {
     /// <summary>
     /// A descriptor for InputFlowHandler. It takes if

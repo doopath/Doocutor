@@ -2,6 +2,6 @@
 {
     public class CompiledCodeExecutionException : NotExitException
     {
-        public CompiledCodeExecutionException(string message) : base(message) {}
+        public CompiledCodeExecutionException(string message) : base(message) { }
     }
 }

@@ -1,6 +1,6 @@
-﻿using System.Reflection;
-using CUI.ColorSchemes;
+﻿using CUI.ColorSchemes;
 using CUI.OutBuffers;
+using System.Reflection;
 
 namespace CUI;
 

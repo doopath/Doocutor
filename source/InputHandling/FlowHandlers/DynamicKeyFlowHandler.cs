@@ -1,9 +1,9 @@
-﻿using System.Text.RegularExpressions;
-using CommandHandling.CommandHandlers;
+﻿using CommandHandling.CommandHandlers;
 using CUI;
 using Domain.Core.Iterators;
 using InputHandling.CommandHandlers;
 using InputHandling.Iterators;
+using System.Text.RegularExpressions;
 using Utils.Exceptions.NotExitExceptions;
 
 namespace InputHandling.FlowHandlers
@@ -79,7 +79,7 @@ namespace InputHandling.FlowHandlers
                 .Map
                 .Keys
                 .Where(key => Regex.Match(input, key).Success);
-            
+
             foreach (var key in matchedKeys)
                 return KeyCombinationsMap.Map[key];
 

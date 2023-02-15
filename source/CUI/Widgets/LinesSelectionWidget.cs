@@ -1,5 +1,4 @@
-﻿using System.Text.RegularExpressions;
-using Common;
+﻿using Common;
 using Pastel;
 using TextCopy;
 
@@ -25,7 +24,8 @@ public sealed class LinesSelectionWidget : Widget
 
         TextBuffer = textBuffer;
 
-        _linesSelectionRange = new() {
+        _linesSelectionRange = new()
+        {
             Start = TextBuffer.CursorPositionFromTop,
             End = TextBuffer.CursorPositionFromTop
         };
@@ -37,7 +37,7 @@ public sealed class LinesSelectionWidget : Widget
 
         Refresh();
     }
-    
+
     protected override void Refresh()
         => CursorPosition = new()
         {
@@ -51,7 +51,7 @@ public sealed class LinesSelectionWidget : Widget
 
         int start = GetStartOfSelection();
         int end = GetEndOfSelection();
-        
+
         start = start >= 0 ? start : 0;
         end = end >= scene.Count ? scene.Count - 1 : end;
 
@@ -69,12 +69,12 @@ public sealed class LinesSelectionWidget : Widget
                 ? TextBuffer.Lines[i + CuiRender.TopOffset]
                 : "";
             int contentEndIndex = GetFirstColoredSymbolIndex(sceneLine);
-            
+
             if (contentEndIndex > 0)
             {
                 if (textBufferLine.Length < contentEndIndex - prefixLength)
                     contentEndIndex = textBufferLine.Length + prefixLength;
-                
+
                 scene[i] = sceneLine[..(prefixLength - 1)]
                            + ("|" + sceneLine[prefixLength..contentEndIndex])
                            .Pastel(_textForegroundColor)
@@ -95,15 +95,15 @@ public sealed class LinesSelectionWidget : Widget
     private string GetSpacesForLine(string sceneLine, string textBufferLine, int prefixLength)
     {
         string pureLine = RemoveAsciiColors(sceneLine);
-            string spaces = new string(' ',
-            pureLine.Length - prefixLength - textBufferLine.Length);
+        string spaces = new string(' ',
+        pureLine.Length - prefixLength - textBufferLine.Length);
 
         return spaces;
     }
 
     private int GetStartOfSelection()
         => Math.Min(_linesSelectionRange.Start, _linesSelectionRange.End) - CuiRender.TopOffset;
-    
+
     private int GetEndOfSelection()
         => Math.Max(_linesSelectionRange.Start, _linesSelectionRange.End) - CuiRender.TopOffset;
 
@@ -115,7 +115,7 @@ public sealed class LinesSelectionWidget : Widget
         {
             if (_linesSelectionRange.End + 1 < TextBuffer.Size)
             {
-                _linesSelectionRange.End++;  
+                _linesSelectionRange.End++;
                 TextBuffer.IncCursorPositionFromTop();
                 CuiRender.Render();
             }
@@ -127,10 +127,10 @@ public sealed class LinesSelectionWidget : Widget
                 _linesSelectionRange.End--;
                 TextBuffer.DecCursorPositionFromTop();
                 CuiRender.Render();
-                
+
             }
         }
-        else if (_lastPressedKey is 
+        else if (_lastPressedKey is
                  ConsoleKey.Enter or
                  ConsoleKey.Backspace or
                  ConsoleKey.Escape)
@@ -140,7 +140,7 @@ public sealed class LinesSelectionWidget : Widget
 
         return false;
     }
-    
+
     protected override void HandleSelectedOption()
     {
         if (_lastPressedKey == ConsoleKey.Enter)
@@ -158,7 +158,7 @@ public sealed class LinesSelectionWidget : Widget
         string[] lines = TextBuffer.Lines;
         string[] selectedLines = lines[start..end];
         string text = string.Join("\n", selectedLines);
-        
+
         new Clipboard().SetText(text);
     }
 

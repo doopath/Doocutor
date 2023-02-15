@@ -1,9 +1,9 @@
-﻿using System.Collections.Generic;
-using System.Linq;
-using Common;
-using Utils.Exceptions.NotExitExceptions;
+﻿using Common;
 using NUnit.Framework;
+using System.Collections.Generic;
+using System.Linq;
 using TextBuffer.TextBufferContents;
+using Utils.Exceptions.NotExitExceptions;
 
 namespace Tests.Core.TextBuffers
 {

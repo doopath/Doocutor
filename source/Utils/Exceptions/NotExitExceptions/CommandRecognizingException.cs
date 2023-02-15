@@ -2,6 +2,6 @@
 {
     public class CommandRecognizingException : NotExitException
     {
-        public CommandRecognizingException(string message) : base(message) {}
+        public CommandRecognizingException(string message) : base(message) { }
     }
 }

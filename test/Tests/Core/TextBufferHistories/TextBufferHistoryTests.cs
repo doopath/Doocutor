@@ -1,8 +1,8 @@
+using Common;
+using NUnit.Framework;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using Common;
-using NUnit.Framework;
 using TextBuffer.TextBufferHistories;
 
 namespace Tests.Core.TextBufferHistories;

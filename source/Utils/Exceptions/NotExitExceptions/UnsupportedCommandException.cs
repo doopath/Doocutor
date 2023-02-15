@@ -2,6 +2,6 @@
 {
     public class UnsupportedCommandException : NotExitException
     {
-        public UnsupportedCommandException(string message) : base(message) {}
+        public UnsupportedCommandException(string message) : base(message) { }
     }
 }

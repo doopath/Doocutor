@@ -8,7 +8,7 @@
         #region Text
         public string TextForeground { get; init; }
         public string TextBackground { get; init; }
-        public string TextSelectionForeground { get; init; }        
+        public string TextSelectionForeground { get; init; }
         public string TextSelectionBackground { get; init; }
 
         #endregion
@@ -44,7 +44,7 @@
         public string InputFieldCursorForeground { get; init; }
         public string InputFieldCursorBackground { get; init; }
         #endregion
-        
+
         public DefaultLightColorScheme()
         {
             Name = "DoocutorLight";
@@ -70,7 +70,7 @@
             AlertNoticeForeground = TextForeground;
             AlertWarnForeground = "#AF3A03";
             AlertErrorForeground = "#9D0006";
-            
+
             InputFieldForeground = "#EEEEEE";
             InputFieldBackground = "#555555";
             InputFieldCursorForeground = "#EEEEEE";

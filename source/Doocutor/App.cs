@@ -47,7 +47,7 @@ public class App : IApplication
         CommandHandler = new DynamicCommandHandler();
         OutBuffer = new StandardConsoleOutBuffer();
         CuiScene = new CuiScene();
-        
+
         Settings.ColorScheme = new DefaultLightColorScheme();
         Settings.OutBuffer = OutBuffer;
 
@@ -100,7 +100,7 @@ public class App : IApplication
             Settings.ColorScheme = ColorScheme;
             WidgetsMount.Mount(new AlertWidget(error.Message, AlertLevel.ERROR));
         }
-        
+
         OutBuffer!.CursorVisible = false;
 
         TextBufferSettings.Tab = options.TabSymbol;
@@ -112,7 +112,7 @@ public class App : IApplication
         if (options.TextBufferPath is not null)
         {
             string path = TextBufferManager.ModifyPath(options.TextBufferPath);
-            
+
             if (TextBufferManager.IsFilePathCorrect(path))
                 TextBufferManager.OpenAsTextBuffer(path, TextBuffer);
             else

@@ -2,6 +2,6 @@
 {
     public class SourceCodeCompilationException : NotExitException
     {
-        public SourceCodeCompilationException(string message) : base(message) {}
+        public SourceCodeCompilationException(string message) : base(message) { }
     }
 }

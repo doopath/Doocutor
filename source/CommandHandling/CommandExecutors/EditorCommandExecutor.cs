@@ -1,8 +1,8 @@
 ﻿using CommandHandling.Commands;
-using Utils.Exceptions;
-using Utils.Exceptions.NotExitExceptions;
 using CUI;
 using NLog;
+using Utils.Exceptions;
+using Utils.Exceptions.NotExitExceptions;
 
 namespace CommandHandling.CommandExecutors;
 

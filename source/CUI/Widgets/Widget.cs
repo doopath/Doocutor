@@ -1,9 +1,9 @@
-﻿using System.Collections;
-using System.ComponentModel.DataAnnotations;
-using System.Text.RegularExpressions;
-using Common;
+﻿using Common;
 using CUI.ColorSchemes;
 using Pastel;
+using System.Collections;
+using System.ComponentModel.DataAnnotations;
+using System.Text.RegularExpressions;
 
 namespace CUI.Widgets;
 
@@ -80,7 +80,7 @@ public abstract class Widget : IWidget
     {
         CuiRender.DisableVirtualCursor();
         CuiRender.Render();
-        
+
         while (true)
         {
             if (HandleInput())
@@ -204,14 +204,14 @@ public abstract class Widget : IWidget
             widgetItemsTopPointer++;
         }
     }
-    
-        
+
+
     protected virtual int GetFirstColoredSymbolIndex(string line)
         => Regex.Match(line, "\u001B\\[[;\\d]*m").Index;
-    
+
     protected virtual string RemoveAsciiColors(string line)
         => Regex.Replace(line, "\u001B\\[[;\\d]*m", "");
-    
+
     protected virtual string ColorizeCharacter(char symbol)
     {
         string result = symbol.ToString();

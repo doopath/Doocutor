@@ -1,13 +1,13 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using Common;
+﻿using Common;
 using CUI;
 using CUI.ColorSchemes;
 using CUI.OutBuffers;
 using CUI.Scenes;
 using NUnit.Framework;
 using Pastel;
+using System;
+using System.Collections.Generic;
+using System.Linq;
 using TextBuffer.TextBufferContents;
 
 namespace Tests.Core

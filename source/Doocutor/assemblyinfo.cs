@@ -1,5 +1,4 @@
 using System.Reflection;
-using Domain.Core;
 using Utils;
 
 [assembly: AssemblyCompany(Info.ProductName)]

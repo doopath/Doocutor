@@ -1,5 +1,5 @@
-using System.ComponentModel.DataAnnotations;
 using CUI.OutBuffers;
+using System.ComponentModel.DataAnnotations;
 
 namespace CUI
 {

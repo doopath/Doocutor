@@ -14,6 +14,7 @@ global.json
 .idea
 .vs
 .vscode
+.fleet
 
 # Dev tools dirs
 .fake

@@ -1,10 +1,9 @@
-﻿using System.Diagnostics;
-using System.Diagnostics.CodeAnalysis;
-using Common;
+﻿using Common;
 using CUI.ColorSchemes;
 using CUI.OutBuffers;
 using CUI.Scenes;
 using Pastel;
+using System.Diagnostics;
 using Utils.Exceptions.NotExitExceptions;
 
 namespace CUI;
@@ -201,7 +200,6 @@ public static class CuiRender
         catch (ArgumentOutOfRangeException) { }
     }
 
-    [SuppressMessage("ReSharper.DPA", "DPA0003: Excessive memory allocations in LOH")]
     private static void SetScene()
     {
         TextBuffer!.AdaptTextForBufferSize(RightEdge);

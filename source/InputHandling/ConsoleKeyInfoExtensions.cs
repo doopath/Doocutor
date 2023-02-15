@@ -18,7 +18,7 @@
 
             if (modifiers.Count == 1 && modifiers.Contains("0"))
                 return new List<string>();
-            
+
             return modifiers;
         }
     }

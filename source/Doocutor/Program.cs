@@ -1,11 +1,9 @@
-﻿using System;
-using System.Linq;
-using CommandLine;
+﻿using CommandLine;
 using Common.Options;
-using Utils.Exceptions;
 using CUI;
 using NLog;
 using Utils;
+using Utils.Exceptions;
 
 namespace Doocutor
 {
@@ -47,18 +45,17 @@ namespace Doocutor
         private static void Start()
             => OutputColorizing.ColorizeForeground(ConsoleColor.Cyan, () =>
             {
-               Logger.Debug("Start of the program");
-               Info.ShowDoocutorInfo();
+                Logger.Debug("Start of the program");
+                Info.ShowDoocutorInfo();
             });
 
         private static void End()
             => OutputColorizing.ColorizeForeground(ConsoleColor.Cyan,
                 () =>
                 {
-                    string endMessage = "End of the program\n";
-                    Logger.Debug($"{endMessage}\n");
+                    Logger.Debug($"End of the program\n\n");
                     OutputColorizing.ColorizeForeground(ConsoleColor.Cyan,
-                       () => Console.WriteLine($"\n{endMessage}"));
+                       () => Console.WriteLine($"\nBye bye! ♥\n"));
                 });
 
         private static AppOptions ParseCommandLineArguments(string[] args)

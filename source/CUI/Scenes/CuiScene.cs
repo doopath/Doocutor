@@ -34,7 +34,7 @@ namespace CUI.Scenes
 
             for (var i = 0; i < bottomEdge; i++)
                 buffer[i] = output[i];
-            
+
             return buffer.ToList();
         }
 

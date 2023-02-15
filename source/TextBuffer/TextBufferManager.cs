@@ -1,5 +1,5 @@
-using System.Text;
 using Common;
+using System.Text;
 using Utils.Exceptions.NotExitExceptions;
 
 namespace TextBuffer;
@@ -11,7 +11,7 @@ public static class TextBufferManager
         path = ModifyPath(path);
         string fileContent = File.ReadAllText(path, Encoding.UTF8).Replace("\r", "");
         List<string> fileContentLines = fileContent.Split("\n").ToList();
-        
+
         textBuffer.ClearHistory();
         textBuffer.ReplaceCurrentContentBy(fileContentLines);
         textBuffer.FilePath = path;

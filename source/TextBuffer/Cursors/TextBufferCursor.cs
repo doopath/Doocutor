@@ -1,5 +1,5 @@
-﻿using Utils.Exceptions.NotExitExceptions;
-using TextBuffer.TextBufferFormatters;
+﻿using TextBuffer.TextBufferFormatters;
+using Utils.Exceptions.NotExitExceptions;
 
 namespace TextBuffer.Cursors;
 

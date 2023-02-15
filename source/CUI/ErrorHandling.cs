@@ -1,6 +1,6 @@
-using Utils.Exceptions;
 using CUI.Widgets;
 using NLog;
+using Utils.Exceptions;
 
 namespace CUI;
 
@@ -23,12 +23,12 @@ public static class ErrorHandling
                 $"(see the logfile in {Settings.ApplicationPath.Replace(@"\", "/")}/logs/doocutor.log)";
             WidgetsMount.Mount(new AlertWidget(alertMessage, AlertLevel.ERROR));
         });
-    
+
     public static void ShowError(string errorMessage)
         => OutputColorizing.ColorizeForeground(ConsoleColor.Red, () =>
         {
             FileLogger.Debug($"Thrown an error: \"{errorMessage}\"\n");
-            string alertMessage = $"INTERNAL ERROR: {errorMessage} " + 
+            string alertMessage = $"INTERNAL ERROR: {errorMessage} " +
                 $"(see the logfile in {Settings.ApplicationPath.Replace(@"\", "/")}/logs/doocutor.log)";
             WidgetsMount.Mount(new AlertWidget(alertMessage, AlertLevel.ERROR));
         });

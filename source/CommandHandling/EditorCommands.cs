@@ -1,12 +1,11 @@
 using CommandHandling.Commands;
 using Common;
-using Utils.Exceptions;
 using CUI;
-using TextBuffer.TextBuffers;
 using CUI.Widgets;
 using TextBuffer;
 using TextCopy;
 using Utils;
+using Utils.Exceptions;
 
 namespace CommandHandling;
 
@@ -131,21 +130,21 @@ public static class EditorCommands
         if (TextBuffer!.FilePath is null)
         {
             bool terminate = false;
-            
+
             WidgetsMount.Mount(new TextInputDialogWidget(
                 text: "Your current buffer is untitled! Please enter a path to save it:",
                 onCancel: () => terminate = true,
-                onOk: path => TextBuffer.FilePath = TextBufferManager.ModifyPath((string) path!)));
+                onOk: path => TextBuffer.FilePath = TextBufferManager.ModifyPath((string)path!)));
 
             if (terminate) return;
 
-                if (TextBuffer.FilePath is not null && !TextBufferManager.IsDirPathCorrect(TextBuffer.FilePath))
+            if (TextBuffer.FilePath is not null && !TextBufferManager.IsDirPathCorrect(TextBuffer.FilePath))
             {
                 TextBuffer.FilePath = null;
                 WidgetsMount.Mount(new AlertWidget("Entered path is incorrect! Cannot save the buffer D:"));
             }
         }
-        
+
         if (TextBuffer.FilePath is not null)
             TextBufferManager.SaveTextBufferAsFile(TextBuffer);
         else
@@ -156,14 +155,14 @@ public static class EditorCommands
     {
         string filePath = string.Empty;
         bool terminate = false;
-        
+
         WidgetsMount.Mount(new TextInputDialogWidget(
             text: "Enter file location:",
             onCancel: () => terminate = true,
-            onOk: path => filePath = (string) path!));
+            onOk: path => filePath = (string)path!));
 
         if (terminate) return;
-        
+
         if (TextBufferManager.IsFilePathCorrect(filePath))
         {
             TextBufferManager.OpenAsTextBuffer(filePath, TextBuffer!);
@@ -179,16 +178,16 @@ public static class EditorCommands
     {
         string filePath = string.Empty;
         bool terminate = false;
-        
+
         WidgetsMount.Mount(new TextInputDialogWidget(
             text: "Enter new file path:",
             onCancel: () => terminate = true,
-            onOk: path => filePath = (string) path!));
+            onOk: path => filePath = (string)path!));
 
         if (terminate) return;
-        
+
         filePath = TextBufferManager.ModifyPath(filePath);
-        
+
         if (TextBufferManager.IsDirPathCorrect(filePath))
             TextBuffer!.FilePath = filePath;
         else

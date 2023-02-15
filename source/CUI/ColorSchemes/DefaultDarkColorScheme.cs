@@ -7,7 +7,7 @@ public record DefaultDarkColorScheme : IColorScheme
     #region Text
     public string TextForeground { get; init; }
     public string TextBackground { get; init; }
-    public string TextSelectionForeground { get; init; }        
+    public string TextSelectionForeground { get; init; }
     public string TextSelectionBackground { get; init; }
     #endregion
 

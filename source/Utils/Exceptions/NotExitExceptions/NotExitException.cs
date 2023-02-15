@@ -7,5 +7,5 @@
 /// </summary>
 public abstract class NotExitException : Exception
 {
-    protected NotExitException(string message) : base(message) {}
+    protected NotExitException(string message) : base(message) { }
 }

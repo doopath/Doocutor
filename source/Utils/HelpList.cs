@@ -1,5 +1,5 @@
-﻿using System.Text.RegularExpressions;
-using Spectre.Console;
+﻿using Spectre.Console;
+using System.Text.RegularExpressions;
 
 namespace Utils
 {

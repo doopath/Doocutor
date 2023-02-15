@@ -1,5 +1,4 @@
 using Common;
-using TextBuffer.Cursors;
 
 namespace TextBuffer.TextBufferHistories
 {

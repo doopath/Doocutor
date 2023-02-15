@@ -2,6 +2,6 @@
 {
     public class CommandExecutingException : NotExitException
     {
-        public CommandExecutingException(string message) : base(message) {}
+        public CommandExecutingException(string message) : base(message) { }
     }
 }
