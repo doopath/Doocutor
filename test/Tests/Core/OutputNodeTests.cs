@@ -57,7 +57,7 @@ namespace Tests.Core
                 .ToString()
                 .Pastel(_colorScheme!.CursorForeground)
                 .PastelBg(_colorScheme.CursorBackground) + supposedLines[top][left..];
-            supposedCode = string.Join("", supposedLines);
+            supposedCode = string.Join("\n", supposedLines);
 
             CuiRender.Render();
 
