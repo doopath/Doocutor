@@ -15,10 +15,10 @@ public class DialogWidget : Widget
         _textForegroundColor = ColorScheme!.TextForeground;
         _horizontalSymbol = "─".Pastel(ColorScheme.WidgetBorderForeground);
         _verticalSymbol = "│".Pastel(ColorScheme.WidgetBorderForeground);
-        _topLeftCorner = "┌".Pastel(ColorScheme.WidgetBorderForeground);
-        _topRightCorner = "┐".Pastel(ColorScheme.WidgetBorderForeground);
-        _bottomLeftCorner = "└".Pastel(ColorScheme.WidgetBorderForeground);
-        _bottomRightCorner = "┘".Pastel(ColorScheme.WidgetBorderForeground);
+        _topLeftCorner = "╭".Pastel(ColorScheme.WidgetBorderForeground);
+        _topRightCorner = "╮".Pastel(ColorScheme.WidgetBorderForeground);
+        _bottomLeftCorner = "╰".Pastel(ColorScheme.WidgetBorderForeground);
+        _bottomRightCorner = "╯".Pastel(ColorScheme.WidgetBorderForeground);
         _activeButtonIndex = ButtonsMap.Keys.ToList().IndexOf(WidgetAction.CANCEL.ToString());
 
         OnCancel = onCancel;

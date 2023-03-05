@@ -4,7 +4,10 @@
 *.user
 */Properties
 publish
+Doocutor.sln.DotSettings.user
 global.json
+run
+build.log
 
 # build dirs
 */*/obj

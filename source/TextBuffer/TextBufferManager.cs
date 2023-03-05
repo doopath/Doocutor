@@ -22,9 +22,11 @@ public static class TextBufferManager
         if (path is null && textBuffer.FilePath is null)
             throw new TextBufferSavingException("Cannot save the textBuffer because of file path is not set!");
 
-        string[] textBufferContent = textBuffer.Lines;
+        using var fs = new FileStream(path ?? textBuffer.FilePath!, FileMode.Append);
+        using var sw = new StreamWriter(stream: fs, encoding: Encoding.UTF8);
 
-        File.WriteAllLinesAsync(path ?? textBuffer.FilePath!, textBufferContent, Encoding.UTF8);
+        foreach (var line in textBuffer.Lines)
+            sw.WriteLine(line);
     }
 
     public static bool IsDirPathCorrect(string path)
